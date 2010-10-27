@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/backport-util-concurrent/backport-util-concurrent/2.2/backport-util-concurrent-2.2.jar" sourcepath="M2_REPO/backport-util-concurrent/backport-util-concurrent/2.2/backport-util-concurrent-2.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136.jar" sourcepath="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-common/3.2.0.3978/blazeds-common-3.2.0.3978.jar" sourcepath="M2_REPO/com/adobe/blazeds/blazeds-common/3.2.0.3978/blazeds-common-3.2.0.3978-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-core/3.2.0.3978/blazeds-core-3.2.0.3978.jar" sourcepath="M2_REPO/com/adobe/blazeds/blazeds-core/3.2.0.3978/blazeds-core-3.2.0.3978-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-proxy/3.2.0.3978/blazeds-proxy-3.2.0.3978.jar" sourcepath="M2_REPO/com/adobe/blazeds/blazeds-proxy/3.2.0.3978/blazeds-proxy-3.2.0.3978-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-remoting/3.2.0.3978/blazeds-remoting-3.2.0.3978.jar" sourcepath="M2_REPO/com/adobe/blazeds/blazeds-remoting/3.2.0.3978/blazeds-remoting-3.2.0.3978-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar" sourcepath="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gate/chunker/5.1/chunker-5.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar" sourcepath="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-digester/commons-digester/1.6/commons-digester-1.6.jar" sourcepath="M2_REPO/commons-digester/commons-digester/1.6/commons-digester-1.6-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-digester/commons-digester/1.6/commons-digester-1.6-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar" sourcepath="M2_REPO/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.5/commons-lang-2.5.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.5/commons-lang-2.5-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/commons-validator/commons-validator/1.3.1/commons-validator-1.3.1.jar" sourcepath="M2_REPO/commons-validator/commons-validator/1.3.1/commons-validator-1.3.1-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/ctakes/ctakes-core/1.0.5/ctakes-core-1.0.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/ctakes/ctakes-pos_tagger/1.0.5/ctakes-pos_tagger-1.0.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/displaytag/displaytag/1.2/displaytag-1.2.jar" sourcepath="M2_REPO/displaytag/displaytag/1.2/displaytag-1.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/apache/tomcat/el-api/6.0.29/el-api-6.0.29.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/fontbox/fontbox/0.1.0/fontbox-0.1.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gate/gate/5.1/gate-5.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gate/gate-asm/5.1/gate-asm-5.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gate/gate-compiler-jdt/5.1/gate-compiler-jdt-5.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/hitex/hitex/2.6.1/hitex-2.6.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/lowagie/itext/1.3/itext-1.3.jar" sourcepath="M2_REPO/com/lowagie/itext/1.3/itext-1.3-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/jcl104-over-slf4j/1.4.2/jcl104-over-slf4j-1.4.2.jar" sourcepath="M2_REPO/org/slf4j/jcl104-over-slf4j/1.4.2/jcl104-over-slf4j-1.4.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/jdom/jdom/1.1/jdom-1.1.jar" sourcepath="M2_REPO/org/jdom/jdom/1.1/jdom-1.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/ryancornia/.m2/repository/org/jdom/jdom/1.1/jdom-1.1-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/jempbox/jempbox/0.2.0/jempbox-0.2.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/apache/tomcat/jsp-api/6.0.29/jsp-api-6.0.29.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.8.1/junit-4.8.1.jar" sourcepath="M2_REPO/junit/junit/4.8.1/junit-4.8.1-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/projectlombok/lombok/0.9.2/lombok-0.9.2.jar" sourcepath="M2_REPO/org/projectlombok/lombok/0.9.2/lombok-0.9.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gov/nih/nlm/nls/metamapapi/2009.2/metamapapi-2009.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/mockito/mockito-all/1.8.3/mockito-all-1.8.3.jar" sourcepath="M2_REPO/org/mockito/mockito-all/1.8.3/mockito-all-1.8.3-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/nekohtml/nekohtml/0.9.5/nekohtml-0.9.5.jar" sourcepath="M2_REPO/nekohtml/nekohtml/0.9.5/nekohtml-0.9.5-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/dsg/ngram/1/ngram-1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/gate/ontotext/5.1/ontotext-5.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/se/sics/prologbeans/2009.2/prologbeans-2009.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/apache/tomcat/servlet-api/6.0.29/servlet-api-6.0.29.jar"/>
+	<classpathentry kind="var" path="M2_REPO/opensymphony/sitemesh/2.4.2/sitemesh-2.4.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.2/slf4j-log4j12-1.4.2.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.4.2/slf4j-log4j12-1.4.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-aop/3.0.1.RELEASE/spring-aop-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-aop/3.0.1.RELEASE/spring-aop-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-asm/3.0.1.RELEASE/spring-asm-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-asm/3.0.1.RELEASE/spring-asm-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/3.0.1.RELEASE/spring-beans-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-beans/3.0.1.RELEASE/spring-beans-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/3.0.1.RELEASE/spring-context-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-context/3.0.1.RELEASE/spring-context-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-context-support/3.0.1.RELEASE/spring-context-support-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-context-support/3.0.1.RELEASE/spring-context-support-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.1.RELEASE/spring-core-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-core/3.0.1.RELEASE/spring-core-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-expression/3.0.1.RELEASE/spring-expression-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-expression/3.0.1.RELEASE/spring-expression-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/flex/spring-flex/1.0.3.RELEASE/spring-flex-1.0.3.RELEASE.jar" sourcepath="M2_REPO/org/springframework/flex/spring-flex/1.0.3.RELEASE/spring-flex-1.0.3.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/3.0.1.RELEASE/spring-jdbc-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-jdbc/3.0.1.RELEASE/spring-jdbc-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-tx/3.0.1.RELEASE/spring-tx-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-tx/3.0.1.RELEASE/spring-tx-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-web/3.0.1.RELEASE/spring-web-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-web/3.0.1.RELEASE/spring-web-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-webmvc/3.0.1.RELEASE/spring-webmvc-3.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-webmvc/3.0.1.RELEASE/spring-webmvc-3.0.1.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/dsg/umlsmap/1/umlsmap-1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/weka/weka/3.5.7/weka-3.5.7.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/wstx-lgpl/3.2.3/wstx-lgpl-3.2.3.jar" sourcepath="M2_REPO/org/codehaus/woodstox/wstx-lgpl/3.2.3/wstx-lgpl-3.2.3-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.1/xercesImpl-2.6.1.jar" sourcepath="M2_REPO/xerces/xercesImpl/2.6.1/xercesImpl-2.6.1-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common-model"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

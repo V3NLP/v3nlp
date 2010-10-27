@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:gate="http://gate.ac.uk/ns/spring"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:flex="http://www.springframework.org/schema/flex"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       		http://gate.ac.uk/ns/spring  
+       		http://gate.ac.uk/ns/spring.xsd
+       		http://www.springframework.org/schema/context 
+       		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       		http://www.springframework.org/schema/flex 
+            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+	<gate:init gate-home="WEB-INF"
+			   user-config-file="WEB-INF/user-gate.xml">
+		<gate:preload-plugins>
+			<value>WEB-INF/plugins/ANNIE</value>
+			<value>WEB-INF/resources/</value>
+		</gate:preload-plugins>
+	</gate:init>
+	<!--
+		 <gate:resource id="firstController" scope="prototype"
+		 resource-class="gate.creole.SerialAnalyserController"
+		 resource-name="First Controller"> <gate:customisers> <gate:add-pr
+		 index="0" ref="defaultAnnotationDeletePR"/> <gate:add-pr index="1"
+		 ref="defaultTokeniser"/> <gate:add-pr index="2"
+		 ref="defaultGazetteer"/> <gate:add-pr index="3"
+		 ref="defaultSentenceSplitter"/> <gate:add-pr index="4"
+		 ref="defaultPOSTagger"/> <gate:add-pr index="5"
+		 ref="defaultANNIETransducer"/> <gate:add-pr index="6"
+		 ref="defaultOrthoMatcher"/> <gate:add-pr index="7"
+		 ref="exampleTransducer"/> </gate:customisers> </gate:resource>
+
+		 <gate:resource id="plainController" scope="prototype"
+		 resource-class="gate.creole.SerialAnalyserController"
+		 resource-name="Plain Controller"> </gate:resource>
+	-->
+	<gate:resource id="defaultUmlsConceptFinder"
+				   resource-class="hitex.gate.UMLSConceptFinder">
+		<gate:parameters>
+			<entry key="filterMappings">
+				<value>true</value>
+			</entry>
+			<entry key="filterHostname">
+				<value>localhost</value>
+			</entry>
+			<entry key="filterPort">
+				<value>3306</value>
+			</entry>
+			<entry key="filterDbname">
+				<value>umls_2004aa</value>
+			</entry>
+			<entry key="filterUsername">
+				<value>webapp</value>
+			</entry>
+			<entry key="filterPassword">
+				<value>secret</value>
+			</entry>
+			<entry key="filterTable">
+				<value>mappings</value>
+			</entry>
+
+			<entry key="filterSemanticTypes">
+				<value>true</value>
+			</entry>
+
+			<entry key="semanticTypesList">
+				<list>
+					<value>T019: Congenital Abnormality</value>
+					<value>T020: Acquired Abnormality</value>
+					<value>T033: Finding</value>
+					<value>T037: Injury or Poisoning</value>
+					<value>T046: Pathologic Function</value>
+					<value>T047: Disease or Syndrome</value>
+					<value>T048: Mental or Behavioral Dysfunction</value>
+					<value>T049: Cell or Molecular Dysfunction</value>
+					<value>T099: Family Group</value>
+					<value>T184: Sign or Symptom</value>
+					<value>T190: Anatomical Abnormality</value>
+					<value>T191: Neoplastic Process</value>
+				</list>
+			</entry>
+
+			<entry key="filterSections">
+				<value>true</value>
+			</entry>
+			<entry key="sectionCriteriaList">
+				<list>
+					<value>ANY</value>
+					<!-- <value>category = PRI</value> -->
+					<!-- <value>category = DIAG</value> -->
+				</list>
+			</entry>
+
+			<entry key="umlsHostname">
+				<value>localhost</value>
+			</entry>
+			<entry key="umlsPort">
+				<value>3306</value>
+			</entry>
+			<entry key="umlsDatabaseName">
+				<value>umls_2004aa</value>
+			</entry>
+			<entry key="umlsUsername">
+				<value>webapp</value>
+			</entry>
+			<entry key="umlsPassword">
+				<value>secret</value>
+			</entry>
+			<entry key="stop">
+				<value>true</value>
+			</entry>
+			<entry key="stem">
+				<value>true</value>
+			</entry>
+			<entry key="truncate">
+				<value>true</value>
+			</entry>
+			<entry key="suppress">
+				<value>STRONG_CHV</value>
+			</entry>
+			<entry key="cacheSize">
+				<value>0</value>
+			</entry>
+			<entry key="calcRelevanceScore">
+				<value>true</value>
+			</entry>
+			<entry key="useCustomSemanticTypes">
+				<value>false</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+
+
+	<gate:resource id="defaultAnnotationDeletePR"
+				   resource-class="gate.creole.annotdelete.AnnotationDeletePR"/>
+	<gate:resource id="defaultTokeniser"
+				   resource-class="gate.creole.tokeniser.DefaultTokeniser">
+		<gate:parameters>
+			<entry key="tokeniserRulesURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/tokeniser/DefaultTokeniser.rules
+				</value>
+			</entry>
+			<entry key="transducerGrammarURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/tokeniser/postprocess.jape
+							</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+	<gate:resource id="defaultGazetteer"
+				   resource-class="gate.creole.gazetteer.DefaultGazetteer">
+		<gate:parameters>
+			<entry key="listsURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/gazetteer/lists.def
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultTextTokenizer"
+				   resource-class="hitex.gate.Tokenizer">
+		<gate:parameters>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/resources/tokenizer/rules.txt
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultSentenceSplitter"
+				   resource-class="hitex.gate.SentenceSplitter">
+	</gate:resource>
+
+	<gate:resource id="defaultRegexConceptFinder"
+				   scope="prototype"
+				   resource-class="hitex.gate.regex.ConceptFinder">
+		<gate:parameters>
+			<entry key="useSections">
+				<value>true</value>
+			</entry>
+			<entry key="filterURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/resources/regex/section_filter.txt
+				</value>
+			</entry>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/resources/regex/rules.xml
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultPOSTagger"
+				   resource-class="gate.creole.POSTagger">
+		<gate:parameters>
+			<entry key="outputAnnotationType">
+				<value>Token</value>
+			</entry>
+			<entry key="baseSentenceAnnotationType">
+				<value>Sentence</value>
+			</entry>
+			<entry key="baseTokenAnnotationType">
+				<value>Token</value>
+			</entry>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/heptag/ruleset
+				</value>
+			</entry>
+			<entry key="lexiconURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/heptag/lexicon
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+	<gate:resource id="defaultANNIETransducer"
+				   resource-class="gate.creole.ANNIETransducer">
+		<gate:parameters>
+			<entry key="grammarURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/NE/main.jape
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+	<gate:resource id="defaultOrthoMatcher"
+				   resource-class="gate.creole.orthomatcher.OrthoMatcher">
+		<gate:parameters>
+			<entry key="definitionFileURL">
+				<value type="org.springframework.core.io.Resource">
+					WEB-INF/plugins/ANNIE/resources/othomatcher/listsNM.def
+				</value>
+			</entry>
+			<entry key="minimumNicknameLikelihood">
+				<value>0.5</value>
+			</entry>
+			<entry key="extLists">
+				<value>true</value>
+			</entry>
+			<entry key="caseSensitive">
+				<value>falshitex.gatee</value>
+			</entry>
+			<entry key="highPrecisionOrgs">
+				<value>false</value>
+			</entry>
+			<entry key="personType">
+				<value>Person</value>
+			</entry>
+			<entry key="processUnknown">
+				<value>true</value>
+			</entry>
+			<entry key="organizationType">
+				<value>Organization</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+
+	<gate:resource id="defaultSectionizer"
+				   scope="prototype"
+				   resource-class="hitex.gate.Sectionizer"
+				   resource-name="exampleSectionizer">
+		<gate:parameters>
+			<entry key="headersURL">
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultNegEx"
+				   scope="prototype"
+				   resource-class="hitex.gate.negex.NegEx"
+				   resource-name="defaultNegEx">
+		<gate:parameters>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="exampleTransducer"
+				   scope="prototype"
+				   resource-class="gate.creole.Transducer"
+				   resource-name="firstTransducer">
+		<gate:parameters>
+			<entry key="grammarURL">
+				<value type="org.springframework.core.io.Resource">WEB-INF/acquire.jape
+							</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:saved-application id="gate-application"
+							location="WEB-INF/application.gapp"
+							scope="prototype"/>
+
+</beans>

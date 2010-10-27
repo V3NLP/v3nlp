@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<concepts>
+
+   <concept>
+      <def><![CDATA[(?i)(?m)(\W+|\d+)(ero[a-zA-Z]+)(\W+|\d+)]]></def>
+      <capt_group_num>2</capt_group_num>
+      <type>RegEx</type>
+      <name>Erosion Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[LCS-I2B2:erosion]]></value>
+         </feature>
+      </features>
+   </concept>
+
+   <concept>
+      <def><![CDATA[(?i)(?m)(\d+|\W+)((ero[a-zA-Z]+))$]]></def>
+      <capt_group_num>2</capt_group_num>
+      <type>RegEx</type>
+      <name>Erosion Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[LCS-I2B2:erosion]]></value>
+         </feature>
+      </features>
+   </concept>
+
+   <concept>
+      <def><![CDATA[(?i)(?m)^(ero[a-zA-Z]+)(\W+|\d+)]]></def>
+      <capt_group_num>1</capt_group_num>
+      <type>RegEx</type>
+      <name>Erosion Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[LCS-I2B2:erosion]]></value>
+         </feature>
+      </features>
+   </concept>
+
+   <concept>
+      <def><![CDATA[(?i)(?m)^((ero[a-zA-Z]+))$]]></def>
+      <capt_group_num>1</capt_group_num>
+      <type>RegEx</type>
+      <name>Erosion Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[LCS-I2B2:erosion]]></value>
+         </feature>
+      </features>
+   </concept>
+
+</concepts>
