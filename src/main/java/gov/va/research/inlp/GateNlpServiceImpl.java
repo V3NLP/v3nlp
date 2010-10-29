@@ -8,6 +8,7 @@ import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
+import gate.util.InvalidOffsetException;
 import gov.va.research.inlp.gate.SectionizerHeaderFactory;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.operations.Negation;
@@ -252,14 +253,14 @@ public class GateNlpServiceImpl implements NlpService {
 		controller.cleanup();
 	}
 
-	private Annotations processDocumentForReturn(Document d) {
+	private Annotations processDocumentForReturn(Document d) throws InvalidOffsetException {
 		AnnotationSet annotations = d.getAnnotations();
 		Annotations results = new Annotations();
 		Iterator<Annotation> i = annotations.iterator();
 		while (i.hasNext()) {
 			Annotation a = i.next();
 			if (annotationTypesToReturn.contains(a.getType())) {
-				results.put(NlpUtilities.convertAnnotation(a));
+				results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));
 			}
 		}
 		return results;
