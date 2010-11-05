@@ -1,7 +1,7 @@
 package gov.va.research.inlp.model;
 
-import gov.va.research.inlp.model.datasources.TextDocument;
 import gov.va.research.inlp.model.operations.Concept;
+import gov.va.research.inlp.model.operations.MetamapConcept;
 import gov.va.research.inlp.model.operations.Negation;
 import gov.va.research.inlp.model.operations.Sectionizer;
 import gov.va.vinci.cm.Corpus;
@@ -131,5 +131,27 @@ public class PipeLine {
 		}
 		return false;
 	}
-		
+
+	/**
+	 * Determine if this pipeline has any section criteria. 
+	 * @return true if it has section criteria, false if it does not. 
+	 */
+	public Boolean hasConcept() {
+		for (BaseNlpModule mod : services) {
+			if (mod instanceof Concept) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public MetamapConcept getMetamapConcept() {
+		for (BaseNlpModule mod : services) {
+			if (mod instanceof MetamapConcept) {
+				return (MetamapConcept)mod;
+			}
+		}
+		return null;
+	}
+
 }

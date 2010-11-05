@@ -136,7 +136,7 @@
 	</gate:resource>
 
 
-
+<!-- 
 	<gate:resource id="defaultAnnotationDeletePR"
 				   resource-class="gate.creole.annotdelete.AnnotationDeletePR"/>
 	<gate:resource id="defaultTokeniser"
@@ -164,7 +164,7 @@
 			</entry>
 		</gate:parameters>
 	</gate:resource>
-
+ -->
 	<gate:resource id="defaultTextTokenizer"
 				   resource-class="hitex.gate.Tokenizer">
 		<gate:parameters>
@@ -290,7 +290,7 @@
 			</entry>
 		</gate:parameters>
 	</gate:resource>
-
+<!-- 
 	<gate:resource id="exampleTransducer"
 				   scope="prototype"
 				   resource-class="gate.creole.Transducer"
@@ -306,5 +306,5 @@
 	<gate:saved-application id="gate-application"
 							location="WEB-INF/application.gapp"
 							scope="prototype"/>
-
+ -->
 </beans>

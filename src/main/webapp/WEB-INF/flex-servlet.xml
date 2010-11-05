@@ -21,5 +21,6 @@
 
 	<flex:remoting-destination ref="expressionService"/>
 	
+	<flex:remoting-destination ref="utilityService" />
 	
 </beans>

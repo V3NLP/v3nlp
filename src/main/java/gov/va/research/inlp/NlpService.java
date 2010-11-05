@@ -5,6 +5,7 @@ import gov.va.research.inlp.model.PipeLine;
 import java.util.List;
 
 public interface NlpService {
+	
 
 	/**
 	 * Given a pipeline, actually process it.

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:gate="http://gate.ac.uk/ns/spring"
-	   xmlns:p="http://www.springframework.org/schema/p"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:flex="http://www.springframework.org/schema/flex"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        		http://gate.ac.uk/ns/spring  
        		http://gate.ac.uk/ns/spring.xsd
@@ -14,34 +12,46 @@
        		http://www.springframework.org/schema/context/spring-context-2.5.xsd
        		http://www.springframework.org/schema/flex 
             http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
-	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
-	<bean id="dataSource"
-	      class="org.springframework.jndi.JndiObjectFactoryBean" p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
-	
-	<bean id="expressionService" class="gov.va.research.inlp.expressionlib.ExpressionServiceImpl" p:dataSource-ref="dataSource" />
-	
-	<bean name="nlpService"
-		  class="gov.va.research.inlp.GateNlpServiceImpl">
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
+		p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
 
-		<lookup-method name="createConceptFinder"
-					   bean="defaultRegexConceptFinder"/>
+	<bean id="expressionService"
+		class="gov.va.research.inlp.expressionlib.ExpressionServiceImpl"
+		p:dataSource-ref="dataSource" />
 
-		<lookup-method name="createNegEx"
-					   bean="defaultNegEx"/>
+	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl"
+		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder">
+			<property name="annotationTypesToReturn">
+			<list>
+				<value>RegEx</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean name="sectionizerAndConceptFinder" class="gov.va.research.inlp.SectionizerAndConceptFinderImpl">
+		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
 
-		<lookup-method name="createSectionizer"
-					   bean="defaultSectionizer"/>
+		<lookup-method name="createNegEx" bean="defaultNegEx" />
+
+		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
 
 		<property name="sectionizerHeaders">
-			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml</value>
+			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
+			</value>
 		</property>
 
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>concept</value>
+				<value>section</value>
 			</list>
 		</property>
 	</bean>
+	
+	
+	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
 
 </beans>

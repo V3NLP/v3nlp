@@ -104,11 +104,10 @@ public class GateNlpServiceImpl implements NlpService {
 		try {
 			controller = (SerialAnalyserController) Factory.createResource(
 					"gate.creole.SerialAnalyserController", Factory
-							.newFeatureMap(), Factory.newFeatureMap(), "ANNIE");
+							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
 			controller.reInit();
-			controller.add(this.textTokenizer);
-			controller.add(this.sentenceSplitter);
-
+		//	controller.add(this.textTokenizer);
+//			controller.add(this.sentenceSplitter);
 			if (dataToProcess.hasSectionCriteria()) {
 				addSectionizer(dataToProcess, controller);
 			}
@@ -259,6 +258,7 @@ public class GateNlpServiceImpl implements NlpService {
 		Iterator<Annotation> i = annotations.iterator();
 		while (i.hasNext()) {
 			Annotation a = i.next();
+			System.out.println("Type=" + a.getType());
 			if (annotationTypesToReturn.contains(a.getType())) {
 				results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));
 			}
