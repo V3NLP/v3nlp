@@ -51,7 +51,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 		
 		// Step 2 - Handle metamap processing. 
 		if (dataToProcess.getMetamapConcept() != null) {
-			
 			// TODO Handle Metamap processing. 
 		}
 		
