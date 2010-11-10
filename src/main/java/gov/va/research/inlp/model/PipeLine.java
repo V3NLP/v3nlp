@@ -8,6 +8,7 @@ import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -26,21 +27,22 @@ public class PipeLine {
 	/**
 	 * Get the negation module in this pipeline if there is one.
 	 * 
-	 * @return The negation module in the pipeline, if there is one, or null. 
+	 * @return The negation module in the pipeline, if there is one, or null.
 	 */
 	public Negation getNegation() {
 		for (BaseNlpModule p : services) {
 			if (p instanceof Negation) {
-				return (Negation)p;
+				return (Negation) p;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Return the name and content of each document in the corpus of this pipeline.
+	 * Return the name and content of each document in the corpus of this
+	 * pipeline.
 	 * 
-	 * @return A hashtable with document name/content. 
+	 * @return A hashtable with document name/content.
 	 */
 	public Hashtable<String, String> getCorpusContent() {
 		Hashtable<String, String> result = new Hashtable<String, String>();
@@ -53,7 +55,7 @@ public class PipeLine {
 	/**
 	 * Find the regular expression xml configuration for this pipeline.
 	 * 
-	 * @return the xml representation of this pipeline's regular expressions. 
+	 * @return the xml representation of this pipeline's regular expressions.
 	 */
 	public String getRegularExpressionConfiguration() {
 		String regExXml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n"
@@ -81,9 +83,11 @@ public class PipeLine {
 	}
 
 	/**
-	 * Find the section modules in this pipeline, and create a configuration string for them.
+	 * Find the section modules in this pipeline, and create a configuration
+	 * string for them.
 	 * 
-	 * @return The regular expression describing the section modules in this pipeline.
+	 * @return The regular expression describing the section modules in this
+	 *         pipeline.
 	 */
 	public String getSectionCriteriaExpression() {
 		String result = "";
@@ -94,7 +98,7 @@ public class PipeLine {
 				continue;
 			}
 			Sectionizer s = (Sectionizer) mod;
-			for(int i=0; i< s.getSections().length; i++) {
+			for (int i = 0; i < s.getSections().length; i++) {
 				if (s.isExclude()) {
 					excludeSectionString += "(category = " + s.getSections()[i]
 							+ ") || ";
@@ -104,7 +108,7 @@ public class PipeLine {
 			}
 
 		}
-		if (result.equals("") && excludeSectionString.equals("") ) {
+		if (result.equals("") && excludeSectionString.equals("")) {
 			return "ANY";
 		} else {
 			if (excludeSectionString.length() > 0) {
@@ -115,13 +119,26 @@ public class PipeLine {
 			if (result.length() > 0) {
 				result = result.substring(0, result.length() - 3);
 			}
-			return result + " "  + excludeSectionString;
+			return result + " " + excludeSectionString;
 		}
 	}
 
+	public List<String> getSectionList() {
+		List<String> sections = new ArrayList<String>();
+		for (BaseNlpModule mod : this.getServices()) {
+			if (!(mod instanceof Sectionizer)) {
+				continue;
+			}
+			Sectionizer s = (Sectionizer) mod;
+			sections.addAll(Arrays.asList(s.getSections()));
+		}
+		return sections;
+	}
+
 	/**
-	 * Determine if this pipeline has any section criteria. 
-	 * @return true if it has section criteria, false if it does not. 
+	 * Determine if this pipeline has any section criteria.
+	 * 
+	 * @return true if it has section criteria, false if it does not.
 	 */
 	public Boolean hasSectionCriteria() {
 		for (BaseNlpModule mod : services) {
@@ -133,8 +150,9 @@ public class PipeLine {
 	}
 
 	/**
-	 * Determine if this pipeline has any section criteria. 
-	 * @return true if it has section criteria, false if it does not. 
+	 * Determine if this pipeline has any section criteria.
+	 * 
+	 * @return true if it has section criteria, false if it does not.
 	 */
 	public Boolean hasConcept() {
 		for (BaseNlpModule mod : services) {
@@ -144,11 +162,11 @@ public class PipeLine {
 		}
 		return false;
 	}
-	
+
 	public MetamapConcept getMetamapConcept() {
 		for (BaseNlpModule mod : services) {
 			if (mod instanceof MetamapConcept) {
-				return (MetamapConcept)mod;
+				return (MetamapConcept) mod;
 			}
 		}
 		return null;

@@ -1,4 +1,4 @@
-package gov.va.research.inlp;
+package gov.va.research.inlp.services;
 
 import gate.Annotation;
 import gate.AnnotationSet;
@@ -9,6 +9,7 @@ import gate.ProcessingResource;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.InvalidOffsetException;
+import gov.va.research.inlp.NlpUtilities;
 import gov.va.research.inlp.gate.SectionizerHeaderFactory;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.operations.Negation;
@@ -28,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class GateNlpServiceImpl implements NlpService {
+public class SectionizerAndConceptFinderImpl {
 	protected ProcessingResource sectionizer;
 
 	@javax.annotation.Resource(name = "defaultTextTokenizer")
@@ -38,9 +39,6 @@ public class GateNlpServiceImpl implements NlpService {
 	protected ProcessingResource sentenceSplitter;
 
 	protected ProcessingResource negEx;
-
-	@javax.annotation.Resource(name = "defaultUmlsConceptFinder")
-	protected ProcessingResource defaultUmlsConceptFinder;
 
 	private org.springframework.core.io.Resource sectionizerHeadersUrl;
 
@@ -94,7 +92,7 @@ public class GateNlpServiceImpl implements NlpService {
 	 * gov.va.research.inlp.NlpService#processPipeLine(gov.va.research.inlp.
 	 * model.PipeLine)
 	 */
-	public gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess) {
+	public gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess, gov.va.vinci.cm.Corpus _corpus) {
 		SerialAnalyserController controller = null;
 		Corpus corpus = null;
 		Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
@@ -106,13 +104,12 @@ public class GateNlpServiceImpl implements NlpService {
 					"gate.creole.SerialAnalyserController", Factory
 							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
 			controller.reInit();
-		//	controller.add(this.textTokenizer);
-//			controller.add(this.sentenceSplitter);
+
 			if (dataToProcess.hasSectionCriteria()) {
 				addSectionizer(dataToProcess, controller);
 			}
 
-			corpus = createCorpus(dataToProcess, corpusDocKeyDocument);
+			corpus = createCorpus(_corpus, corpusDocKeyDocument);
 			controller.setCorpus(corpus);
 
 			if (!dataToProcess.getRegularExpressionConfiguration().equals("")) {
@@ -237,7 +234,6 @@ public class GateNlpServiceImpl implements NlpService {
 
 	private void cleanupPipeLine(SerialAnalyserController controller,
 			Corpus corpus, ConceptFinder regexConceptFinder) {
-		defaultUmlsConceptFinder.cleanup();
 		textTokenizer.cleanup();
 		sentenceSplitter.cleanup();
 		regexConceptFinder.cleanup();
@@ -258,7 +254,6 @@ public class GateNlpServiceImpl implements NlpService {
 		Iterator<Annotation> i = annotations.iterator();
 		while (i.hasNext()) {
 			Annotation a = i.next();
-			System.out.println("Type=" + a.getType());
 			if (annotationTypesToReturn.contains(a.getType())) {
 				results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));
 			}
@@ -277,14 +272,14 @@ public class GateNlpServiceImpl implements NlpService {
 	 * @throws ResourceInstantiationException
 	 */
 	@SuppressWarnings("unchecked")
-	private Corpus createCorpus(PipeLine dataToProcess,
+	private Corpus createCorpus(gov.va.vinci.cm.Corpus dataToProcess,
 			Hashtable<String, Document> docs)
 			throws ResourceInstantiationException {
 		Corpus corpus;
-		corpus = Factory.newCorpus("NlpServiceImpl Corpus");
+		corpus = Factory.newCorpus("V3NLP Corpus - SectionizerAndConceptFinderImpl");
 
-		Hashtable<String, String> dataCorpuses = dataToProcess
-				.getCorpusContent();
+		
+		Hashtable<String, String> dataCorpuses = dataToProcess.getContentMap();
 
 		Enumeration<String> e = dataCorpuses.keys();
 

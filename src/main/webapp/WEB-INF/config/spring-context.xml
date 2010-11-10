@@ -23,15 +23,20 @@
 		p:dataSource-ref="dataSource" />
 
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl"
-		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder">
-			<property name="annotationTypesToReturn">
+		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder"
+		p:metamapProvider-ref="metamapProvider">
+		<property name="annotationTypesToReturn">
 			<list>
 				<value>RegEx</value>
+				<value>UMLS_Concept</value>
 			</list>
 		</property>
 	</bean>
-		
-	<bean name="sectionizerAndConceptFinder" class="gov.va.research.inlp.SectionizerAndConceptFinderImpl">
+
+
+
+	<bean name="sectionizerAndConceptFinder"
+		class="gov.va.research.inlp.services.SectionizerAndConceptFinderImpl">
 		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
 
 		<lookup-method name="createNegEx" bean="defaultNegEx" />
@@ -46,12 +51,21 @@
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>concept</value>
-				<value>section</value>
+				<value>section_header</value>
 			</list>
 		</property>
 	</bean>
-	
-	
+
+
 	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
 
+	<bean id="metamapProvider" class="gov.va.research.inlp.services.MetamapProviderImpl"
+		p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" />
+
+	<bean id="metamapService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
+		p:serviceUrl="http://10.5.17.158:8080/mm-service/httpinvoker/map" 
+		p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" />
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
 </beans>

@@ -1,6 +1,7 @@
 package gov.va.research.inlp;
 
 import gov.va.research.inlp.model.PipeLine;
+import gov.va.vinci.cm.Corpus;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface NlpService {
 	 * @param dataToProcess
 	 * @return
 	 */
-	public abstract gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess);
+	public abstract gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess, Corpus corpus);
 
 	/**
 	 * Returns the list of section headers available in this service.
