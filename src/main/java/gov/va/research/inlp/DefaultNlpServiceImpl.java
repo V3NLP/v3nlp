@@ -5,7 +5,6 @@ import gov.va.research.inlp.services.MetamapProviderImpl;
 import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.AnnotationInterface;
-import gov.va.vinci.cm.AnnotationsInterface;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.Feature;
@@ -19,6 +18,7 @@ import lombok.Setter;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
+	
 	@Getter
 	@Setter
 	SectionizerAndConceptFinderImpl sectionizerAndConceptFinder = null;
@@ -65,7 +65,17 @@ public class DefaultNlpServiceImpl implements NlpService {
 		}
 
 		// Remmove annotations not in return list & return annotated corpus.
-		return removeUnneededAnnotations(returnCorpus);
+		Corpus finalCorpus = removeUnneededAnnotations(returnCorpus);
+		
+		/** Add the format tags that were passed through. **/
+		for (int d = 0; d < dataToProcess.getServices().size(); d++) {
+			if (dataToProcess.getServices().get(d).getFormatInfo() != null) {
+				finalCorpus.addFormatInfo(dataToProcess.getServices().get(d)
+						.getFormatInfo());
+			}
+		}
+		
+		return finalCorpus;
 	}
 
 	/**
@@ -87,7 +97,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 				if (a.getFeatures() != null) {
 					for (Feature f : a.getFeatures()) {
 						for (FeatureElement fe : f.getFeatureElements()) {
-							if ("type".equals("type")) {
+							if ("type".equals(fe.getName())) {
 								if (this.annotationTypesToReturn.contains(fe
 										.getValue())) {
 									keep = true;

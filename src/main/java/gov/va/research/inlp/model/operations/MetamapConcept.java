@@ -8,9 +8,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class MetamapConcept extends BaseNlpModule {
 
-	public String toConceptXml() {
-		return 	  "   <metamapconcept>\n"
-				+ "   </metamapconcept>\n";
-	}
+	private String[] semanticGroups;
 
 }

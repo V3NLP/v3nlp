@@ -28,7 +28,7 @@
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>RegEx</value>
-				<value>UMLS_Concept</value>
+				<value>UMLSConcept</value>
 			</list>
 		</property>
 	</bean>

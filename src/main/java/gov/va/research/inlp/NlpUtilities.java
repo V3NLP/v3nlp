@@ -12,11 +12,11 @@ public class NlpUtilities {
 	public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
 			String content) {
 		Annotation resultAnnotation = new Annotation(gateAnnotation.getId());
-		resultAnnotation.setEndOffset(gateAnnotation.getEndNode().getOffset()
-				.intValue());
+		
 		resultAnnotation.setBeginOffset(gateAnnotation.getStartNode()
 				.getOffset().intValue());
-
+		resultAnnotation.setEndOffset(gateAnnotation.getEndNode().getOffset()
+				.intValue());
 		Feature feature = new Feature((String) gateAnnotation.getFeatures()
 				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
 		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));

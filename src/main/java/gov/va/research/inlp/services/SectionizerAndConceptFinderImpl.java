@@ -130,13 +130,6 @@ public class SectionizerAndConceptFinderImpl {
 						processDocumentForReturn(corpusDocKeyDocument.get(s)));
 			}
 
-			/** Add the format tags that were passed through. **/
-			for (int d = 0; d < dataToProcess.getServices().size(); d++) {
-				if (dataToProcess.getServices().get(d).getFormatInfo() != null) {
-					results.addFormatInfo(dataToProcess.getServices().get(d)
-							.getFormatInfo());
-				}
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
