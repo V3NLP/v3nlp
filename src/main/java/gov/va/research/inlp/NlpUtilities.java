@@ -4,6 +4,7 @@ import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,9 @@ public class NlpUtilities {
 		Feature feature = new Feature((String) gateAnnotation.getFeatures()
 				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
 		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
+		feature.getMetaData().setCreatedDate(new Date());
+		feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
+		
 		
 		// Copy Features
 		for (Object o : gateAnnotation.getFeatures().keySet()) {

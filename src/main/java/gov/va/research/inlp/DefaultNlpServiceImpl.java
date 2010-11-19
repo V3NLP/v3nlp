@@ -50,8 +50,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 	public Corpus processPipeLine(PipeLine dataToProcess, Corpus corpus) {
 		Corpus returnCorpus = corpus;
 
-		// TODO Create complete corpus.
-
 		// Step 1 - Sections and Concepts go first through annotation.
 		if (dataToProcess.hasSectionCriteria() || dataToProcess.hasConcept()) {
 			returnCorpus = sectionizerAndConceptFinder.processPipeLine(

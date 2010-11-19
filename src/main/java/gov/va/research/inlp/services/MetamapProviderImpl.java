@@ -14,6 +14,7 @@ import gov.va.vinci.cm.FeatureElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -106,7 +107,7 @@ public class MetamapProviderImpl {
 	private List<String> getCategoriesFromFeatureElements(Feature f) {
 		List<String> returnList = new ArrayList<String>();
 		
-		List<FeatureElement> categories = f.getFeatureElementsByName("categories");
+		Set<FeatureElement> categories = f.getFeatureElementsByName("categories");
 
 		for (FeatureElement categoryElement : categories) {
 			String[] cats = categoryElement.getValue().split(",");

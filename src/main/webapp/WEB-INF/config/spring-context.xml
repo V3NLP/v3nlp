@@ -64,7 +64,7 @@
 
 	<bean id="metamapService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
-		p:serviceUrl="http://10.5.17.158:8080/mm-service/httpinvoker/map" 
+		p:serviceUrl="http://10.5.17.158:8888/mm-service/httpinvoker/map" 
 		p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" />
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
