@@ -15,12 +15,9 @@
             http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 
 	<flex:message-broker />
-	
-	<!-- Expose the nlpService bean for Flex remoting -->
-	<flex:remoting-destination ref="nlpService" />
 
+	<flex:remoting-destination ref="databaseRespositoryService"/>
 	<flex:remoting-destination ref="expressionService"/>
-	
+	<flex:remoting-destination ref="nlpService" />	
 	<flex:remoting-destination ref="utilityService" />
-	
 </beans>

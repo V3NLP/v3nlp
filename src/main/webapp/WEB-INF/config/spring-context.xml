@@ -15,6 +15,13 @@
 	<bean
 		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:v3nlp-server.properties</value>
+		</property>
+	</bean>
+	
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
 		p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
 
@@ -64,8 +71,41 @@
 
 	<bean id="metamapService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
-		p:serviceUrl="http://10.5.17.158:8080/mm-service/httpinvoker/map" 
+		p:serviceUrl="${metamapServerUrl}"
 		p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" />
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+
+	<bean id="databaseRespositoryService" class="gov.va.research.inlp.DatabaseRespositoryServiceImpl">
+		<property name="repositories">
+			<list>
+				<ref bean="vinciTuiRepository"/>
+				<ref bean="ordZengRepository"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository">
+		<property name="url"
+			value="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;" />
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="schema" value="VINCI_TIU.TIU" />
+		<property name="table" value="TIUDocument" />
+		<property name="uidColumn" value="TIUDocumentSID" />
+		<property name="textColumn" value="ReportText" />
+		<property name="firstRow" value="1" />
+		<property name="maxResults" value="1000" />
+	</bean>
+
+	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository">
+		<property name="url"
+			value="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;" />
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="schema" value="ORD_Zeng_20100321.dflt" />
+		<property name="table" value="TIUDocument_subset" />
+		<property name="uidColumn" value="TIUDocumentSID" />
+		<property name="textColumn" value="ReportText" />
+		<!--    <property name="firstRow" value="1" />-->
+		<!--    <property name="maxResults" value="1000" />-->
+	</bean>
 </beans>

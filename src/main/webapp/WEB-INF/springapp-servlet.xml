@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:gate="http://gate.ac.uk/ns/spring"
-	   xmlns:p="http://www.springframework.org/schema/p"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:mvc="http://www.springframework.org/schema/mvc"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        		http://gate.ac.uk/ns/spring  
        		http://gate.ac.uk/ns/spring.xsd
@@ -15,13 +13,19 @@
        		http://www.springframework.org/schema/mvc
        		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-    <!-- Scans the classpath of this application for @Components to deploy as beans -->
+	<!--
+		Scans the classpath of this application for @Components to deploy as
+		beans
+	-->
 	<context:component-scan base-package="gov.va.research.inlp" />
-	
-	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+
+
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
 	<bean id="viewResolver"
-		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix">
 			<value>/WEB-INF/pages/</value>
 		</property>
@@ -36,10 +40,15 @@
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
 	<mvc:view-controller path="/home.html" view-name="home" />
-	<mvc:view-controller path="/documentation.html" view-name="documentation" />
-	<mvc:view-controller path="/documentation/building.html" view-name="documentation/building" />
-	<mvc:view-controller path="/documentation/installation.html" view-name="documentation/installation" />
-	<mvc:view-controller path="/documentation/releasenotes.html" view-name="documentation/releasenotes" />
-	<mvc:view-controller path="/documentation/regularexpressions.html" view-name="documentation/regularexpressions" />
+	<mvc:view-controller path="/documentation.html"
+		view-name="documentation" />
+	<mvc:view-controller path="/documentation/building.html"
+		view-name="documentation/building" />
+	<mvc:view-controller path="/documentation/installation.html"
+		view-name="documentation/installation" />
+	<mvc:view-controller path="/documentation/releasenotes.html"
+		view-name="documentation/releasenotes" />
+	<mvc:view-controller path="/documentation/regularexpressions.html"
+		view-name="documentation/regularexpressions" />
 
 </beans>

@@ -16,7 +16,7 @@
 	<link rel="icon" href="<%=request.getContextPath()%>/img/magnify.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<%=request.getContextPath()%>/img/magnify.ico" type="image/x-icon" />
 
-	<title>iNLP - University of Utah</title>
+	<title>v3nlp - University of Utah</title>
 	<link rel="stylesheet" type="text/css"
 		href="<%=request.getContextPath()%>/css/style.css" />
 	<link rel="stylesheet" type="text/css"
@@ -84,7 +84,7 @@
 	<div id="wrap">
 		<div id="top">
 			<h2><a href="<%=request.getContextPath()%>/app/home.html"
-				title="Back to main application page">iNLP [v1]</a></h2>
+				title="Back to main application page">v3nlp [v1.3]</a></h2>
 			<div id="menu">
 			<ul>
 				<li><a href="<%=request.getContextPath()%>/app/home.html"
@@ -94,9 +94,7 @@
 					<%=getCurrentMenuCssClass(request, "documentation")%>>documentation</a></li>
 				<li><a href="<%=request.getContextPath()%>/app/expressionlib.html"
 					<%=getCurrentMenuCssClass(request, "expressionlib")%>>expression lib</a></li>
-				<li><a
-					href="<%=request.getContextPath()%>/iNLP.air">launch
-				iNLP!</a></li>				
+				
 			</ul>
 			</div>
 		</div>
