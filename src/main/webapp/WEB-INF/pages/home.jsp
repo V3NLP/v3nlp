@@ -1,8 +1,8 @@
-<h1>iNLP</h1>
+<h1>v3nlp Keywords</h1>
 <h2 style="margin-top: -25px;"><i>"Find the needle in the hay stack."</i></h2>
 <br />
 <h2>Introduction</h2>
-<p>iNLP is a tool targeted to end users with little, or no NLP
+<p>v3nlp Keywords is a tool targeted to end users with little, or no NLP
 experience or knowledge. The goal of the tool is to allow those who need
 to search clinical data access to it via an intuitive, easy to use
 interface.</p>

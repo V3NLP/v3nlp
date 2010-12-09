@@ -1,6 +1,8 @@
 package gov.va.research.inlp;
 
+import gov.va.research.inlp.model.BaseNlpModule;
 import gov.va.research.inlp.model.PipeLine;
+import gov.va.research.inlp.model.datasources.DataServiceSource;
 import gov.va.research.inlp.services.MetamapProviderImpl;
 import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
 import gov.va.vinci.cm.Annotation;
@@ -10,6 +12,7 @@ import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,6 @@ import lombok.Setter;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
-	
 	@Getter
 	@Setter
 	SectionizerAndConceptFinderImpl sectionizerAndConceptFinder = null;
@@ -30,6 +32,10 @@ public class DefaultNlpServiceImpl implements NlpService {
 	@Getter
 	@Setter
 	private MetamapProviderImpl metamapProvider;
+
+	@Getter
+	@Setter
+	private DatabaseRepositoryService databaseRepositoryService;
 
 	@Override
 	public List<String> getAvailableSectionHeaders() {
@@ -50,30 +56,46 @@ public class DefaultNlpServiceImpl implements NlpService {
 	public Corpus processPipeLine(PipeLine dataToProcess, Corpus corpus) {
 		Corpus returnCorpus = corpus;
 
-		// Step 1 - Sections and Concepts go first through annotation.
-		if (dataToProcess.hasSectionCriteria() || dataToProcess.hasConcept()) {
-			returnCorpus = sectionizerAndConceptFinder.processPipeLine(
-					dataToProcess, returnCorpus);
-		}
-
-		// Step 2 - Handle metamap processing.
-		if (dataToProcess.getMetamapConcept() != null) {
-			returnCorpus = metamapProvider.processPipeLine(dataToProcess,
-					returnCorpus);
-		}
-
-		// Remmove annotations not in return list & return annotated corpus.
-		Corpus finalCorpus = removeUnneededAnnotations(returnCorpus);
-		
-		/** Add the format tags that were passed through. **/
-		for (int d = 0; d < dataToProcess.getServices().size(); d++) {
-			if (dataToProcess.getServices().get(d).getFormatInfo() != null) {
-				finalCorpus.addFormatInfo(dataToProcess.getServices().get(d)
-						.getFormatInfo());
+		try {
+			// Step 0 - Add documents from chosen datasource.
+			for (BaseNlpModule m : dataToProcess.getServices()) {
+				if (m instanceof DataServiceSource) {
+					// Get data and add to corpus for this dataServiceSource.
+					List<DocumentInterface> rdocs = databaseRepositoryService
+							.getDocuments((DataServiceSource) m);
+					for (DocumentInterface doc : rdocs) {
+						returnCorpus.addDocument(doc);
+					}
+				}
 			}
+			// Step 1 - Sections and Concepts go first through annotation.
+			if (dataToProcess.hasSectionCriteria()
+					|| dataToProcess.hasConcept()) {
+				returnCorpus = sectionizerAndConceptFinder.processPipeLine(
+						dataToProcess, returnCorpus);
+			}
+
+			// Step 2 - Handle metamap processing.
+			if (dataToProcess.getMetamapConcept() != null) {
+				returnCorpus = metamapProvider.processPipeLine(dataToProcess,
+						returnCorpus);
+			}
+
+			// Remmove annotations not in return list & return annotated corpus.
+			Corpus finalCorpus = removeUnneededAnnotations(returnCorpus);
+
+			/** Add the format tags that were passed through. **/
+			for (int d = 0; d < dataToProcess.getServices().size(); d++) {
+				if (dataToProcess.getServices().get(d).getFormatInfo() != null) {
+					finalCorpus.addFormatInfo(dataToProcess.getServices()
+							.get(d).getFormatInfo());
+				}
+			}
+			return finalCorpus;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		return finalCorpus;
+
 	}
 
 	/**

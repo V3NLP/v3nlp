@@ -1,6 +1,6 @@
 package gov.va.research.inlp;
 
-import gov.va.research.v3nlp.util.Util;
+import gov.va.research.v3nlp.common.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;

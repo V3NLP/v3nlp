@@ -21,7 +21,7 @@
 			<value>classpath:v3nlp-server.properties</value>
 		</property>
 	</bean>
-	
+
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
 		p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
 
@@ -31,7 +31,8 @@
 
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl"
 		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder"
-		p:metamapProvider-ref="metamapProvider">
+		p:metamapProvider-ref="metamapProvider"
+		p:databaseRepositoryService-ref="databaseRepositoryService">
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>RegEx</value>
@@ -75,37 +76,28 @@
 		p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" />
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
-
-	<bean id="databaseRespositoryService" class="gov.va.research.inlp.DatabaseRespositoryServiceImpl">
+			  
+	<bean id="databaseRepositoryService" class="gov.va.research.inlp.DatabaseRespositoryServiceImpl">
 		<property name="repositories">
 			<list>
-				<ref bean="vinciTuiRepository"/>
-				<ref bean="ordZengRepository"/>
+				<ref bean="vinciTuiRepository" />
+				<ref bean="ordZengRepository" />
 			</list>
 		</property>
 	</bean>
 
-	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository">
-		<property name="url"
-			value="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;" />
-		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-		<property name="schema" value="VINCI_TIU.TIU" />
-		<property name="table" value="TIUDocument" />
-		<property name="uidColumn" value="TIUDocumentSID" />
-		<property name="textColumn" value="ReportText" />
-		<property name="firstRow" value="1" />
-		<property name="maxResults" value="1000" />
-	</bean>
+	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository"
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"
+		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+		p:schema="VINCI_TIU.TIU" p:table="TIUDocument" p:uidColumn="TIUDocumentSID"
+		p:textColumn="ReportText" p:firstRow="1" p:maxResults="1000"
+		p:name="VINCI TUI Repository" />
 
-	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository">
-		<property name="url"
-			value="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;" />
-		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-		<property name="schema" value="ORD_Zeng_20100321.dflt" />
-		<property name="table" value="TIUDocument_subset" />
-		<property name="uidColumn" value="TIUDocumentSID" />
-		<property name="textColumn" value="ReportText" />
-		<!--    <property name="firstRow" value="1" />-->
-		<!--    <property name="maxResults" value="1000" />-->
-	</bean>
+	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository"
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}"
+		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+		p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
+		p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" 
+		p:name="Zeng Repository" />
+
 </beans>
