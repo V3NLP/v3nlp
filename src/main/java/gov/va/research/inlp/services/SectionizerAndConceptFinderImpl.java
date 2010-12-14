@@ -12,10 +12,8 @@ import gate.util.InvalidOffsetException;
 import gov.va.research.inlp.NlpUtilities;
 import gov.va.research.inlp.gate.SectionizerHeaderFactory;
 import gov.va.research.inlp.model.PipeLine;
-import gov.va.research.inlp.model.operations.Negation;
 import gov.va.vinci.cm.Annotations;
 import hitex.gate.Sectionizer;
-import hitex.gate.negex.NegEx;
 import hitex.gate.regex.ConceptFinder;
 import hitex.util.Header;
 
@@ -63,28 +61,6 @@ public class SectionizerAndConceptFinderImpl {
 		return result;
 	}
 
-	public String getDefaultNegationConfiguration() throws Exception {
-		NegEx defaultNegEx = createNegEx();
-		String toReturn = "";
-
-		if (defaultNegEx.getRulesURL() != null) {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					defaultNegEx.getRulesURL().openStream()));
-			String str = null;
-			while ((str = in.readLine()) != null) {
-				toReturn += str + "\n";
-			}
-		}
-
-		if (defaultNegEx.getRulesList() != null) {
-			for (String rule : defaultNegEx.getRulesList()) {
-				toReturn += rule + "\n";
-			}
-		}
-
-		return toReturn;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -116,7 +92,6 @@ public class SectionizerAndConceptFinderImpl {
 				addRegEx(dataToProcess, controller, regexConceptFinder);
 			}
 
-			handleNegation(dataToProcess, controller);
 
 			results.setCorpusName(dataToProcess.getPipeLineName());
 
@@ -150,15 +125,7 @@ public class SectionizerAndConceptFinderImpl {
 		return null;
 	}
 
-	/**
-	 * Create a concept finder. Overridden in Spring with Method Injection to
-	 * return a new Negex Finder for every request.
-	 * 
-	 * @return a concept (regex) finder.
-	 */
-	public NegEx createNegEx() {
-		return null;
-	}
+	
 
 	/**
 	 * Create a sectionizer. Overridden in Spring with Method Injection to
@@ -319,26 +286,6 @@ public class SectionizerAndConceptFinderImpl {
 			s.setHeadersList(newRules);
 		}
 		controller.add(s);
-	}
-
-	private void handleNegation(PipeLine dataToProcess,
-			SerialAnalyserController controller) {
-
-		if (dataToProcess.getNegation() != null) {
-			NegEx ne = createNegEx();
-			Negation negation = dataToProcess.getNegation();
-
-			// Add the custom rules if there are any.
-			if (negation.getUseCustomConfiguration()) {
-				List<String> ruleList = new ArrayList<String>();
-
-				for (String s : negation.getConfiguration().split("\r|\n")) {
-					ruleList.add(s);
-				}
-				ne.setRulesList(ruleList);
-			}
-			controller.add(ne);
-		}
 	}
 
 }

@@ -12,29 +12,29 @@
 		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
 	</properties>
 
-  <organization>
-    <name>Department of Biomedical Informatics, University of Utah School of Medicine</name>
-    <url>http://www.bmi.utah.edu</url>
-  </organization>
-  <developers>
-    <developer>
-      <id>rcornia</id>
-      <name>Ryan Cornia</name>
-      <email>ryan.cornia@utah.edu</email>
-      <organization>Department of Biomedical Informatics, University of Utah School of Medicine</organization>
-      <organizationUrl>http://www.bmi.utah.edu</organizationUrl>
-      <roles>
-        <role>architect</role>
-        <role>developer</role>
-      </roles>
-      <timezone>-7</timezone>
-    </developer>
-  </developers>
-  <scm>
-    <connection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</connection>
-    <developerConnection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</developerConnection>
-    <url>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</url>
-  </scm>
+	<organization>
+		<name>Department of Biomedical Informatics, University of Utah School of Medicine</name>
+		<url>http://www.bmi.utah.edu</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>rcornia</id>
+			<name>Ryan Cornia</name>
+			<email>ryan.cornia@utah.edu</email>
+			<organization>Department of Biomedical Informatics, University of Utah School of Medicine</organization>
+			<organizationUrl>http://www.bmi.utah.edu</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-7</timezone>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</connection>
+		<developerConnection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</developerConnection>
+		<url>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk/</url>
+	</scm>
 
 
 
@@ -42,11 +42,10 @@
 		<!--  In House deps.. -->
 		<dependency>
 			<groupId>gov.va.research</groupId>
-  			<artifactId>v3nlp-common</artifactId>
-  			<version>1.0-SNAPSHOT</version>
+			<artifactId>v3nlp-common</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
-	
-	
+
 		<!--  Testing deps.  -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -86,10 +85,20 @@
 			<artifactId>spring-flex</artifactId>
 			<version>1.0.3.RELEASE</version>
 		</dependency>
+		 <dependency>
+                        <groupId>opennlp</groupId>
+                        <artifactId>opennlp</artifactId>
+                        <version>1.1.0</version>
+		</dependency>
+		<dependency>
+                        <groupId>gate.plugins</groupId>
+                        <artifactId>maxent</artifactId>
+                        <version>2.5.2</version>
+                </dependency>
 		<dependency>
 			<groupId>hitex</groupId>
-	 		<artifactId>hitex</artifactId>
-  			<version>3.0.1-SNAPSHOT</version>
+			<artifactId>hitex</artifactId>
+			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -145,7 +154,7 @@
 					<version>2.0</version>
 					<configuration>
 						<webResources>
-							
+
 						</webResources>
 					</configuration>
 				</plugin>
@@ -169,14 +178,14 @@
 						<target>1.6</target>
 					</configuration>
 				</plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.1</version>
-	 <configuration>
-		<tagBase>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/</tagBase>
-	 </configuration>
-      </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.1</version>
+					<configuration>
+						<tagBase>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/</tagBase>
+					</configuration>
+				</plugin>
 
 
 			</plugins>

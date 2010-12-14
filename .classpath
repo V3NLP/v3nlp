@@ -242,6 +242,11 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/opennlp/opennlp/1.1.0/opennlp-1.1.0.jar">
+    <attributes>
+      <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/gate/plugins/opennlp-api/0.9.0/opennlp-api-0.9.0.jar">
     <attributes>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>

@@ -32,22 +32,30 @@
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl"
 		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder"
 		p:metamapProvider-ref="metamapProvider"
+		p:negationProvider-ref="negationProvider"
 		p:databaseRepositoryService-ref="databaseRepositoryService">
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>RegEx</value>
 				<value>UMLSConcept</value>
+				<value>Negation</value>
 			</list>
 		</property>
 	</bean>
 
+	<bean name="negationProvider" class="gov.va.research.inlp.services.NegationImpl" init-method="init">
+		<property name="sentenceRulesFile">
+			<value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
+		</property>
+		<property name="negationRulesFile">
+			<value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt</value>
+		</property>
+	</bean>
 
 
 	<bean name="sectionizerAndConceptFinder"
 		class="gov.va.research.inlp.services.SectionizerAndConceptFinderImpl">
 		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
-
-		<lookup-method name="createNegEx" bean="defaultNegEx" />
 
 		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
 

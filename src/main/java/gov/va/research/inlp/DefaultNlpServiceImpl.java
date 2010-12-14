@@ -4,6 +4,7 @@ import gov.va.research.inlp.model.BaseNlpModule;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.datasources.DataServiceSource;
 import gov.va.research.inlp.services.MetamapProviderImpl;
+import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.AnnotationInterface;
@@ -35,6 +36,10 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Getter
 	@Setter
+	private NegationImpl negationProvider;
+
+	@Getter
+	@Setter
 	private DatabaseRepositoryService databaseRepositoryService;
 
 	@Override
@@ -44,7 +49,12 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Override
 	public String getDefaultNegationConfiguration() throws Exception {
-		return sectionizerAndConceptFinder.getDefaultNegationConfiguration();
+		StringBuffer sb = new StringBuffer();
+		for (String s : negationProvider.getDefaultNegationConfiguration()) {
+			sb.append(s);
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 	@Override
@@ -68,6 +78,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 					}
 				}
 			}
+
 			// Step 1 - Sections and Concepts go first through annotation.
 			if (dataToProcess.hasSectionCriteria()
 					|| dataToProcess.hasConcept()) {
@@ -81,8 +92,21 @@ public class DefaultNlpServiceImpl implements NlpService {
 						returnCorpus);
 			}
 
-			// Remmove annotations not in return list & return annotated corpus.
+			// Remmove annotations not in return list before potentially sending
+			// to Negation.
 			Corpus finalCorpus = removeUnneededAnnotations(returnCorpus);
+
+			// Negation -- Right now we are putting negation at the end of the
+			// processing.
+			// This will likely change in the next release, but if we change to
+			// UIMA, this
+			// will change anyway, so was left as the last module for
+			// simplicity.
+			// @TODO Add negation
+			if (dataToProcess.getNegation() != null) {
+				this.negationProvider.process(finalCorpus, dataToProcess
+						.getNegation());
+			}
 
 			/** Add the format tags that were passed through. **/
 			for (int d = 0; d < dataToProcess.getServices().size(); d++) {
@@ -93,6 +117,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 			}
 			return finalCorpus;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 

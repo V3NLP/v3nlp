@@ -278,7 +278,7 @@
 			</entry>
 		</gate:parameters>
 	</gate:resource>
-
+<!-- 
 	<gate:resource id="defaultNegEx"
 				   scope="prototype"
 				   resource-class="hitex.gate.negex.NegEx"
@@ -290,6 +290,7 @@
 			</entry>
 		</gate:parameters>
 	</gate:resource>
+	 -->
 <!-- 
 	<gate:resource id="exampleTransducer"
 				   scope="prototype"

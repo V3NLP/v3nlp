@@ -139,6 +139,9 @@
     <dependent-module archiveName="ontotext-5.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gate/ontotext/5.1/ontotext-5.1.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
+    <dependent-module archiveName="opennlp-1.1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/opennlp/opennlp/1.1.0/opennlp-1.1.0.jar">
+      <dependency-type>uses</dependency-type>
+    </dependent-module>
     <dependent-module archiveName="opennlp-api-0.9.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gate/plugins/opennlp-api/0.9.0/opennlp-api-0.9.0.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
