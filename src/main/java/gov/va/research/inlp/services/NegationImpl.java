@@ -104,7 +104,6 @@ public class NegationImpl {
 						f.getMetaData().setPedigree("Negation");
 						((Annotation)ann).getFeatures().add(f);
 						
-						System.out.println("Need to add negation annotation.");
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);

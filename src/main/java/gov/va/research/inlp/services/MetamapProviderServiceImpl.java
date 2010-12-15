@@ -18,11 +18,10 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 
 import org.springframework.web.client.RestTemplate;
 
-public class MetamapProviderImpl {
+public class MetamapProviderServiceImpl {
 
 	@Setter
 	@Getter
@@ -32,39 +31,58 @@ public class MetamapProviderImpl {
 	@Getter
 	private MetaMapServiceHttpInvoker metamapService;
 
-	@SneakyThrows
 	public gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess,
 			Corpus c) {
 		List<String> sections = dataToProcess.getSectionList();
 		MetamapConcept mmc = dataToProcess.getMetamapConcept();
 		List<String> semanticGroups = new ArrayList<String>();
-		if (mmc.getSemanticGroups() != null && mmc.getSemanticGroups().length > 0) {
-			
+		if (mmc.getSemanticGroups() != null
+				&& mmc.getSemanticGroups().length > 0) {
+
 			semanticGroups = Arrays.asList(mmc.getSemanticGroups());
 		}
-		
+
 		for (DocumentInterface d : c.getDocuments()) {
 			if (!sections.isEmpty()) { // Processing sections only.
-				List<Annotation> sectionsToBeProcessed = getSectionAnnotations(d, sections);
-				
-				// Send each section to metamap
-				for (Annotation a: sectionsToBeProcessed) {
-					// Run Metamap on this section. 
-					Document newDocument = metamapService.getMapping(
-							d.getContent().substring(a.getBeginOffset(), a.getEndOffset()), false, new ArrayList<String>(), semanticGroups);
+				List<Annotation> sectionsToBeProcessed = getSectionAnnotations(
+						d, sections);
 
+				// Send each section to metamap
+				for (Annotation a : sectionsToBeProcessed) {
+					// Run Metamap on this section.
+					Document newDocument = null;
+					try {
+						newDocument = metamapService.getMapping(
+								d.getContent().substring(a.getBeginOffset(),
+										a.getEndOffset()), false,
+								new ArrayList<String>(), semanticGroups);
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new RuntimeException(e);
+					}
 					// Add annotation back in.
-					for (AnnotationInterface newAnnotation: newDocument.getAnnotations().getAll()) 
-					{
-						newAnnotation.setBeginOffset(newAnnotation.getBeginOffset() + a.getBeginOffset());
-						newAnnotation.setEndOffset(newAnnotation.getEndOffset() + a.getEndOffset());
+					for (AnnotationInterface newAnnotation : newDocument
+							.getAnnotations().getAll()) {
+						newAnnotation.setBeginOffset(newAnnotation
+								.getBeginOffset()
+								+ a.getBeginOffset());
+						newAnnotation.setEndOffset(newAnnotation.getEndOffset()
+								+ a.getEndOffset());
 						d.getAnnotations().getAll().add(newAnnotation);
 					}
 				}
-			} else { // Processing whole document.				
-				Document newDocument = metamapService.getMapping(
-						d.getContent(), false, new ArrayList<String>(), semanticGroups);
-				d.getAnnotations().getAll().addAll(newDocument.getAnnotations().getAll());
+			} else { // Processing whole document.
+				Document newDocument = null;
+				try {
+					newDocument = metamapService.getMapping(d.getContent(),
+							false, new ArrayList<String>(), semanticGroups);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				
+				}
+				d.getAnnotations().getAll().addAll(
+						newDocument.getAnnotations().getAll());
 			}
 		}
 		return c;
@@ -83,21 +101,22 @@ public class MetamapProviderImpl {
 				if (f.getFeatureElements() == null) {
 					continue;
 				}
-				
+
 				// See if it is a section element, and if so, get the sections.
 				for (FeatureElement fe : f.getFeatureElements()) {
 					if (fe.equals(sectionFeatureElement)) {
-						annotationSections.addAll(getCategoriesFromFeatureElements(f));
+						annotationSections
+								.addAll(getCategoriesFromFeatureElements(f));
 					}
 				} // End FeatureElement Loop
 			} // End Feature Loop
-			
-			// See if any of the sections selected are in this annotation. If so, add the 
-			// annotation to return. 
-			for (String section: sectionsSelected) 
-			{
+
+			// See if any of the sections selected are in this annotation. If
+			// so, add the
+			// annotation to return.
+			for (String section : sectionsSelected) {
 				if (annotationSections.contains(section)) {
-					annotations.add((Annotation)a);
+					annotations.add((Annotation) a);
 				}
 			}
 		} // End each Annotation Loop
@@ -106,12 +125,13 @@ public class MetamapProviderImpl {
 
 	private List<String> getCategoriesFromFeatureElements(Feature f) {
 		List<String> returnList = new ArrayList<String>();
-		
-		Set<FeatureElement> categories = f.getFeatureElementsByName("categories");
+
+		Set<FeatureElement> categories = f
+				.getFeatureElementsByName("categories");
 
 		for (FeatureElement categoryElement : categories) {
 			String[] cats = categoryElement.getValue().split(",");
-			for (int i=0; i<cats.length; i++) {
+			for (int i = 0; i < cats.length; i++) {
 				returnList.add(cats[i].trim());
 			}
 		}

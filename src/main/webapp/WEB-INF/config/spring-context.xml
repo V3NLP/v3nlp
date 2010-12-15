@@ -75,7 +75,7 @@
 
 	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
 
-	<bean id="metamapProvider" class="gov.va.research.inlp.services.MetamapProviderImpl"
+	<bean id="metamapProvider" class="gov.va.research.inlp.services.MetamapProviderServiceImpl"
 		p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" />
 
 	<bean id="metamapService"
@@ -85,7 +85,7 @@
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
 			  
-	<bean id="databaseRepositoryService" class="gov.va.research.inlp.DatabaseRespositoryServiceImpl">
+	<bean id="databaseRepositoryService" class="gov.va.research.inlp.services.DatabaseRespositoryServiceImpl">
 		<property name="repositories">
 			<list>
 				<ref bean="vinciTuiRepository" />
@@ -94,15 +94,17 @@
 		</property>
 	</bean>
 
+<!-- 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"  -->
 	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository"
-		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
 		p:schema="VINCI_TIU.TIU" p:table="TIUDocument" p:uidColumn="TIUDocumentSID"
 		p:textColumn="ReportText" p:firstRow="1" p:maxResults="1000"
 		p:name="VINCI TUI Repository" />
 
+<!-- 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}" -->
 	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository"
-		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}"
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
 		p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
 		p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" 

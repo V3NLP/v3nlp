@@ -3,7 +3,8 @@ package gov.va.research.inlp;
 import gov.va.research.inlp.model.BaseNlpModule;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.datasources.DataServiceSource;
-import gov.va.research.inlp.services.MetamapProviderImpl;
+import gov.va.research.inlp.services.DatabaseRepositoryService;
+import gov.va.research.inlp.services.MetamapProviderServiceImpl;
 import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
 import gov.va.vinci.cm.Annotation;
@@ -32,7 +33,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Getter
 	@Setter
-	private MetamapProviderImpl metamapProvider;
+	private MetamapProviderServiceImpl metamapProvider;
 
 	@Getter
 	@Setter
@@ -88,8 +89,13 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 			// Step 2 - Handle metamap processing.
 			if (dataToProcess.getMetamapConcept() != null) {
+				try {
 				returnCorpus = metamapProvider.processPipeLine(dataToProcess,
 						returnCorpus);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
 			}
 
 			// Remmove annotations not in return list before potentially sending
