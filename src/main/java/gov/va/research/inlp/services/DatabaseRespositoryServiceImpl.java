@@ -2,6 +2,7 @@ package gov.va.research.inlp.services;
 
 import gov.va.research.inlp.model.datasources.DataServiceSource;
 import gov.va.research.v3nlp.repo.DBRepository;
+import gov.va.vinci.cm.Annotations;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.FormatInfo;
@@ -145,7 +146,7 @@ public class DatabaseRespositoryServiceImpl implements
 						.add(new Document("Repository: " + rs.getString("uid"),
 								rs.getString("uid"), null,
 								new ArrayList<FormatInfo>(), rs
-										.getString("text"), null));
+										.getString("text"),  new Annotations()));
 				validRow = rs.next();
 			}
 

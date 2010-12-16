@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:flex="http://www.springframework.org/schema/flex"
@@ -11,7 +12,9 @@
        		http://www.springframework.org/schema/context 
        		http://www.springframework.org/schema/context/spring-context-2.5.xsd
        		http://www.springframework.org/schema/flex 
-            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd
+            http://www.springframework.org/schema/task
+            http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 	<bean
 		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
@@ -22,6 +25,10 @@
 		</property>
 	</bean>
 
+	<task:annotation-driven executor="myExecutor" />
+
+	<task:executor id="myExecutor" pool-size="5" />
+
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
 		p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
 
@@ -29,10 +36,9 @@
 		class="gov.va.research.inlp.expressionlib.ExpressionServiceImpl"
 		p:dataSource-ref="dataSource" />
 
-	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl"
-		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder"
-		p:metamapProvider-ref="metamapProvider"
-		p:negationProvider-ref="negationProvider"
+	<bean name="pipeLineProcessor" class="gov.va.research.inlp.services.PipeLineProcessorImpl" init-method="init"
+		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
+		p:metamapProvider-ref="metamapProvider" p:negationProvider-ref="negationProvider"
 		p:databaseRepositoryService-ref="databaseRepositoryService">
 		<property name="annotationTypesToReturn">
 			<list>
@@ -43,7 +49,13 @@
 		</property>
 	</bean>
 
-	<bean name="negationProvider" class="gov.va.research.inlp.services.NegationImpl" init-method="init">
+	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl" init-method="init"
+		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
+		p:negationProvider-ref="negationProvider"
+		p:pipeLineProcessor-ref="pipeLineProcessor" />
+		
+	<bean name="negationProvider" class="gov.va.research.inlp.services.NegationImpl"
+		init-method="init">
 		<property name="sentenceRulesFile">
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
 		</property>
@@ -75,7 +87,8 @@
 
 	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
 
-	<bean id="metamapProvider" class="gov.va.research.inlp.services.MetamapProviderServiceImpl"
+	<bean id="metamapProvider"
+		class="gov.va.research.inlp.services.MetamapProviderServiceImpl"
 		p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" />
 
 	<bean id="metamapService"
@@ -84,8 +97,9 @@
 		p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" />
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
-			  
-	<bean id="databaseRepositoryService" class="gov.va.research.inlp.services.DatabaseRespositoryServiceImpl">
+
+	<bean id="databaseRepositoryService"
+		class="gov.va.research.inlp.services.DatabaseRespositoryServiceImpl">
 		<property name="repositories">
 			<list>
 				<ref bean="vinciTuiRepository" />
@@ -94,7 +108,9 @@
 		</property>
 	</bean>
 
-<!-- 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"  -->
+	<!--
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"
+	-->
 	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository"
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
@@ -102,12 +118,13 @@
 		p:textColumn="ReportText" p:firstRow="1" p:maxResults="1000"
 		p:name="VINCI TUI Repository" />
 
-<!-- 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}" -->
+	<!--
+		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}"
+	-->
 	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository"
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
 		p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
-		p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" 
-		p:name="Zeng Repository" />
+		p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" p:name="Zeng Repository" />
 
 </beans>

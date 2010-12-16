@@ -119,7 +119,11 @@ public class PipeLine {
 			if (result.length() > 0) {
 				result = result.substring(0, result.length() - 3);
 			}
-			return result + " " + excludeSectionString;
+			if (!GenericValidator.isBlankOrNull(result) && !GenericValidator.isBlankOrNull(excludeSectionString)) {
+				return result + " && " + excludeSectionString.trim();
+			} else {
+				return (result + " " + excludeSectionString).trim();
+			}
 		}
 	}
 

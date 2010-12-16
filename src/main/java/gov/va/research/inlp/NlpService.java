@@ -6,15 +6,18 @@ import gov.va.vinci.cm.Corpus;
 import java.util.List;
 
 public interface NlpService {
-	
 
 	/**
-	 * Given a pipeline, actually process it.
+	 * Given a pipeline, submit for processing.
 	 * @param dataToProcess
 	 * @return
 	 */
-	public abstract gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess, Corpus corpus);
+	public abstract String submitPipeLine(PipeLine dataToProcess, Corpus corpus);
 
+	public abstract String getPipeLineStatus(String pipeLineId);
+	
+	public abstract Corpus getPipeLineResults(String pipeLineId);
+	
 	/**
 	 * Returns the list of section headers available in this service.
 	 * 
