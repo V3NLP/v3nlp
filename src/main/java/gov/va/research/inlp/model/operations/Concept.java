@@ -10,7 +10,8 @@ public class Concept extends BaseNlpModule {
 	private String expressionName;
 	private String expression;
 	private String code;
-
+	private String captureGroups;
+	
 	public String toConceptXml() {
 		return 	  "   <concept>\n" + "      <def><![CDATA[(?i)" + getNullSafeString(this.expression) + "]]></def>\n"
 				+ "      <capt_group_num>0</capt_group_num>\n"

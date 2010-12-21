@@ -127,10 +127,14 @@ public class DatabaseRespositoryServiceImpl implements
 
 			// Set the username and password on the driver url.
 			String connectionUrl = repository.getUrl();
-			connectionUrl = connectionUrl.replace("{username}", ds
-					.getDataServiceUsername());
-			connectionUrl = connectionUrl.replace("{password}", ds
-					.getDataServicePassword());
+			if (ds.getDataServiceUsername() != null) {
+				connectionUrl = connectionUrl.replace("{username}", ds
+						.getDataServiceUsername());
+			}
+			if (ds.getDataServicePassword() != null) {
+				connectionUrl = connectionUrl.replace("{password}", ds
+						.getDataServicePassword());
+			}
 			conn = DriverManager.getConnection(connectionUrl);
 			ps = conn.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
@@ -142,11 +146,10 @@ public class DatabaseRespositoryServiceImpl implements
 
 			boolean validRow = rs.next();
 			while (validRow) {
-				reportList
-						.add(new Document("Repository: " + rs.getString("uid"),
-								rs.getString("uid"), null,
-								new ArrayList<FormatInfo>(), rs
-										.getString("text"),  new Annotations()));
+				reportList.add(new Document("Repository: "
+						+ rs.getString("uid"), rs.getString("uid"), null,
+						new ArrayList<FormatInfo>(), rs.getString("text"),
+						new Annotations()));
 				validRow = rs.next();
 			}
 

@@ -24,7 +24,6 @@ public class NlpUtilities {
 		feature.getMetaData().setCreatedDate(new Date());
 		feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
 		
-		
 		// Copy Features
 		for (Object o : gateAnnotation.getFeatures().keySet()) {
 			Object j = gateAnnotation.getFeatures().get(o);
