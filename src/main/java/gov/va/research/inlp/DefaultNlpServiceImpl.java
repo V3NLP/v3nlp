@@ -1,19 +1,17 @@
 package gov.va.research.inlp;
 
 import gov.va.research.inlp.model.PipeLine;
-import gov.va.research.inlp.services.DatabaseRepositoryService;
-import gov.va.research.inlp.services.MetamapProviderServiceImpl;
 import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.PipeLineProcessorImpl;
 import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.service.SerializationService;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +36,9 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Setter
 	private PipeLineProcessorImpl pipeLineProcessor;
+	
+	@Setter
+	private SerializationService serializationService;
 
 	public void init() {
 		if (!new File(directoryToStoreResults).exists()
@@ -122,5 +123,15 @@ public class DefaultNlpServiceImpl implements NlpService {
 		Object newObj = oi.readObject();
 		oi.close();
 		return newObj;
+	}
+	
+	public String serializeCorpus(Corpus c)
+	{
+		return serializationService.serialize(c);
+	}
+	
+	public Corpus deSerializeCorpus(String content)
+	{
+		return serializationService.deserialize(content, Corpus.class);
 	}
 }

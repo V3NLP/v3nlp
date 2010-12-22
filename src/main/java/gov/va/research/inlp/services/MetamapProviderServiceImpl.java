@@ -66,8 +66,7 @@ public class MetamapProviderServiceImpl {
 						newAnnotation.setBeginOffset(newAnnotation
 								.getBeginOffset()
 								+ a.getBeginOffset());
-						newAnnotation.setEndOffset(newAnnotation.getEndOffset()
-								+ a.getEndOffset());
+						newAnnotation.setEndOffset(newAnnotation.getBeginOffset() + a.getLength() - 1);
 						d.getAnnotations().getAll().add(newAnnotation);
 					}
 				}

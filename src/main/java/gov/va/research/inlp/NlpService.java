@@ -30,8 +30,12 @@ public interface NlpService {
 	 * @return the raw sectionizer configuration file. 
 	 * @throws Exception
 	 */
-	public String getDefaultSectionizerConfiguration() throws Exception;
+	public abstract String getDefaultSectionizerConfiguration() throws Exception;
 	
 	public abstract String getDefaultNegationConfiguration() throws Exception;
+	
+	public abstract String serializeCorpus(Corpus c);
+	
+	public abstract Corpus deSerializeCorpus(String content);
 
 }
