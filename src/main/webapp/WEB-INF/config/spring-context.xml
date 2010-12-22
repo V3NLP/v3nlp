@@ -52,8 +52,11 @@
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl" init-method="init"
 		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
 		p:negationProvider-ref="negationProvider"
-		p:pipeLineProcessor-ref="pipeLineProcessor" />
+		p:pipeLineProcessor-ref="pipeLineProcessor" 
+		p:serializationService-ref="serializationService"/>
 		
+	<bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl" />
+	
 	<bean name="negationProvider" class="gov.va.research.inlp.services.NegationImpl"
 		init-method="init">
 		<property name="sentenceRulesFile">
@@ -100,17 +103,19 @@
 
 	<bean id="databaseRepositoryService"
 		class="gov.va.research.inlp.services.DatabaseRespositoryServiceImpl">
+		<!-- 
 		<property name="repositories">
 			<list>
 				<ref bean="vinciTuiRepository" />
 				<ref bean="ordZengRepository" />
 			</list>
 		</property>
+		 -->
 	</bean>
 
 	<!--
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"
-	-->
+
 	<bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository"
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
@@ -118,13 +123,12 @@
 		p:textColumn="ReportText" p:firstRow="1" p:maxResults="1000"
 		p:name="VINCI TUI Repository" />
 
-	<!--
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}"
-	-->
+	
 	<bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository"
 		p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;"
 		p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
 		p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
 		p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" p:name="Zeng Repository" />
-
+	-->
 </beans>
