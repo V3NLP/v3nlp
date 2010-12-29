@@ -114,11 +114,6 @@
 			<version>1.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>hitex</groupId>
-			<artifactId>hitex</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>0.9.2</version>
