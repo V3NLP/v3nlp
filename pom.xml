@@ -96,6 +96,11 @@
                         <version>2.5.2</version>
                 </dependency>
 		<dependency>
+			<groupId>gov.va.research.v3nlp</groupId>
+			<artifactId>dictionary</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>hitex</groupId>
 			<artifactId>hitex</artifactId>
 			<version>3.0.1-SNAPSHOT</version>
