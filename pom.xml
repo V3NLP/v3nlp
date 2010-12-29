@@ -224,4 +224,14 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+
+	<distributionManagement>
+        	<repository>
+          		<id>builder</id>
+          		<name>Repository Name</name>
+          		<url>scp://10.5.17.158/home/builder/releases</url>
+        	</repository>
+	</distributionManagement>
+
 </project>
