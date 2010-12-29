@@ -4,7 +4,7 @@
 	<artifactId>v3nlp-server</artifactId>
 	<packaging>war</packaging>
 	<name>V3NLP Server</name>
-	<version>1.3.1-SNAPSHOT</version>
+	<version>1.3.1</version>
 
 	<properties>
 		<powermock.version>1.3.6</powermock.version>
@@ -43,9 +43,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</connection>
-		<developerConnection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</developerConnection>
-		<url>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</url>
+		<connection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/v3nlp-server-1.3.1</connection>
+		<developerConnection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/v3nlp-server-1.3.1</developerConnection>
+		<url>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/v3nlp-server-1.3.1</url>
 	</scm>
 
 
