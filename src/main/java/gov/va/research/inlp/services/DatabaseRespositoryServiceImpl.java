@@ -18,6 +18,34 @@ import java.util.List;
 public class DatabaseRespositoryServiceImpl implements
 		DatabaseRepositoryService {
 
+	// SQL statements
+	public static final String UID_COLUMN_PARAMETER = ":uidColumn";
+	public static final String TEXT_COLUMN_PARAMETER = ":textColumn";
+	public static final String TABLE_REF_PARAMETER = ":tableRef";
+	public static final String NO_FIRST_NO_LIMIT = "SELECT "
+			+ UID_COLUMN_PARAMETER + " as uid, " + TEXT_COLUMN_PARAMETER
+			+ " as text FROM " + TABLE_REF_PARAMETER + " ORDER BY "
+			+ UID_COLUMN_PARAMETER;
+	public static final String LIMITED_SQLSERVER_BASE = "WITH ["
+			+ TABLE_REF_PARAMETER
+			+ " ORDERED BY rnum] AS (SELECT row_number() over (order by "
+			+ UID_COLUMN_PARAMETER + ") as rnum, " + UID_COLUMN_PARAMETER
+			+ " as uid, " + TEXT_COLUMN_PARAMETER + " as text FROM "
+			+ TABLE_REF_PARAMETER + ") SELECT * FROM [" + TABLE_REF_PARAMETER
+			+ " ORDERED BY rnum]";
+	public static final String NO_FIRST_YES_LIMIT_SQLSERVER = LIMITED_SQLSERVER_BASE
+			+ " where rnum < ?";
+	public static final String YES_FIRST_NO_LIMIT_SQLSERVER = LIMITED_SQLSERVER_BASE
+			+ " where rnum >= ?";
+	public static final String YES_FIRST_YES_LIMIT_SQLSERVER = LIMITED_SQLSERVER_BASE
+			+ " where rnum >= ? and rnum < ?";
+	public static final String NO_FIRST_YES_LIMIT_MYSQL = NO_FIRST_NO_LIMIT
+			+ " LIMIT ?";
+	public static final String YES_FIRST_NO_LIMIT_MYSQL = NO_FIRST_NO_LIMIT
+			+ " LIMIT ?," + Long.MAX_VALUE;
+	public static final String YES_FIRST_YES_LIMIT_MYSQL = NO_FIRST_NO_LIMIT
+			+ " LIMIT ?,?";
+
 	public List<DBRepository> repositories;
 
 	public List<DBRepository> getRepositories() {
@@ -28,6 +56,7 @@ public class DatabaseRespositoryServiceImpl implements
 		this.repositories = repositories;
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -66,7 +95,7 @@ public class DatabaseRespositoryServiceImpl implements
 	 */
 	private List<DocumentInterface> doGetDocuments(DBRepository repository,
 			DataServiceSource ds) throws SQLException {
-		boolean mysql = repository.isMysql();
+		boolean mysql = repository.getDriverClassName().contains("mysql");
 
 		List<DocumentInterface> reportList = (ds.getNumberOfDocuments() != null && ds
 				.getNumberOfDocuments() > 0) ? new ArrayList<DocumentInterface>(
@@ -80,37 +109,37 @@ public class DatabaseRespositoryServiceImpl implements
 		List<Integer> args = new ArrayList<Integer>();
 		if (repository.getFirstRow() == null) {
 			if (repository.getMaxResults() == null) {
-				query = DBRepository.NO_FIRST_NO_LIMIT;
+				query = NO_FIRST_NO_LIMIT;
 			} else {
-				if (repository.isMysql()) {
-					query = DBRepository.NO_FIRST_YES_LIMIT_MYSQL;
+				if (repository.getDriverClassName().contains("mysql")) {
+					query = NO_FIRST_YES_LIMIT_MYSQL;
 				} else {
-					query = DBRepository.NO_FIRST_YES_LIMIT_SQLSERVER;
+					query = NO_FIRST_YES_LIMIT_SQLSERVER;
 				}
 				args.add(ds.getNumberOfDocuments());
 			}
 		} else {
 			if (repository.getMaxResults() == null) {
 				if (mysql) {
-					query = DBRepository.YES_FIRST_NO_LIMIT_MYSQL;
+					query = YES_FIRST_NO_LIMIT_MYSQL;
 				} else {
-					query = DBRepository.YES_FIRST_NO_LIMIT_SQLSERVER;
+					query = YES_FIRST_NO_LIMIT_SQLSERVER;
 				}
 				args.add(repository.getFirstRow());
 			} else {
 				if (mysql) {
-					query = DBRepository.YES_FIRST_YES_LIMIT_MYSQL;
+					query = YES_FIRST_YES_LIMIT_MYSQL;
 				} else {
-					query = DBRepository.YES_FIRST_YES_LIMIT_SQLSERVER;
+					query = YES_FIRST_YES_LIMIT_SQLSERVER;
 				}
 				args.add(repository.getFirstRow());
 				args.add(repository.getFirstRow() + ds.getNumberOfDocuments());
 			}
 		}
-		query = query.replace(DBRepository.UID_COLUMN_PARAMETER,
+		query = query.replace(UID_COLUMN_PARAMETER,
 				repository.getUidColumn()).replace(
-				DBRepository.TEXT_COLUMN_PARAMETER, repository.getTextColumn())
-				.replace(DBRepository.TABLE_REF_PARAMETER, tableRef);
+				TEXT_COLUMN_PARAMETER, repository.getTextColumn())
+				.replace(TABLE_REF_PARAMETER, tableRef);
 
 		Connection conn = null;
 		PreparedStatement ps = null;
