@@ -68,8 +68,9 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/gov/va/research/common-model/1.0-SNAPSHOT/common-model-1.0-SNAPSHOT.jar">
+  <classpathentry kind="var" path="M2_REPO/gov/va/research/common-model/1.0.5/common-model-1.0.5.jar" sourcepath="M2_REPO/gov/va/research/common-model/1.0.5/common-model-1.0.5-sources.jar">
     <attributes>
+      <attribute value="jar:file:/Users/ryancornia/.m2/repository/gov/va/research/common-model/1.0.5/common-model-1.0.5-javadoc.jar!/" name="javadoc_location"/>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
@@ -129,6 +130,12 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0.jar" sourcepath="M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/ryancornia/.m2/repository/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0-javadoc.jar!/" name="javadoc_location"/>
+      <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/displaytag/displaytag/1.2/displaytag-1.2.jar" sourcepath="M2_REPO/displaytag/displaytag/1.2/displaytag-1.2-sources.jar">
     <attributes>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
@@ -156,11 +163,6 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/gate/plugins/gate-opennlp/5.2.1/gate-opennlp-5.2.1.jar">
-    <attributes>
-      <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/hitex/hitex/3.0.1-SNAPSHOT/hitex-3.0.1-SNAPSHOT.jar">
     <attributes>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
@@ -348,6 +350,11 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/microsoft/sqljdbc4/3.0/sqljdbc4-3.0.jar">
+    <attributes>
+      <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar">
     <attributes>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
@@ -363,8 +370,9 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/gov/va/research/v3nlp-common/1.0-SNAPSHOT/v3nlp-common-1.0-SNAPSHOT.jar">
+  <classpathentry kind="var" path="M2_REPO/gov/va/research/v3nlp-common/1.0/v3nlp-common-1.0.jar" sourcepath="M2_REPO/gov/va/research/v3nlp-common/1.0/v3nlp-common-1.0-sources.jar">
     <attributes>
+      <attribute value="jar:file:/Users/ryancornia/.m2/repository/gov/va/research/v3nlp-common/1.0/v3nlp-common-1.0-javadoc.jar!/" name="javadoc_location"/>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>

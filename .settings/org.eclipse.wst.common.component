@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-  <wb-module deploy-name="v3nlp-server-2.0-SNAPSHOT">
-    <property name="context-root" value="v3nlp-server"/>
+  <wb-module deploy-name="keywords-server-1.4.0-SNAPSHOT">
+    <property name="context-root" value="keywords-server"/>
     <wb-resource deploy-path="/" source-path="src/main/webapp"/>
     <property name="java-output-path" value="/target/classes"/>
     <dependent-module archiveName="aopalliance-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
@@ -40,7 +40,7 @@
     <dependent-module archiveName="chunker-5.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gate/chunker/5.1/chunker-5.1.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
-    <dependent-module archiveName="common-model-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/common-model/1.0-SNAPSHOT/common-model-1.0-SNAPSHOT.jar">
+    <dependent-module archiveName="common-model-1.0.5.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/common-model/1.0.5/common-model-1.0.5.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="commons-beanutils-1.7.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar">
@@ -73,6 +73,9 @@
     <dependent-module archiveName="ctakes-pos_tagger-1.0.5.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/ctakes/ctakes-pos_tagger/1.0.5/ctakes-pos_tagger-1.0.5.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
+    <dependent-module archiveName="dictionary-1.1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0.jar">
+      <dependency-type>uses</dependency-type>
+    </dependent-module>
     <dependent-module archiveName="displaytag-1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/displaytag/displaytag/1.2/displaytag-1.2.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
@@ -89,9 +92,6 @@
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="gate-opennlp-5.2.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gate/plugins/gate-opennlp/5.2.1/gate-opennlp-5.2.1.jar">
-      <dependency-type>uses</dependency-type>
-    </dependent-module>
-    <dependent-module archiveName="hitex-3.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/hitex/hitex/3.0.1-SNAPSHOT/hitex-3.0.1-SNAPSHOT.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="itext-1.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/com/lowagie/itext/1.3/itext-1.3.jar">
@@ -202,6 +202,9 @@
     <dependent-module archiveName="spring-webmvc-3.0.3.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/springframework/spring-webmvc/3.0.3.RELEASE/spring-webmvc-3.0.3.RELEASE.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
+    <dependent-module archiveName="sqljdbc4-3.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/com/microsoft/sqljdbc4/3.0/sqljdbc4-3.0.jar">
+      <dependency-type>uses</dependency-type>
+    </dependent-module>
     <dependent-module archiveName="stax-api-1.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
@@ -211,7 +214,7 @@
     <dependent-module archiveName="umlsmap-1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/dsg/umlsmap/1/umlsmap-1.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
-    <dependent-module archiveName="v3nlp-common-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/v3nlp-common/1.0-SNAPSHOT/v3nlp-common-1.0-SNAPSHOT.jar">
+    <dependent-module archiveName="v3nlp-common-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/v3nlp-common/1.0/v3nlp-common-1.0.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="weka-3.5.7.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/weka/weka/3.5.7/weka-3.5.7.jar">
