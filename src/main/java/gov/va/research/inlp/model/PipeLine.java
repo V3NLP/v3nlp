@@ -145,12 +145,7 @@ public class PipeLine {
 	 * @return true if it has section criteria, false if it does not.
 	 */
 	public Boolean hasSectionCriteria() {
-		for (BaseNlpModule mod : services) {
-			if (mod instanceof Sectionizer) {
-				return true;
-			}
-		}
-		return false;
+		return hasOperation(Sectionizer.class);
 	}
 
 	/**
@@ -159,12 +154,17 @@ public class PipeLine {
 	 * @return true if it has section criteria, false if it does not.
 	 */
 	public Boolean hasConcept() {
+		return hasOperation(Concept.class);
+	}
+	
+	public Boolean hasOperation(Class<? extends BaseNlpModule> c) {
 		for (BaseNlpModule mod : services) {
-			if (mod instanceof Concept) {
+			if (c.isInstance(mod)) {
 				return true;
 			}
 		}
 		return false;
+		
 	}
 
 	public MetamapConcept getMetamapConcept() {

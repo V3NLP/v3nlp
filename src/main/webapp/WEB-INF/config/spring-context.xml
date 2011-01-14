@@ -26,7 +26,6 @@
 	</bean>
 
 	<task:annotation-driven executor="myExecutor" />
-
 	<task:executor id="myExecutor" pool-size="5" />
 
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
@@ -37,27 +36,52 @@
 		p:dataSource-ref="dataSource" />
 
 	<bean name="pipeLineProcessor" class="gov.va.research.inlp.services.PipeLineProcessorImpl" init-method="init"
-		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
-		p:metamapProvider-ref="metamapProvider" p:negationProvider-ref="negationProvider"
-		p:databaseRepositoryService-ref="databaseRepositoryService">
+		p:databaseRepositoryService-ref="databaseRepositoryService" 
+		p:directoryToStoreResults="${directoryToStoreResults}"
+		
+		
+		p:conceptFinderService-ref="conceptFinderService"
+		p:metamapProvider-ref="metamapProvider" 
+		p:negationService-ref="negationService"
+		p:posTaggerService-ref ="posTaggerService"
+		p:sectionizerService-ref="sectionizerService"
+		p:sentenceSplitterService-ref="sentenceSplitterService"
+		p:tokenizerService-ref="tokenizerService"
+		
+		
+		
+		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" 
+		>
 		<property name="annotationTypesToReturn">
 			<list>
 				<value>RegEx</value>
 				<value>UMLSConcept</value>
 				<value>Negation</value>
+				<value>Sentence</value>
+				<value>SpaceToken</value>
+				<value>Token</value>
+				<value>section_header</value>
 			</list>
 		</property>
 	</bean>
 
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl" init-method="init"
 		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
-		p:negationProvider-ref="negationProvider"
+		p:negationProvider-ref="negationService"
 		p:pipeLineProcessor-ref="pipeLineProcessor" 
-		p:serializationService-ref="serializationService"/>
+		p:serializationService-ref="serializationService"
+	/>
 		
 	<bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl" />
 	
-	<bean name="negationProvider" class="gov.va.research.inlp.services.NegationImpl"
+	
+	
+	
+	<bean name="conceptFinderService" class="gov.va.research.inlp.services.HitexConceptFinderImpl" >
+		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
+	</bean>
+	
+	<bean name="negationService" class="gov.va.research.inlp.services.NegationImpl"
 		init-method="init">
 		<property name="sentenceRulesFile">
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
@@ -66,10 +90,30 @@
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt</value>
 		</property>
 	</bean>
+	
+	<bean name="posTaggerService" class="gov.va.research.inlp.services.HitexPOSTaggerImpl" />
+	
+	<bean name="sentenceSplitterService" class="gov.va.research.inlp.services.HitexSentenceSplitterImpl" />
+	
+	<bean name="sectionizerService" class="gov.va.research.inlp.services.HitexSectionizerImpl">
+		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
+		<property name="sectionizerHeaders">
+			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
+			</value>
+		</property>
+	</bean>
+	
+	<bean name="tokenizerService" class="gov.va.research.inlp.services.HitexTokenizerImpl" />
+	
 
 
+
+
+
+
+	
 	<bean name="sectionizerAndConceptFinder"
-		class="gov.va.research.inlp.services.SectionizerAndConceptFinderImpl">
+		class="gov.va.research.inlp.services.HitexGateModulesImpl">
 		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
 
 		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
@@ -79,12 +123,6 @@
 			</value>
 		</property>
 
-		<property name="annotationTypesToReturn">
-			<list>
-				<value>concept</value>
-				<value>section_header</value>
-			</list>
-		</property>
 	</bean>
 
 

@@ -22,8 +22,13 @@ public class NlpUtilities {
 				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
 		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
 		feature.getMetaData().setCreatedDate(new Date());
-		feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
+		if (gateAnnotation.getFeatures().get("type") != null) {
+			feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
+		} else {
+			feature.getMetaData().setPedigree(gateAnnotation.getType());	
+		}
 		
+
 		// Copy Features
 		for (Object o : gateAnnotation.getFeatures().keySet()) {
 			Object j = gateAnnotation.getFeatures().get(o);

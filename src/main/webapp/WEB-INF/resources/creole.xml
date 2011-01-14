@@ -2,5 +2,5 @@
 <!-- creole.xml directory file for GATE plug-ins -->
 
 <CREOLE-DIRECTORY>
-        <JAR SCAN="true">../lib/dictionary-1.1.0.jar</JAR>
+        <JAR SCAN="true">../lib/dictionary-1.2.0-SNAPSHOT.jar</JAR>
 </CREOLE-DIRECTORY>

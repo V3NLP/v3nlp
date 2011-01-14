@@ -3,7 +3,7 @@ package gov.va.research.inlp;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.PipeLineProcessorImpl;
-import gov.va.research.inlp.services.SectionizerAndConceptFinderImpl;
+import gov.va.research.inlp.services.HitexGateModulesImpl;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.service.SerializationService;
 
@@ -23,7 +23,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Getter
 	@Setter
-	SectionizerAndConceptFinderImpl sectionizerAndConceptFinder = null;
+	HitexGateModulesImpl sectionizerAndConceptFinder = null;
 
 
 	@Getter

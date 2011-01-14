@@ -3,6 +3,14 @@ package gov.va.research.inlp.services;
 import gov.va.research.inlp.model.BaseNlpModule;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.datasources.DataServiceSource;
+import gov.va.research.inlp.model.operations.Concept;
+import gov.va.research.inlp.model.operations.MetamapConcept;
+import gov.va.research.inlp.model.operations.Negation;
+import gov.va.research.inlp.model.operations.OParser;
+import gov.va.research.inlp.model.operations.PosTagger;
+import gov.va.research.inlp.model.operations.Sectionizer;
+import gov.va.research.inlp.model.operations.SentenceSplitter;
+import gov.va.research.inlp.model.operations.Tokenizer;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.AnnotationInterface;
 import gov.va.vinci.cm.Corpus;
@@ -16,6 +24,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Setter;
@@ -23,23 +32,62 @@ import lombok.Setter;
 import org.springframework.scheduling.annotation.Async;
 
 public class PipeLineProcessorImpl {
+
 	@Setter
-	private NegationImpl negationProvider;
+	private String directoryToStoreResults;
 
 	@Setter
 	private DatabaseRepositoryService databaseRepositoryService;
 
+	/*************************************************************
+	 * Services For NLP
+	 *************************************************************/
+	
+	/* Concept */
 	@Setter
-	SectionizerAndConceptFinderImpl sectionizerAndConceptFinder = null;
+	private ConceptFinderService conceptFinderService;
+	
+	/* MetamapConcept */
+	@Setter
+	private MetamapProviderServiceImpl metamapProvider;
+	
+	/* Negation */
+	@Setter
+	private NegationImpl negationService;
+	
+	/* OParser */
+	
+	
+	/* PosTagger */
+	@Setter
+	private POSTaggerService posTaggerService;
+
+	/* Sectionizer */
+	@Setter
+	private SectionizerService sectionizerService;
+	
+	/* SentenceSplitterService */
+	@Setter
+	private SentenceSplitterService sentenceSplitterService;
+	
+	@Setter
+	private TokenizerService tokenizerService;
+
+	/* TokenizerService */
+	
+	/************************************************************
+	 * End NLP Services
+	 ************************************************************/
+
+
+
+	@Setter
+	HitexGateModulesImpl sectionizerAndConceptFinder = null;
 
 	@Setter
 	private List<String> annotationTypesToReturn = new ArrayList<String>();
 
-	@Setter
-	private MetamapProviderServiceImpl metamapProvider;
 
-	@Setter
-	private String directoryToStoreResults;
 
 	public void init() {
 
@@ -54,7 +102,8 @@ public class PipeLineProcessorImpl {
 	public void processPipeLine(String pipeLineId, PipeLine dataToProcess,
 			Corpus corpus) {
 		Corpus returnCorpus = corpus;
-
+		
+		System.out.println("Begin pipeline processing [" + dataToProcess.getPipeLineName() + "] at " + new Date());
 		try {
 			// Step 0 - Add documents from chosen datasource.
 			for (BaseNlpModule m : dataToProcess.getServices()) {
@@ -68,9 +117,68 @@ public class PipeLineProcessorImpl {
 				}
 			}
 
-			// Step 1 - Sections and Concepts go first through annotation.
+			for (BaseNlpModule m : dataToProcess.getServices()) {
+				if (m instanceof DataServiceSource) {
+					continue;
+				} else if (m instanceof Concept) {
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.conceptFinderService.conceptFinder(dataToProcess.getRegularExpressionConfiguration(), dataToProcess.getSectionCriteriaExpression(), returnCorpus);
+			
+				} else if (m instanceof MetamapConcept) {
+			
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.metamapProvider.processPipeLine(dataToProcess, returnCorpus);
+					
+				} else if (m instanceof Negation) {
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.negationService.process(returnCorpus, dataToProcess
+						.getNegation());
+					
+				} else if (m instanceof OParser) {
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					// TODO Implement. 
+				
+				} else if (m instanceof PosTagger) {
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.posTaggerService.posTagging(returnCorpus);
+					
+				} else if (m instanceof Sectionizer) {
+				
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.sectionizerService.sectionize( dataToProcess.getCustomSectionRules(), returnCorpus);
+					
+				} else if (m instanceof SentenceSplitter) {
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = this.sentenceSplitterService.splitSentences(returnCorpus);
+					
+				} else if (m instanceof Tokenizer) { 
+					
+					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+							+ m.getClass().getName());
+					returnCorpus = tokenizerService.tokenize(returnCorpus);
+			
+				}
+			}
+			
+
+			/**
+			// Step 1 - Hitex Modules all go through one pipeline for
+			// performance.
 			if (dataToProcess.hasSectionCriteria()
-					|| dataToProcess.hasConcept()) {
+					|| dataToProcess.hasConcept()
+					|| dataToProcess.hasOperation(TokenizerService.class)) {
 				returnCorpus = sectionizerAndConceptFinder.processPipeLine(
 						dataToProcess, returnCorpus);
 			}
@@ -81,9 +189,13 @@ public class PipeLineProcessorImpl {
 						returnCorpus);
 			}
 
+			// Temp POS Tagging Service Impl.
+			posTaggerService.posTagging(dataToProcess, returnCorpus);
+
+			**/
 			// Remmove annotations not in return list before potentially sending
 			// to Negation.
-			Corpus finalCorpus = removeUnneededAnnotations(returnCorpus);
+			Corpus finalCorpus = returnCorpus; // removeUnneededAnnotations(returnCorpus);
 
 			// Negation -- Right now we are putting negation at the end of the
 			// processing.
@@ -91,10 +203,10 @@ public class PipeLineProcessorImpl {
 			// UIMA, this
 			// will change anyway, so was left as the last module for
 			// simplicity.
-			if (dataToProcess.getNegation() != null) {
-				this.negationProvider.process(finalCorpus, dataToProcess
-						.getNegation());
-			}
+			//if (dataToProcess.getNegation() != null) {
+			//	this.negationService.process(finalCorpus, dataToProcess
+			//			.getNegation());
+			//}
 
 			/** Add the format tags that were passed through. **/
 			for (int d = 0; d < dataToProcess.getServices().size(); d++) {
@@ -103,6 +215,9 @@ public class PipeLineProcessorImpl {
 							.get(d).getFormatInfo());
 				}
 			}
+
+			System.out.println("End pipeline processing [" + dataToProcess.getPipeLineName() + "] at " + new Date());
+			
 			serializeObject(this.directoryToStoreResults + pipeLineId
 					+ ".results", finalCorpus);
 			return;
@@ -147,6 +262,7 @@ public class PipeLineProcessorImpl {
 				if (a.getFeatures() != null) {
 					for (Feature f : a.getFeatures()) {
 						for (FeatureElement fe : f.getFeatureElements()) {
+							System.out.println(fe.getName());
 							if ("type".equals(fe.getName())) {
 								if (this.annotationTypesToReturn.contains(fe
 										.getValue())) {

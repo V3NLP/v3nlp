@@ -22,23 +22,7 @@
 			<value>WEB-INF/resources/</value>
 		</gate:preload-plugins>
 	</gate:init>
-	<!--
-		 <gate:resource id="firstController" scope="prototype"
-		 resource-class="gate.creole.SerialAnalyserController"
-		 resource-name="First Controller"> <gate:customisers> <gate:add-pr
-		 index="0" ref="defaultAnnotationDeletePR"/> <gate:add-pr index="1"
-		 ref="defaultTokeniser"/> <gate:add-pr index="2"
-		 ref="defaultGazetteer"/> <gate:add-pr index="3"
-		 ref="defaultSentenceSplitter"/> <gate:add-pr index="4"
-		 ref="defaultPOSTagger"/> <gate:add-pr index="5"
-		 ref="defaultANNIETransducer"/> <gate:add-pr index="6"
-		 ref="defaultOrthoMatcher"/> <gate:add-pr index="7"
-		 ref="exampleTransducer"/> </gate:customisers> </gate:resource>
-
-		 <gate:resource id="plainController" scope="prototype"
-		 resource-class="gate.creole.SerialAnalyserController"
-		 resource-name="Plain Controller"> </gate:resource>
-	-->
+	
 	<gate:resource id="defaultUmlsConceptFinder"
 				   resource-class="hitex.gate.UMLSConceptFinder">
 		<gate:parameters>
@@ -135,36 +119,6 @@
 		</gate:parameters>
 	</gate:resource>
 
-
-<!-- 
-	<gate:resource id="defaultAnnotationDeletePR"
-				   resource-class="gate.creole.annotdelete.AnnotationDeletePR"/>
-	<gate:resource id="defaultTokeniser"
-				   resource-class="gate.creole.tokeniser.DefaultTokeniser">
-		<gate:parameters>
-			<entry key="tokeniserRulesURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/tokeniser/DefaultTokeniser.rules
-				</value>
-			</entry>
-			<entry key="transducerGrammarURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/tokeniser/postprocess.jape
-							</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
-	<gate:resource id="defaultGazetteer"
-				   resource-class="gate.creole.gazetteer.DefaultGazetteer">
-		<gate:parameters>
-			<entry key="listsURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/gazetteer/lists.def
-				</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
- -->
 	<gate:resource id="defaultTextTokenizer"
 				   resource-class="hitex.gate.Tokenizer">
 		<gate:parameters>
@@ -200,73 +154,26 @@
 		</gate:parameters>
 	</gate:resource>
 
-	<gate:resource id="defaultPOSTagger"
-				   resource-class="gate.creole.POSTagger">
+	<gate:resource id="sentenceSplitter"
+				   resource-class="hitex.gate.SentenceSplitter"
+				   resource-name="sentenceSplitter">
+	</gate:resource>
+	
+	<gate:resource id="hitexPOSTagger"
+				   resource-class="hitex.gate.POSTagger"
+				   resource-name="examplePOSTagger">
 		<gate:parameters>
-			<entry key="outputAnnotationType">
-				<value>Token</value>
-			</entry>
-			<entry key="baseSentenceAnnotationType">
-				<value>Sentence</value>
-			</entry>
-			<entry key="baseTokenAnnotationType">
-				<value>Token</value>
-			</entry>
 			<entry key="rulesURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/heptag/ruleset
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag/rules.txt
 				</value>
 			</entry>
 			<entry key="lexiconURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/heptag/lexicon
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag/lexicon.txt
 				</value>
 			</entry>
 		</gate:parameters>
 	</gate:resource>
-	<gate:resource id="defaultANNIETransducer"
-				   resource-class="gate.creole.ANNIETransducer">
-		<gate:parameters>
-			<entry key="grammarURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/NE/main.jape
-				</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
-	<gate:resource id="defaultOrthoMatcher"
-				   resource-class="gate.creole.orthomatcher.OrthoMatcher">
-		<gate:parameters>
-			<entry key="definitionFileURL">
-				<value type="org.springframework.core.io.Resource">
-					WEB-INF/plugins/ANNIE/resources/othomatcher/listsNM.def
-				</value>
-			</entry>
-			<entry key="minimumNicknameLikelihood">
-				<value>0.5</value>
-			</entry>
-			<entry key="extLists">
-				<value>true</value>
-			</entry>
-			<entry key="caseSensitive">
-				<value>falshitex.gatee</value>
-			</entry>
-			<entry key="highPrecisionOrgs">
-				<value>false</value>
-			</entry>
-			<entry key="personType">
-				<value>Person</value>
-			</entry>
-			<entry key="processUnknown">
-				<value>true</value>
-			</entry>
-			<entry key="organizationType">
-				<value>Organization</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
-
-
+	
 	<gate:resource id="defaultSectionizer"
 				   scope="prototype"
 				   resource-class="hitex.gate.Sectionizer"
@@ -278,34 +185,5 @@
 			</entry>
 		</gate:parameters>
 	</gate:resource>
-<!-- 
-	<gate:resource id="defaultNegEx"
-				   scope="prototype"
-				   resource-class="hitex.gate.negex.NegEx"
-				   resource-name="defaultNegEx">
-		<gate:parameters>
-			<entry key="rulesURL">
-				<value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt
-				</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
-	 -->
-<!-- 
-	<gate:resource id="exampleTransducer"
-				   scope="prototype"
-				   resource-class="gate.creole.Transducer"
-				   resource-name="firstTransducer">
-		<gate:parameters>
-			<entry key="grammarURL">
-				<value type="org.springframework.core.io.Resource">WEB-INF/acquire.jape
-							</value>
-			</entry>
-		</gate:parameters>
-	</gate:resource>
 
-	<gate:saved-application id="gate-application"
-							location="WEB-INF/application.gapp"
-							scope="prototype"/>
- -->
 </beans>

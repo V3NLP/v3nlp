@@ -1,18 +1,12 @@
 package gov.va.research.inlp.services;
 
-import gate.Annotation;
-import gate.AnnotationSet;
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
-import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
-import gate.util.InvalidOffsetException;
-import gov.va.research.inlp.NlpUtilities;
 import gov.va.research.inlp.gate.SectionizerHeaderFactory;
 import gov.va.research.inlp.model.PipeLine;
-import gov.va.vinci.cm.Annotations;
 import hitex.gate.Sectionizer;
 import hitex.gate.regex.ConceptFinder;
 import hitex.util.Header;
@@ -20,14 +14,12 @@ import hitex.util.Header;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class SectionizerAndConceptFinderImpl {
+public class HitexGateModulesImpl extends BaseGateService {
 	protected ProcessingResource sectionizer;
 
 	@javax.annotation.Resource(name = "defaultTextTokenizer")
@@ -40,7 +32,6 @@ public class SectionizerAndConceptFinderImpl {
 
 	private org.springframework.core.io.Resource sectionizerHeadersUrl;
 
-	private List<String> annotationTypesToReturn = new ArrayList<String>();
 
 	public String getDefaultSectionizerConfiguration() throws Exception {
 		Sectionizer s = this.createSectionizer();
@@ -80,12 +71,20 @@ public class SectionizerAndConceptFinderImpl {
 					"gate.creole.SerialAnalyserController", Factory
 							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
 			controller.reInit();
-
+			
+			if (dataToProcess.hasOperation(gov.va.research.inlp.model.operations.Tokenizer.class)) {
+				controller.add(this.textTokenizer);
+			}
+			
+			if (dataToProcess.hasOperation(gov.va.research.inlp.model.operations.SentenceSplitter.class)) {
+				controller.add(this.sentenceSplitter);
+			}
+			
 			if (dataToProcess.hasSectionCriteria()) {
 				addSectionizer(dataToProcess, controller);
 			}
 
-			corpus = createCorpus(_corpus, corpusDocKeyDocument);
+			corpus = createGateCorpusFromCommonModel(_corpus, corpusDocKeyDocument);
 			controller.setCorpus(corpus);
 
 			if (!dataToProcess.getRegularExpressionConfiguration().equals("")) {
@@ -93,17 +92,12 @@ public class SectionizerAndConceptFinderImpl {
 			}
 
 
-			results.setCorpusName(dataToProcess.getPipeLineName());
+			
 
 			// run the application
 			controller.execute();
-			Enumeration<String> docEnum = corpusDocKeyDocument.keys();
-
-			while (docEnum.hasMoreElements()) {
-				String s = docEnum.nextElement();
-				results.addDocument(s, corpusDocKeyDocument.get(s).getContent().toString(),
-						processDocumentForReturn(corpusDocKeyDocument.get(s)));
-			}
+			results = processGateResults(corpusDocKeyDocument);
+			results.setCorpusName(dataToProcess.getPipeLineName());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,6 +108,8 @@ public class SectionizerAndConceptFinderImpl {
 
 		return results;
 	}
+
+	
 
 	/**
 	 * Create a concept finder. Overridden in Spring with Method Injection to
@@ -166,29 +162,7 @@ public class SectionizerAndConceptFinderImpl {
 		this.sectionizerHeadersUrl = url;
 	}
 
-	/**
-	 * The processes document will only return annotations the service has been
-	 * configured to return (in order to avoid all of the noise annotations,
-	 * such as SpaceToken and Token.)
-	 * 
-	 * @return the list of annotation types this service will return in the
-	 *         result.
-	 */
-	public List<String> getAnnotationTypesToReturn() {
-		return annotationTypesToReturn;
-	}
 
-	/**
-	 * The processes document will only return annotations the service has been
-	 * configured to return (in order to avoid all of the noise annotations,
-	 * such as SpaceToken and Token.)
-	 * 
-	 * @param annotationTypesToReturn
-	 *            a list of annotation types to return.
-	 */
-	public void setAnnotationTypesToReturn(List<String> annotationTypesToReturn) {
-		this.annotationTypesToReturn = annotationTypesToReturn;
-	}
 
 	/*************** PRIVATE METHODS BELOW HERE ********************************/
 
@@ -208,51 +182,6 @@ public class SectionizerAndConceptFinderImpl {
 		controller.cleanup();
 	}
 
-	private Annotations processDocumentForReturn(Document d) throws InvalidOffsetException {
-		AnnotationSet annotations = d.getAnnotations();
-		Annotations results = new Annotations();
-		Iterator<Annotation> i = annotations.iterator();
-		while (i.hasNext()) {
-			Annotation a = i.next();
-			if (annotationTypesToReturn.contains(a.getType())) {
-				results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Create the corpus given the pipeline and documents.
-	 * 
-	 * @param dataToProcess
-	 *            the pipeline being processes
-	 * @param docs
-	 *            the string/document hashtable of corpus items
-	 * @return a corpus
-	 * @throws ResourceInstantiationException
-	 */
-	@SuppressWarnings("unchecked")
-	private Corpus createCorpus(gov.va.vinci.cm.Corpus dataToProcess,
-			Hashtable<String, Document> docs)
-			throws ResourceInstantiationException {
-		Corpus corpus;
-		corpus = Factory.newCorpus("V3NLP Corpus - SectionizerAndConceptFinderImpl");
-
-		
-		Hashtable<String, String> dataCorpuses = dataToProcess.getContentMap();
-
-		Enumeration<String> e = dataCorpuses.keys();
-
-		// Iterate through documents.
-		while (e.hasMoreElements()) {
-			String key = (String) e.nextElement();
-			Document doc = Factory.newDocument(dataCorpuses.get(key));
-			doc.setName(key);
-			docs.put(key, doc);
-			corpus.add(doc);
-		}
-		return corpus;
-	}
 
 
 	private void addRegEx(PipeLine dataToProcess,
@@ -287,5 +216,4 @@ public class SectionizerAndConceptFinderImpl {
 		}
 		controller.add(s);
 	}
-
 }
