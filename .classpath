@@ -130,9 +130,8 @@
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0.jar" sourcepath="M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0-sources.jar">
+  <classpathentry kind="var" path="M2_REPO/gov/va/research/v3nlp/dictionary/1.2.0-SNAPSHOT/dictionary-1.2.0-SNAPSHOT.jar">
     <attributes>
-      <attribute value="jar:file:/Users/ryancornia/.m2/repository/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0-javadoc.jar!/" name="javadoc_location"/>
       <attribute value="/WEB-INF/lib" name="org.eclipse.jst.component.dependency"/>
     </attributes>
   </classpathentry>

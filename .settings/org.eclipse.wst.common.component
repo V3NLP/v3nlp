@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
   <wb-module deploy-name="keywords-server-1.4.0-SNAPSHOT">
-    <property name="context-root" value="keywords-server"/>
-    <wb-resource deploy-path="/" source-path="src/main/webapp"/>
     <property name="java-output-path" value="/target/classes"/>
+        <property name="context-root" value="v3nlp-server"/>
+    <wb-resource deploy-path="/" source-path="src/main/webapp"/>
     <dependent-module archiveName="aopalliance-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
@@ -73,7 +73,7 @@
     <dependent-module archiveName="ctakes-pos_tagger-1.0.5.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/ctakes/ctakes-pos_tagger/1.0.5/ctakes-pos_tagger-1.0.5.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
-    <dependent-module archiveName="dictionary-1.1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/v3nlp/dictionary/1.1.0/dictionary-1.1.0.jar">
+    <dependent-module archiveName="dictionary-1.2.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gov/va/research/v3nlp/dictionary/1.2.0-SNAPSHOT/dictionary-1.2.0-SNAPSHOT.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="displaytag-1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/displaytag/displaytag/1.2/displaytag-1.2.jar">
