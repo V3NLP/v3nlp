@@ -3,7 +3,7 @@ package gov.va.research.inlp;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.PipeLineProcessorImpl;
-import gov.va.research.inlp.services.HitexGateModulesImpl;
+import gov.va.research.inlp.services.SectionizerService;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.service.SerializationService;
 
@@ -21,10 +21,6 @@ import lombok.SneakyThrows;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
-	@Getter
-	@Setter
-	HitexGateModulesImpl sectionizerAndConceptFinder = null;
-
 
 	@Getter
 	@Setter
@@ -39,6 +35,9 @@ public class DefaultNlpServiceImpl implements NlpService {
 	
 	@Setter
 	private SerializationService serializationService;
+	
+	@Setter
+	private SectionizerService sectionizerService;
 
 	public void init() {
 		if (!new File(directoryToStoreResults).exists()
@@ -97,7 +96,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Override
 	public List<String> getAvailableSectionHeaders() {
-		return sectionizerAndConceptFinder.getAvailableSectionHeaders();
+		return sectionizerService.getAvailableSectionHeaders();
 	}
 
 	@Override
@@ -112,7 +111,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
 	@Override
 	public String getDefaultSectionizerConfiguration() throws Exception {
-		return sectionizerAndConceptFinder.getDefaultSectionizerConfiguration();
+		return sectionizerService.getDefaultSectionizerConfiguration();
 	}
 
 	

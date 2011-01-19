@@ -1,15 +1,17 @@
-package gov.va.research.inlp.services;
+package gov.va.research.inlp.services.hitex;
 
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
+import gov.va.research.inlp.services.BaseGateService;
+import gov.va.research.inlp.services.OParserService;
 
 import java.util.Hashtable;
 
 public class HitexOParserImpl extends BaseGateService implements OParserService {
-	//@javax.annotation.Resource(name = "hitexOParser")
+	@javax.annotation.Resource(name = "oParser")
 	protected ProcessingResource oParser;
 
 	public gov.va.vinci.cm.Corpus parse(gov.va.vinci.cm.Corpus _corpus) {

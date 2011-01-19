@@ -1,18 +1,20 @@
-package gov.va.research.inlp.services;
+package gov.va.research.inlp.services.hitex;
 
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
+import gov.va.research.inlp.services.BaseGateService;
+import gov.va.research.inlp.services.TokenizerService;
 
 import java.util.Hashtable;
 
-public class HitexSentenceSplitterImpl extends BaseGateService implements SentenceSplitterService {
-	@javax.annotation.Resource(name = "defaultSentenceSplitter")
-	protected ProcessingResource sentenceSplitter;
+public class HitexTokenizerImpl extends BaseGateService implements TokenizerService {
+	@javax.annotation.Resource(name = "defaultTextTokenizer")
+	protected ProcessingResource tokenizer;
 
-	public gov.va.vinci.cm.Corpus splitSentences(gov.va.vinci.cm.Corpus _corpus) {
+	public gov.va.vinci.cm.Corpus tokenize(gov.va.vinci.cm.Corpus _corpus) {
 		SerialAnalyserController controller = null;
 		Corpus corpus = null;
 		Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
@@ -26,7 +28,7 @@ public class HitexSentenceSplitterImpl extends BaseGateService implements Senten
 			controller.reInit();
 			
 			// Add Sentence Splitter
-			controller.add(this.sentenceSplitter);
+			controller.add(this.tokenizer);
 			
 			// Add Corpus
 			corpus = createGateCorpusFromCommonModel(_corpus, corpusDocKeyDocument);

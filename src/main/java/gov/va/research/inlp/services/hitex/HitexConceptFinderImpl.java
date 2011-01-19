@@ -1,9 +1,11 @@
-package gov.va.research.inlp.services;
+package gov.va.research.inlp.services.hitex;
 
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.creole.SerialAnalyserController;
+import gov.va.research.inlp.services.BaseGateService;
+import gov.va.research.inlp.services.ConceptFinderService;
 import hitex.gate.regex.ConceptFinder;
 
 import java.util.Hashtable;

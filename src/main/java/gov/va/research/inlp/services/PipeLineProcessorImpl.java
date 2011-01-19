@@ -56,7 +56,8 @@ public class PipeLineProcessorImpl {
 	private NegationImpl negationService;
 	
 	/* OParser */
-	
+	@Setter
+	private OParserService oParserService;
 	
 	/* PosTagger */
 	@Setter
@@ -79,10 +80,6 @@ public class PipeLineProcessorImpl {
 	 * End NLP Services
 	 ************************************************************/
 
-
-
-	@Setter
-	HitexGateModulesImpl sectionizerAndConceptFinder = null;
 
 	@Setter
 	private List<String> annotationTypesToReturn = new ArrayList<String>();
@@ -143,8 +140,8 @@ public class PipeLineProcessorImpl {
 					
 					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
 							+ m.getClass().getName());
-					// TODO Implement. 
-				
+					returnCorpus = this.oParserService.parse(returnCorpus);
+
 				} else if (m instanceof PosTagger) {
 					
 					System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
@@ -173,40 +170,11 @@ public class PipeLineProcessorImpl {
 			}
 			
 
-			/**
-			// Step 1 - Hitex Modules all go through one pipeline for
-			// performance.
-			if (dataToProcess.hasSectionCriteria()
-					|| dataToProcess.hasConcept()
-					|| dataToProcess.hasOperation(TokenizerService.class)) {
-				returnCorpus = sectionizerAndConceptFinder.processPipeLine(
-						dataToProcess, returnCorpus);
-			}
 
-			// Step 2 - Handle metamap processing.
-			if (dataToProcess.getMetamapConcept() != null) {
-				returnCorpus = metamapProvider.processPipeLine(dataToProcess,
-						returnCorpus);
-			}
-
-			// Temp POS Tagging Service Impl.
-			posTaggerService.posTagging(dataToProcess, returnCorpus);
-
-			**/
 			// Remmove annotations not in return list before potentially sending
 			// to Negation.
 			Corpus finalCorpus = returnCorpus; // removeUnneededAnnotations(returnCorpus);
 
-			// Negation -- Right now we are putting negation at the end of the
-			// processing.
-			// This will likely change in the next release, but if we change to
-			// UIMA, this
-			// will change anyway, so was left as the last module for
-			// simplicity.
-			//if (dataToProcess.getNegation() != null) {
-			//	this.negationService.process(finalCorpus, dataToProcess
-			//			.getNegation());
-			//}
 
 			/** Add the format tags that were passed through. **/
 			for (int d = 0; d < dataToProcess.getServices().size(); d++) {

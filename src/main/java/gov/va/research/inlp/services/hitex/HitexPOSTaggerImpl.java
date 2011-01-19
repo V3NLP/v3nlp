@@ -1,18 +1,23 @@
-package gov.va.research.inlp.services;
+package gov.va.research.inlp.services.hitex;
 
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
+import gov.va.research.inlp.model.PipeLine;
+import gov.va.research.inlp.services.BaseGateService;
+import gov.va.research.inlp.services.POSTaggerService;
 
 import java.util.Hashtable;
 
-public class HitexTokenizerImpl extends BaseGateService implements TokenizerService {
-	@javax.annotation.Resource(name = "defaultTextTokenizer")
-	protected ProcessingResource tokenizer;
+public class HitexPOSTaggerImpl extends BaseGateService implements POSTaggerService {
+	protected ProcessingResource sectionizer;
 
-	public gov.va.vinci.cm.Corpus tokenize(gov.va.vinci.cm.Corpus _corpus) {
+	@javax.annotation.Resource(name = "hitexPOSTagger")
+	protected ProcessingResource posTagger;
+
+	public gov.va.vinci.cm.Corpus posTagging(gov.va.vinci.cm.Corpus _corpus) {
 		SerialAnalyserController controller = null;
 		Corpus corpus = null;
 		Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
@@ -25,8 +30,8 @@ public class HitexTokenizerImpl extends BaseGateService implements TokenizerServ
 							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
 			controller.reInit();
 			
-			// Add Sentence Splitter
-			controller.add(this.tokenizer);
+			// Add POS Tagger
+			controller.add(this.posTagger);
 			
 			// Add Corpus
 			corpus = createGateCorpusFromCommonModel(_corpus, corpusDocKeyDocument);
@@ -43,6 +48,8 @@ public class HitexTokenizerImpl extends BaseGateService implements TokenizerServ
 		} finally {
 			cleanupPipeLine(controller, corpus);
 		}
+
 		return results;
 	}
+
 }

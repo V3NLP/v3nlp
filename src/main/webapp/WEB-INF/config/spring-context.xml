@@ -44,13 +44,11 @@
 		p:metamapProvider-ref="metamapProvider" 
 		p:negationService-ref="negationService"
 		p:posTaggerService-ref ="posTaggerService"
+		p:oParserService-ref="oParserService"
 		p:sectionizerService-ref="sectionizerService"
 		p:sentenceSplitterService-ref="sentenceSplitterService"
 		p:tokenizerService-ref="tokenizerService"
 		
-		
-		
-		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" 
 		>
 		<property name="annotationTypesToReturn">
 			<list>
@@ -66,7 +64,7 @@
 	</bean>
 
 	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl" init-method="init"
-		p:sectionizerAndConceptFinder-ref="sectionizerAndConceptFinder" p:directoryToStoreResults="${directoryToStoreResults}"
+		p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
 		p:negationProvider-ref="negationService"
 		p:pipeLineProcessor-ref="pipeLineProcessor" 
 		p:serializationService-ref="serializationService"
@@ -74,10 +72,7 @@
 		
 	<bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl" />
 	
-	
-	
-	
-	<bean name="conceptFinderService" class="gov.va.research.inlp.services.HitexConceptFinderImpl" >
+	<bean name="conceptFinderService" class="gov.va.research.inlp.services.hitex.HitexConceptFinderImpl" >
 		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
 	</bean>
 	
@@ -91,11 +86,13 @@
 		</property>
 	</bean>
 	
-	<bean name="posTaggerService" class="gov.va.research.inlp.services.HitexPOSTaggerImpl" />
+	<bean name="oParserService" class="gov.va.research.inlp.services.hitex.HitexOParserImpl"/>
 	
-	<bean name="sentenceSplitterService" class="gov.va.research.inlp.services.HitexSentenceSplitterImpl" />
+	<bean name="posTaggerService" class="gov.va.research.inlp.services.hitex.HitexPOSTaggerImpl" />
 	
-	<bean name="sectionizerService" class="gov.va.research.inlp.services.HitexSectionizerImpl">
+	<bean name="sentenceSplitterService" class="gov.va.research.inlp.services.hitex.HitexSentenceSplitterImpl" />
+	
+	<bean name="sectionizerService" class="gov.va.research.inlp.services.hitex.HitexSectionizerImpl">
 		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
 		<property name="sectionizerHeaders">
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
@@ -103,27 +100,10 @@
 		</property>
 	</bean>
 	
-	<bean name="tokenizerService" class="gov.va.research.inlp.services.HitexTokenizerImpl" />
-	
+	<bean name="tokenizerService" class="gov.va.research.inlp.services.hitex.HitexTokenizerImpl" />
 
 
 
-
-
-
-	
-	<bean name="sectionizerAndConceptFinder"
-		class="gov.va.research.inlp.services.HitexGateModulesImpl">
-		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
-
-		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
-
-		<property name="sectionizerHeaders">
-			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
-			</value>
-		</property>
-
-	</bean>
 
 
 	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
