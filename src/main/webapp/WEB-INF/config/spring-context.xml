@@ -32,10 +32,10 @@
 		p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true" />
 
 	<bean id="expressionService"
-		class="gov.va.research.inlp.expressionlib.ExpressionServiceImpl"
+		class="gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl"
 		p:dataSource-ref="dataSource" />
 
-	<bean name="pipeLineProcessor" class="gov.va.research.inlp.services.PipeLineProcessorImpl" init-method="init"
+	<bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.PipeLineProcessorImpl" init-method="init"
 		p:databaseRepositoryService-ref="databaseRepositoryService" 
 		p:directoryToStoreResults="${directoryToStoreResults}"
 		
@@ -63,7 +63,7 @@
 		</property>
 	</bean>
 
-	<bean name="nlpService" class="gov.va.research.inlp.DefaultNlpServiceImpl" init-method="init"
+	<bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
 		p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
 		p:negationProvider-ref="negationService"
 		p:pipeLineProcessor-ref="pipeLineProcessor" 
@@ -72,11 +72,11 @@
 		
 	<bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl" />
 	
-	<bean name="conceptFinderService" class="gov.va.research.inlp.services.hitex.HitexConceptFinderImpl" >
+	<bean name="conceptFinderService" class="gov.va.vinci.v3nlp.services.hitex.HitexConceptFinderImpl" >
 		<lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder" />
 	</bean>
 	
-	<bean name="negationService" class="gov.va.research.inlp.services.NegationImpl"
+	<bean name="negationService" class="gov.va.vinci.v3nlp.services.NegationImpl"
 		init-method="init">
 		<property name="sentenceRulesFile">
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
@@ -86,13 +86,13 @@
 		</property>
 	</bean>
 	
-	<bean name="oParserService" class="gov.va.research.inlp.services.hitex.HitexOParserImpl"/>
+	<bean name="oParserService" class="gov.va.vinci.v3nlp.services.hitex.HitexOParserImpl"/>
 	
-	<bean name="posTaggerService" class="gov.va.research.inlp.services.hitex.HitexPOSTaggerImpl" />
+	<bean name="posTaggerService" class="gov.va.vinci.v3nlp.services.hitex.HitexPOSTaggerImpl" />
 	
-	<bean name="sentenceSplitterService" class="gov.va.research.inlp.services.hitex.HitexSentenceSplitterImpl" />
+	<bean name="sentenceSplitterService" class="gov.va.vinci.v3nlp.services.hitex.HitexSentenceSplitterImpl" />
 	
-	<bean name="sectionizerService" class="gov.va.research.inlp.services.hitex.HitexSectionizerImpl">
+	<bean name="sectionizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexSectionizerImpl">
 		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
 		<property name="sectionizerHeaders">
 			<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
@@ -100,16 +100,16 @@
 		</property>
 	</bean>
 	
-	<bean name="tokenizerService" class="gov.va.research.inlp.services.hitex.HitexTokenizerImpl" />
+	<bean name="tokenizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexTokenizerImpl" />
 
 
 
 
 
-	<bean id="utilityService" class="gov.va.research.inlp.UtilityServiceImpl" />
+	<bean id="utilityService" class="gov.va.vinci.v3nlp.UtilityServiceImpl" />
 
 	<bean id="metamapProvider"
-		class="gov.va.research.inlp.services.MetamapProviderServiceImpl"
+		class="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
 		p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" />
 
 	<bean id="metamapService"
@@ -120,7 +120,7 @@
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
 
 	<bean id="databaseRepositoryService"
-		class="gov.va.research.inlp.services.DatabaseRespositoryServiceImpl">
+		class="gov.va.vinci.v3nlp.services.DatabaseRespositoryServiceImpl">
 		<property name="repositories">
 			<list>
 				<ref bean="vinciTuiRepository" />

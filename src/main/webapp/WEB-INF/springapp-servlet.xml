@@ -17,7 +17,7 @@
 		Scans the classpath of this application for @Components to deploy as
 		beans
 	-->
-	<context:component-scan base-package="gov.va.research.inlp" />
+	<context:component-scan base-package="gov.va.vinci.v3nlp" />
 
 	<bean
 		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
