@@ -21,7 +21,6 @@ public class CorpusSummary implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Setter
 	@Getter
 	private Corpus corpus;
 
@@ -44,8 +43,15 @@ public class CorpusSummary implements Serializable {
 	 * @param formatInfos
 	 */
 	public CorpusSummary(Corpus c) {
+		this.setCorpus(c);
+	}
+
+	public CorpusSummary() {
+	}
+	
+	public void setCorpus(Corpus c) {
 		this.corpus = c;
-		updateSummary();
+		updateSummary();	
 	}
 	
 	public void updateSummary() {

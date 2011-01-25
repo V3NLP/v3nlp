@@ -35,8 +35,10 @@ public interface NlpService {
 	
 	public abstract String getDefaultNegationConfiguration() throws Exception;
 	
-	public abstract String serializeCorpus(CorpusSummary c);
+	public abstract String serializeCorpus(Corpus c);
 	
-	public abstract CorpusSummary deSerializeCorpus(String content);
+	public abstract Corpus deSerializeCorpus(String content);
+
+	public abstract CorpusSummary deSerializeCorpusToCorpusSummary(String content);
 
 }

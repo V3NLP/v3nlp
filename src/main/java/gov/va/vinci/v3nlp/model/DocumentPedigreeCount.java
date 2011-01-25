@@ -16,6 +16,10 @@ public class DocumentPedigreeCount implements Serializable {
 	private String pedigree;
 	private Long count;
 	
+	public DocumentPedigreeCount() {
+		
+	}
+	
 	public DocumentPedigreeCount(String documentId, String pedigree, Long count) {
 		super();
 		this.documentId = documentId;
