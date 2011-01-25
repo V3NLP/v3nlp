@@ -40,6 +40,8 @@ public class NlpUtilities {
 				// TODO Implement
 			} else if (j instanceof Set) {
 				// TODO Implement
+			} else if (j == null) {
+				
 			} else {
 				System.out.println(j);
 				throw new RuntimeException("Unknown Feature type.");
