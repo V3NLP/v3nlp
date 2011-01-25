@@ -15,7 +15,6 @@ import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -70,9 +69,12 @@ public class BaseGateService {
 
 		while (docEnum.hasMoreElements()) {
 			String s = docEnum.nextElement();
-
-			results.addDocument(s, corpusDocKeyDocument.get(s).getContent().toString(),
-					processDocumentForReturn(corpusDocKeyDocument.get(s)));
+	        gov.va.vinci.cm.Document d  = new gov.va.vinci.cm.Document();
+	        d.setDocumentName(s);
+	        d.setContent(corpusDocKeyDocument.get(s).getContent().toString());
+	        d.setDocumentId(s);
+	        d.setAnnotations(processDocumentForReturn(corpusDocKeyDocument.get(s)));
+	        results.addDocument(d);
 		}
 		return results;
 	}
@@ -91,8 +93,6 @@ public class BaseGateService {
 		controller.cleanup();
 	}
 
-
-	
 	private Annotations processDocumentForReturn(Document d) throws InvalidOffsetException {
 		AnnotationSet annotations = d.getAnnotations();
 		Annotations results = new Annotations();
@@ -142,10 +142,10 @@ public class BaseGateService {
 				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
 		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
 		feature.getMetaData().setCreatedDate(new Date());
-		if (gateAnnotation.getFeatures().get("type") != null) {
-			feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
+		if (gateAnnotation.getType() != null) {
+			feature.getMetaData().setPedigree((String) gateAnnotation.getType());
 		} else {
-			feature.getMetaData().setPedigree(gateAnnotation.getType());	
+			feature.getMetaData().setPedigree((String)gateAnnotation.getFeatures().get("type"));	
 		}
 		
 

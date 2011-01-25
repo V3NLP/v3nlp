@@ -1,5 +1,6 @@
 package gov.va.research.inlp;
 
+import gov.va.research.inlp.model.CorpusSummary;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.vinci.cm.Corpus;
 
@@ -16,7 +17,7 @@ public interface NlpService {
 
 	public abstract String getPipeLineStatus(String pipeLineId);
 	
-	public abstract Corpus getPipeLineResults(String pipeLineId);
+	public abstract CorpusSummary getPipeLineResults(String pipeLineId);
 	
 	/**
 	 * Returns the list of section headers available in this service.
@@ -34,8 +35,8 @@ public interface NlpService {
 	
 	public abstract String getDefaultNegationConfiguration() throws Exception;
 	
-	public abstract String serializeCorpus(Corpus c);
+	public abstract String serializeCorpus(CorpusSummary c);
 	
-	public abstract Corpus deSerializeCorpus(String content);
+	public abstract CorpusSummary deSerializeCorpus(String content);
 
 }

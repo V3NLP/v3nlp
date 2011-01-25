@@ -1,6 +1,7 @@
 package gov.va.research.inlp.services;
 
 import gov.va.research.inlp.model.BaseNlpModule;
+import gov.va.research.inlp.model.CorpusSummary;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.model.datasources.DataServiceSource;
 import gov.va.research.inlp.model.operations.Concept;
@@ -173,13 +174,13 @@ public class PipeLineProcessorImpl {
 
 			// Remmove annotations not in return list before potentially sending
 			// to Negation.
-			Corpus finalCorpus = returnCorpus; // removeUnneededAnnotations(returnCorpus);
+			CorpusSummary finalCorpus = new CorpusSummary(returnCorpus); // removeUnneededAnnotations(returnCorpus);
 
 
 			/** Add the format tags that were passed through. **/
 			for (int d = 0; d < dataToProcess.getServices().size(); d++) {
 				if (dataToProcess.getServices().get(d).getFormatInfo() != null) {
-					finalCorpus.addFormatInfo(dataToProcess.getServices()
+					finalCorpus.getCorpus().addFormatInfo(dataToProcess.getServices()
 							.get(d).getFormatInfo());
 				}
 			}

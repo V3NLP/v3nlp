@@ -1,5 +1,6 @@
 package gov.va.research.inlp;
 
+import gov.va.research.inlp.model.CorpusSummary;
 import gov.va.research.inlp.model.PipeLine;
 import gov.va.research.inlp.services.NegationImpl;
 import gov.va.research.inlp.services.PipeLineProcessorImpl;
@@ -48,10 +49,10 @@ public class DefaultNlpServiceImpl implements NlpService {
 	}
 
 	@Override
-	public Corpus getPipeLineResults(String pipeLineId) {
+	public CorpusSummary getPipeLineResults(String pipeLineId) {
 		if (new File(directoryToStoreResults + pipeLineId + ".results")
 				.exists()) {
-			Corpus c = (Corpus) this.deSerialize(this.directoryToStoreResults
+			CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
 					+ pipeLineId + ".results");
 			new File(directoryToStoreResults + pipeLineId + ".results")
 					.delete();
@@ -124,13 +125,13 @@ public class DefaultNlpServiceImpl implements NlpService {
 		return newObj;
 	}
 	
-	public String serializeCorpus(Corpus c)
+	public String serializeCorpus(CorpusSummary c)
 	{
 		return serializationService.serialize(c);
 	}
 	
-	public Corpus deSerializeCorpus(String content)
+	public CorpusSummary deSerializeCorpus(String content)
 	{
-		return serializationService.deserialize(content, Corpus.class);
+		return serializationService.deserialize(content, CorpusSummary.class);
 	}
 }
