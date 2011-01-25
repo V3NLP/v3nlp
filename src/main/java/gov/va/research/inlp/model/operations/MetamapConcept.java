@@ -1,6 +1,6 @@
 package gov.va.research.inlp.model.operations;
 
-import gov.va.research.inlp.model.BaseNlpModule;
+import gov.va.vinci.v3nlp.model.BaseNlpModule;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
