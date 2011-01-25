@@ -64,7 +64,7 @@ public class NegationImpl {
 	}
 
 	public Corpus process(Corpus c, Negation neg) {
-		ArrayList negationRules = new ArrayList();
+		ArrayList<String> negationRules = new ArrayList<String>();
 		for (String s : neg.getConfiguration().split("\r")) {
 			if (s.startsWith("##") || s.trim().length() == 0) {
 				continue;

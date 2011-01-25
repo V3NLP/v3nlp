@@ -27,7 +27,7 @@ public class HitexTokenizerImpl extends BaseGateService implements TokenizerServ
 							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
 			controller.reInit();
 			
-			// Add Sentence Splitter
+			// Add Tokenizer
 			controller.add(this.tokenizer);
 			
 			// Add Corpus

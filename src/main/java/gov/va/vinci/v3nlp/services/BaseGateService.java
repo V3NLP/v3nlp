@@ -14,13 +14,11 @@ import gov.va.vinci.cm.Annotations;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
+import gov.va.vinci.v3nlp.NlpUtilities;
 
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class BaseGateService {
 
@@ -79,7 +77,6 @@ public class BaseGateService {
 		return results;
 	}
 
-
 	protected void cleanupPipeLine(SerialAnalyserController controller,
 			Corpus corpus) {
 
@@ -100,7 +97,7 @@ public class BaseGateService {
 		while (i.hasNext()) {
 			gate.Annotation a = i.next();
 			//System.out.println(a.getType());
-			results.put(convertGateAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));		
+			results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));		
 		}
 		return results;
 	}
@@ -129,48 +126,4 @@ public class BaseGateService {
 		}
 
 	}
-	
-	private Annotation convertGateAnnotation(gate.Annotation gateAnnotation,
-			String content) {
-		Annotation resultAnnotation = new Annotation(gateAnnotation.getId());
-		
-		resultAnnotation.setBeginOffset(gateAnnotation.getStartNode()
-				.getOffset().intValue());
-		resultAnnotation.setEndOffset(gateAnnotation.getEndNode().getOffset()
-				.intValue());
-		Feature feature = new Feature((String) gateAnnotation.getFeatures()
-				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
-		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
-		feature.getMetaData().setCreatedDate(new Date());
-		if (gateAnnotation.getType() != null) {
-			feature.getMetaData().setPedigree((String) gateAnnotation.getType());
-		} else {
-			feature.getMetaData().setPedigree((String)gateAnnotation.getFeatures().get("type"));	
-		}
-		
-
-		// Copy Features
-		for (Object o : gateAnnotation.getFeatures().keySet()) {
-			Object j = gateAnnotation.getFeatures().get(o);
-			if (j instanceof String) {
-				feature.getFeatureElements().add(
-						new FeatureElement((String) o, (String) j));
-			} else if (j instanceof List) {
-				// TODO Implement
-			} else if (j instanceof Set) {
-				// TODO Implement
-			} else if (j == null) {
-				
-			} else {
-				System.out.println(j);
-				throw new RuntimeException("Unknown Feature type.");
-			}
-		}
-		
-		// TODO set theNumWhiteSpaceThatFollows if available.
-		resultAnnotation.setOriginalContent(content);
-		resultAnnotation.getFeatures().add(feature);
-		return resultAnnotation;
-	}
-
 }

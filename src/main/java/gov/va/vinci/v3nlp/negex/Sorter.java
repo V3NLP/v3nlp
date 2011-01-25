@@ -1,4 +1,5 @@
 package gov.va.vinci.v3nlp.negex;
+
 import java.util.ArrayList;
 
 // Utility class to sort the negation rules by length in descending order.
@@ -10,28 +11,26 @@ import java.util.ArrayList;
 // solti@u.washington.edu
 // Date: 10/20/2008
 
-
 public class Sorter {
 
-	public ArrayList sortRules(ArrayList unsortedRules) {
+	public ArrayList<String> sortRules(ArrayList<String> unsortedRules) {
 
 		try {
-                	// Sort the negation rules by length to make sure
-        	        // that longest rules match first.
-			String temp = "";
-                	for (int i = 0; i<unsortedRules.size()-1; i++) {
-        	                for (int j = i+1; j<unsortedRules.size(); j++) {
-	                                String a = (String) unsortedRules.get(i);
-                                	String b = (String) unsortedRules.get(j);
-                        	        if (a.trim().length()<b.trim().length()) {
-                	                        // Sorting into descending order by lebgth of string.
-                                	        unsortedRules.set(i, b);
-                        	                unsortedRules.set(j, a);
-                	                }
-        	                }
-	                }
-		}
-		catch (Exception e) {
+			// Sort the negation rules by length to make sure
+			// that longest rules match first.
+
+			for (int i = 0; i < unsortedRules.size() - 1; i++) {
+				for (int j = i + 1; j < unsortedRules.size(); j++) {
+					String a = (String) unsortedRules.get(i);
+					String b = (String) unsortedRules.get(j);
+					if (a.trim().length() < b.trim().length()) {
+						// Sorting into descending order by lebgth of string.
+						unsortedRules.set(i, b);
+						unsortedRules.set(j, a);
+					}
+				}
+			}
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return unsortedRules;

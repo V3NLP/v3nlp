@@ -5,7 +5,6 @@ import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
-import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.services.BaseGateService;
 import gov.va.vinci.v3nlp.services.POSTaggerService;
 

@@ -37,18 +37,16 @@ limitations under the License.
 
 public class GenNegEx {
 
-	public String negCheck(String sentenceString, String phraseString, ArrayList ruleStrings, 
+	public String negCheck(String sentenceString, String phraseString, ArrayList<String> ruleStrings, 
 			boolean negatePossible) throws Exception {
 
 		Sorter s			= new Sorter();
 		String sToReturn		= "";
 		String sScope			= "";
-		String sentencePortion		= "";
-		ArrayList sortedRules 		= new ArrayList();
+		ArrayList<String> sortedRules 		= new ArrayList<String>();
 
 		String filler			= "_";
 		boolean negPoss			= negatePossible;
-		boolean negationScope		= true;
 
                 // Sort the rules by length in descending order.
 		// Rules need to be sorted so the longest rule is always tried to match
@@ -86,9 +84,9 @@ public class GenNegEx {
                                     + "[PHRASE]");
                 }
 
-		Iterator iRule = sortedRules.iterator();
+		Iterator<String> iRule = sortedRules.iterator();
 		while (iRule.hasNext()){
-			String rule 		= (String) iRule.next();
+			String rule 		= iRule.next();
 			Pattern p 		= Pattern.compile("[\\t]+"); 	// Working.
 			String[] ruleTokens 	= p.split(rule.trim());
 			// Add the regular expression characters to tokens and asemble the rule again.

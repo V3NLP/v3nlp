@@ -6,7 +6,6 @@ import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.v3nlp.gate.SectionizerHeaderFactory;
-import gov.va.vinci.v3nlp.model.BaseNlpModule;
 import gov.va.vinci.v3nlp.services.BaseGateService;
 import gov.va.vinci.v3nlp.services.SectionizerService;
 import hitex.gate.Sectionizer;
@@ -19,8 +18,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.apache.commons.validator.GenericValidator;
 
 public class HitexSectionizerImpl extends BaseGateService implements SectionizerService {
 

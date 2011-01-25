@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class NlpUtilities {
 
+	@SuppressWarnings("unchecked")
 	public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
 			String content) {
 		Annotation resultAnnotation = new Annotation(gateAnnotation.getId());
@@ -49,5 +50,6 @@ public class NlpUtilities {
 		resultAnnotation.setOriginalContent(content);
 		resultAnnotation.getFeatures().add(feature);
 		return resultAnnotation;
+	
 	}
 }
