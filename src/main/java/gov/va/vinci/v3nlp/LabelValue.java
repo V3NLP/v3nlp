@@ -2,7 +2,7 @@ package gov.va.vinci.v3nlp;
 
 import lombok.Data;
 
-@Data
+
 public class LabelValue {
 	private String label;
 	private String value;
@@ -12,4 +12,12 @@ public class LabelValue {
 		this.label = label;
 		this.value = value;
 	}
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

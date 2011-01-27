@@ -21,15 +21,10 @@ public class CorpusSummary implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Getter
 	private Corpus corpus;
 
-	@Setter
-	@Getter
 	private List<String> pedigrees = new ArrayList<String>();
 	
-	@Setter
-	@Getter
 	private List<DocumentPedigreeCount> documentPedigreeCounts = new ArrayList<DocumentPedigreeCount>();
 
 	
@@ -85,7 +80,26 @@ public class CorpusSummary implements Serializable {
 				this.documentPedigreeCounts.add(new DocumentPedigreeCount(doc.getDocumentId(), key, tempResults.get(key)));
 			}
 		} // End for each document
-	} 
+	}
 
+    public List<String> getPedigrees() {
+        return pedigrees;
+    }
+
+    public void setPedigrees(List<String> pedigrees) {
+        this.pedigrees = pedigrees;
+    }
+
+    public List<DocumentPedigreeCount> getDocumentPedigreeCounts() {
+        return documentPedigreeCounts;
+    }
+
+    public void setDocumentPedigreeCounts(List<DocumentPedigreeCount> documentPedigreeCounts) {
+        this.documentPedigreeCounts = documentPedigreeCounts;
+    }
+
+    public Corpus getCorpus() {
+        return corpus;
+    }
 }
 

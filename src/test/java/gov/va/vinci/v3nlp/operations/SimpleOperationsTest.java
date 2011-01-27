@@ -1,4 +1,4 @@
-package gov.va.vinci.v3nlp.oeprations;
+package gov.va.vinci.v3nlp.operations;
 
 import junit.framework.TestCase;
 import gov.va.vinci.v3nlp.model.operations.Concept;
