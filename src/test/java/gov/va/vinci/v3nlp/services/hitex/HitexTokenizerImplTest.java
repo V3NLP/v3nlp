@@ -52,7 +52,6 @@ public class HitexTokenizerImplTest extends TestCase {
     }
 
     public static Corpus createSimpleCorpus() {
-
         Corpus c = new Corpus();
         Document d = new Document();
         d.setContent("This is a test");
