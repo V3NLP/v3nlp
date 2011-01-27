@@ -19,7 +19,6 @@ public class SimpleSetterGetterTest extends TestCase {
     @Test
     public void testSimpleClass() {
         GetterSetterTester  tester = new GetterSetterTester();
-
         tester.testClass(CorpusSummary.class);
         tester.testClass(DocumentPedigreeCount.class);
         tester.testClass(LabelValue.class);
