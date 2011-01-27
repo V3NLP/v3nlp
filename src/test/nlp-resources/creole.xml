@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- creole.xml directory file for GATE plug-ins -->
+
+<CREOLE-DIRECTORY>
+        <JAR SCAN="true">dictionary-1.2.0-SNAPSHOT.jar</JAR>
+</CREOLE-DIRECTORY>

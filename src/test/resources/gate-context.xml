@@ -2,14 +2,20 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:flex="http://www.springframework.org/schema/flex"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        		http://gate.ac.uk/ns/spring  
-       		http://gate.ac.uk/ns/spring.xsd">
+       		http://gate.ac.uk/ns/spring.xsd
+       		http://www.springframework.org/schema/context 
+       		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       		http://www.springframework.org/schema/flex 
+            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 
-	<gate:init gate-home="WEB-INF" site-config-file="WEB-INF/config/gate.xml" >
+	<gate:init gate-home="file:src/main/webapp/WEB-INF/" site-config-file="file:src/main/webapp/WEB-INF/config/gate.xml">
 		<gate:preload-plugins>
-			<value>WEB-INF/resources/</value>
+			<value>file:src/test/nlp-resources/</value>
 		</gate:preload-plugins>
 	</gate:init>
 
@@ -65,8 +71,6 @@
 			<entry key="sectionCriteriaList">
 				<list>
 					<value>ANY</value>
-					<!-- <value>category = PRI</value> -->
-					<!-- <value>category = DIAG</value> -->
 				</list>
 			</entry>
 
@@ -113,7 +117,7 @@
 		<gate:parameters>
 			<entry key="rulesURL">
 				<value type="org.springframework.core.io.Resource">
-					WEB-INF/resources/tokenizer/rules.txt
+					file:src/main/webapp/WEB-INF/resources/tokenizer/rules.txt
 				</value>
 			</entry>
 		</gate:parameters>
@@ -131,12 +135,12 @@
 			</entry>
 			<entry key="filterURL">
 				<value type="org.springframework.core.io.Resource">
-					WEB-INF/resources/regex/section_filter.txt
+					file:src/main/webapp/WEB-INF/resources/regex/section_filter.txt
 				</value>
 			</entry>
 			<entry key="rulesURL">
 				<value type="org.springframework.core.io.Resource">
-					WEB-INF/resources/regex/rules.xml
+					file:src/main/webapp/WEB-INF/resources/regex/rules.xml
 				</value>
 			</entry>
 		</gate:parameters>
@@ -152,7 +156,7 @@
 		<gate:parameters>
 			<entry key="model">
 				<value type="org.springframework.core.io.Resource">
-					WEB-INF/resources/chunker_opennlp/EnglishChunk.bin.gz
+					file:src/main/webapp/WEB-INF/resources/chunker_opennlp/EnglishChunk.bin.gz
 				</value>
 			</entry>
 		</gate:parameters>
@@ -162,11 +166,11 @@
 		resource-name="examplePOSTagger">
 		<gate:parameters>
 			<entry key="model">
-				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz
 				</value>
 			</entry>
 			<entry key="dictionary">
-				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag_ctakes/models/tag.dictionary.txt
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/tag.dictionary.txt
 				</value>
 			</entry>
 		</gate:parameters>
@@ -176,7 +180,7 @@
 		resource-class="hitex.gate.Sectionizer" resource-name="exampleSectionizer">
 		<gate:parameters>
 			<entry key="headersURL">
-				<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/sectionizer/dis_headers.xml
 				</value>
 			</entry>
 		</gate:parameters>

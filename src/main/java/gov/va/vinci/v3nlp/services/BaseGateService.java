@@ -38,10 +38,13 @@ public class BaseGateService {
 			Hashtable<String, gate.Document> docs)
 			throws ResourceInstantiationException {
 		Corpus corpus;
-		corpus = Factory.newCorpus("V3NLP Corpus From Commond Model");
+		corpus = Factory.newCorpus("V3NLP Corpus From Common Model");
 
 		for (DocumentInterface d: dataToProcess.getDocuments()) {
 			String key = (String) d.getDocumentName();
+            if (key == null) {
+                key = d.getDocumentId();
+            }
 			gate.Document doc = Factory.newDocument(d.getContent());
 			doc.setName(key);
 			
