@@ -6,8 +6,6 @@ import gov.va.vinci.v3nlp.model.DocumentPedigreeCount;
 import gov.va.vinci.v3nlp.model.operations.Sectionizer;
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Time: 10:00 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleSetterGetterTest {
+public class SimpleSetterGetterTest extends TestCase {
 
     @Test
     public void testSimpleClass() {
@@ -34,5 +32,13 @@ public class SimpleSetterGetterTest {
         Span s = new Span(10, 15);
         assert(s.getStart() == 10);
         assert(s.getEnd() == 15);
+    }
+
+    @Test
+    public void testDocumentPedigreeCount() {
+        DocumentPedigreeCount dc = new DocumentPedigreeCount("test", "pedigree", 10L);
+        assertEquals(dc.getDocumentId(), "test");
+        assertEquals(dc.getPedigree(), "pedigree");
+        assert(dc.getCount().equals(10L));
     }
 }

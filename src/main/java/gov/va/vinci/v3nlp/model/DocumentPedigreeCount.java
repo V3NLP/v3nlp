@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import lombok.Data;
 
-@Data
 public class DocumentPedigreeCount implements Serializable {
 
 	/**
@@ -26,5 +25,28 @@ public class DocumentPedigreeCount implements Serializable {
 		this.pedigree = pedigree;
 		this.count = count;
 	}
-	
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getPedigree() {
+        return pedigree;
+    }
+
+    public void setPedigree(String pedigree) {
+        this.pedigree = pedigree;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
 }
