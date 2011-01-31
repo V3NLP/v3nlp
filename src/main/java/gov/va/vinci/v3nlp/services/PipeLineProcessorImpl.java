@@ -21,16 +21,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Setter;
 
 import org.springframework.scheduling.annotation.Async;
 
 public class PipeLineProcessorImpl {
 
-    @Setter
     private String directoryToStoreResults;
 
-    @Setter
     private DatabaseRepositoryService databaseRepositoryService;
 
     /**
@@ -40,34 +37,26 @@ public class PipeLineProcessorImpl {
      */
 
     /* Concept */
-    @Setter
     private ConceptFinderService conceptFinderService;
 
     /* MetamapConcept */
-    @Setter
     private MetamapProviderServiceImpl metamapProvider;
 
     /* Negation */
-    @Setter
     private NegationImpl negationService;
 
     /* OParser */
-    @Setter
     private OParserService oParserService;
 
     /* PosTagger */
-    @Setter
     private POSTaggerService posTaggerService;
 
     /* Sectionizer */
-    @Setter
     private SectionizerService sectionizerService;
 
     /* SentenceSplitterService */
-    @Setter
     private SentenceSplitterService sentenceSplitterService;
 
-    @Setter
     private TokenizerService tokenizerService;
 
     /* TokenizerService */
@@ -77,11 +66,6 @@ public class PipeLineProcessorImpl {
      * End NLP Services
      * **********************************************************
      */
-
-
-    @Setter
-    private List<String> annotationTypesToReturn = new ArrayList<String>();
-
 
     public void init() {
 
@@ -242,4 +226,45 @@ public class PipeLineProcessorImpl {
         }
         return c;
     }
+
+    public void setDirectoryToStoreResults(String directoryToStoreResults) {
+        this.directoryToStoreResults = directoryToStoreResults;
+    }
+
+    public void setDatabaseRepositoryService(DatabaseRepositoryService databaseRepositoryService) {
+        this.databaseRepositoryService = databaseRepositoryService;
+    }
+
+    public void setConceptFinderService(ConceptFinderService conceptFinderService) {
+        this.conceptFinderService = conceptFinderService;
+    }
+
+    public void setMetamapProvider(MetamapProviderServiceImpl metamapProvider) {
+        this.metamapProvider = metamapProvider;
+    }
+
+    public void setNegationService(NegationImpl negationService) {
+        this.negationService = negationService;
+    }
+
+    public void setoParserService(OParserService oParserService) {
+        this.oParserService = oParserService;
+    }
+
+    public void setPosTaggerService(POSTaggerService posTaggerService) {
+        this.posTaggerService = posTaggerService;
+    }
+
+    public void setSectionizerService(SectionizerService sectionizerService) {
+        this.sectionizerService = sectionizerService;
+    }
+
+    public void setSentenceSplitterService(SentenceSplitterService sentenceSplitterService) {
+        this.sentenceSplitterService = sentenceSplitterService;
+    }
+
+    public void setTokenizerService(TokenizerService tokenizerService) {
+        this.tokenizerService = tokenizerService;
+    }
+
 }

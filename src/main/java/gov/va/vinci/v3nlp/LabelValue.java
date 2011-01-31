@@ -1,6 +1,6 @@
 package gov.va.vinci.v3nlp;
 
-import lombok.Data;
+
 
 
 public class LabelValue {

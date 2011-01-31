@@ -2,8 +2,6 @@ package gov.va.vinci.v3nlp.model;
 
 import java.io.Serializable;
 
-import lombok.Data;
-
 public class DocumentPedigreeCount implements Serializable {
 
 	/**

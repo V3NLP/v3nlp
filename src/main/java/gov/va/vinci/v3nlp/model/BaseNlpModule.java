@@ -1,12 +1,8 @@
 package gov.va.vinci.v3nlp.model;
 
 
-import gov.va.vinci.cm.FormatInfo;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Data;
 
 public abstract class BaseNlpModule extends Object {
 	private String moduleName = "";

@@ -39,17 +39,6 @@
           p:sectionizerService-ref="sectionizerService"
           p:sentenceSplitterService-ref="sentenceSplitterService"
           p:tokenizerService-ref="tokenizerService">
-        <property name="annotationTypesToReturn">
-            <list>
-                <value>RegEx</value>
-                <value>UMLSConcept</value>
-                <value>Negation</value>
-                <value>Sentence</value>
-                <value>SpaceToken</value>
-                <value>Token</value>
-                <value>section_header</value>
-            </list>
-        </property>
     </bean>
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"

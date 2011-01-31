@@ -1,8 +1,5 @@
 package gov.va.vinci.v3nlp;
 
-import lombok.Data;
-
-@Data
 public class Span {
 
 	private int start;
@@ -12,4 +9,20 @@ public class Span {
 		this.start = s;
 		this.end = e;
 	}
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
+    }
 }

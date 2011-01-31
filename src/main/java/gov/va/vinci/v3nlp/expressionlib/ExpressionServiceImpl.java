@@ -12,13 +12,10 @@ import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
-import lombok.Data;
-
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-@Data
 public class ExpressionServiceImpl {
 
 	public static final List<LabelValue> SEARCHABLE_FIELDS = new ArrayList<LabelValue>();
@@ -101,4 +98,12 @@ public class ExpressionServiceImpl {
 						});
 		return expressions;
 	}
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

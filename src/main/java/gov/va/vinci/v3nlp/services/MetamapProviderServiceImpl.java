@@ -16,19 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.web.client.RestTemplate;
 
 public class MetamapProviderServiceImpl {
 
-	@Setter
-	@Getter
 	private RestTemplate restTemplate;
 
-	@Setter
-	@Getter
 	private MetaMapServiceHttpInvoker metamapService;
 
 	public gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess,
@@ -136,4 +130,20 @@ public class MetamapProviderServiceImpl {
 		}
 		return returnList;
 	}
+
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
+
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public MetaMapServiceHttpInvoker getMetamapService() {
+        return metamapService;
+    }
+
+    public void setMetamapService(MetaMapServiceHttpInvoker metamapService) {
+        this.metamapService = metamapService;
+    }
 }

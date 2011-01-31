@@ -16,127 +16,143 @@ import java.io.ObjectInputStream;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
-
 public class DefaultNlpServiceImpl implements NlpService {
 
+    private NegationImpl negationProvider;
 
-	@Getter
-	@Setter
-	private NegationImpl negationProvider;
+    private String directoryToStoreResults;
+
+    private PipeLineProcessorImpl pipeLineProcessor;
+
+    private SerializationService serializationService;
+
+    private SectionizerService sectionizerService;
 
 
-	@Setter
-	private String directoryToStoreResults;
+    public NegationImpl getNegationProvider() {
+        return negationProvider;
+    }
 
-	@Setter
-	private PipeLineProcessorImpl pipeLineProcessor;
-	
-	@Setter
-	private SerializationService serializationService;
-	
-	@Setter
-	private SectionizerService sectionizerService;
+    public void setNegationProvider(NegationImpl negationProvider) {
+        this.negationProvider = negationProvider;
+    }
 
-	public void init() {
-		if (!new File(directoryToStoreResults).exists()
-				|| !new File(directoryToStoreResults).isDirectory()) {
-			throw new RuntimeException(directoryToStoreResults
-					+ ": Is not a valid directory to store results.");
-		}
-	}
+    public void setDirectoryToStoreResults(String directoryToStoreResults) {
+        this.directoryToStoreResults = directoryToStoreResults;
+    }
 
-	@Override
-	public CorpusSummary getPipeLineResults(String pipeLineId) {
-		if (new File(directoryToStoreResults + pipeLineId + ".results")
-				.exists()) {
-			CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
-					+ pipeLineId + ".results");
-			new File(directoryToStoreResults + pipeLineId + ".results")
-					.delete();
-			return c;
-		} else if (new File(directoryToStoreResults + pipeLineId + ".err")
-				.exists()) {
-			Exception e = (Exception) this
-					.deSerialize(this.directoryToStoreResults + pipeLineId
-							+ ".err");
-			new File(directoryToStoreResults + pipeLineId + ".err").delete();
-			throw new RuntimeException(e);
-		} else {
-			throw new RuntimeException("Results not found.");
-		}
-	}
+    public void setPipeLineProcessor(PipeLineProcessorImpl pipeLineProcessor) {
+        this.pipeLineProcessor = pipeLineProcessor;
+    }
 
-	@Override
-	public String getPipeLineStatus(String pipeLineId) {
-		if (new File(directoryToStoreResults + pipeLineId + ".lck").exists()) {
-			return "PROCESSING";
-		}
-		if (new File(directoryToStoreResults + pipeLineId + ".err").exists()) {
-			return "ERROR";
-		}
-		if (new File(directoryToStoreResults + pipeLineId + ".results").exists()) {
-			return "COMPLETE";
-		}
-		
-		return null;
-	}
+    public void setSerializationService(SerializationService serializationService) {
+        this.serializationService = serializationService;
+    }
 
-	@Override
-	@SneakyThrows
-	public String submitPipeLine(PipeLine dataToProcess, Corpus corpus) {
-		String pipeLineId = new Date().getTime() + "-"
-				+ dataToProcess.hashCode() + "-" + corpus.hashCode();
-		new File(directoryToStoreResults + pipeLineId + ".lck").createNewFile();
-		pipeLineProcessor
-				.processPipeLine(pipeLineId, dataToProcess, corpus);
-		return pipeLineId;
-	}
+    public void setSectionizerService(SectionizerService sectionizerService) {
+        this.sectionizerService = sectionizerService;
+    }
 
-	@Override
-	public List<String> getAvailableSectionHeaders() {
-		return sectionizerService.getAvailableSectionHeaders();
-	}
+    public void init() {
+        if (!new File(directoryToStoreResults).exists()
+                || !new File(directoryToStoreResults).isDirectory()) {
+            throw new RuntimeException(directoryToStoreResults
+                    + ": Is not a valid directory to store results.");
+        }
+    }
 
-	@Override
-	public String getDefaultNegationConfiguration() throws Exception {
-		StringBuffer sb = new StringBuffer();
-		for (String s : negationProvider.getDefaultNegationConfiguration()) {
-			sb.append(s);
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
+    @Override
+    public CorpusSummary getPipeLineResults(String pipeLineId) {
+        if (new File(directoryToStoreResults + pipeLineId + ".results")
+                .exists()) {
+            CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
+                    + pipeLineId + ".results");
+            new File(directoryToStoreResults + pipeLineId + ".results")
+                    .delete();
+            return c;
+        } else if (new File(directoryToStoreResults + pipeLineId + ".err")
+                .exists()) {
+            Exception e = (Exception) this
+                    .deSerialize(this.directoryToStoreResults + pipeLineId
+                            + ".err");
+            new File(directoryToStoreResults + pipeLineId + ".err").delete();
+            throw new RuntimeException(e);
+        } else {
+            throw new RuntimeException("Results not found.");
+        }
+    }
 
-	@Override
-	public String getDefaultSectionizerConfiguration() throws Exception {
-		return sectionizerService.getDefaultSectionizerConfiguration();
-	}
+    @Override
+    public String getPipeLineStatus(String pipeLineId) {
+        if (new File(directoryToStoreResults + pipeLineId + ".lck").exists()) {
+            return "PROCESSING";
+        }
+        if (new File(directoryToStoreResults + pipeLineId + ".err").exists()) {
+            return "ERROR";
+        }
+        if (new File(directoryToStoreResults + pipeLineId + ".results").exists()) {
+            return "COMPLETE";
+        }
 
-	
-	@SneakyThrows
-	private Object deSerialize(String path) {
-		InputStream is = new FileInputStream(new File(path));
-		ObjectInput oi = new ObjectInputStream(is);
-		Object newObj = oi.readObject();
-		oi.close();
-		return newObj;
-	}
-	
-	public String serializeCorpus(Corpus c)
-	{
-		return serializationService.serialize(c);
-	}
-	
-	public Corpus deSerializeCorpus(String content)
-	{
-		return serializationService.deserialize(content, Corpus.class);
-	}
+        return null;
+    }
 
-	public CorpusSummary deSerializeCorpusToCorpusSummary(String content)
-	{
-		return new CorpusSummary(deSerializeCorpus(content));
-	}
+    @Override
+    public String submitPipeLine(PipeLine dataToProcess, Corpus corpus) {
+        try {
+            String pipeLineId = new Date().getTime() + "-"
+                    + dataToProcess.hashCode() + "-" + corpus.hashCode();
+            new File(directoryToStoreResults + pipeLineId + ".lck").createNewFile();
+            pipeLineProcessor
+                    .processPipeLine(pipeLineId, dataToProcess, corpus);
+            return pipeLineId;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<String> getAvailableSectionHeaders() {
+        return sectionizerService.getAvailableSectionHeaders();
+    }
+
+    @Override
+    public String getDefaultNegationConfiguration() throws Exception {
+        StringBuffer sb = new StringBuffer();
+        for (String s : negationProvider.getDefaultNegationConfiguration()) {
+            sb.append(s);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getDefaultSectionizerConfiguration() throws Exception {
+        return sectionizerService.getDefaultSectionizerConfiguration();
+    }
+
+    private Object deSerialize(String path) {
+        try {
+            InputStream is = new FileInputStream(new File(path));
+            ObjectInput oi = new ObjectInputStream(is);
+            Object newObj = oi.readObject();
+            oi.close();
+            return newObj;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String serializeCorpus(Corpus c) {
+        return serializationService.serialize(c);
+    }
+
+    public Corpus deSerializeCorpus(String content) {
+        return serializationService.deserialize(content, Corpus.class);
+    }
+
+    public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {
+        return new CorpusSummary(deSerializeCorpus(content));
+    }
 }

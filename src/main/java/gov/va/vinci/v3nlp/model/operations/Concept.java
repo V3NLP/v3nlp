@@ -1,8 +1,6 @@
 package gov.va.vinci.v3nlp.model.operations;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import gov.va.vinci.v3nlp.model.BaseNlpModule;
+
 
 public class Concept extends BaseOperation {
 	private String expressionName;
