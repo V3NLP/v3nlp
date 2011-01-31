@@ -38,8 +38,7 @@
           p:oParserService-ref="oParserService"
           p:sectionizerService-ref="sectionizerService"
           p:sentenceSplitterService-ref="sentenceSplitterService"
-          p:tokenizerService-ref="tokenizerService"
-            >
+          p:tokenizerService-ref="tokenizerService">
         <property name="annotationTypesToReturn">
             <list>
                 <value>RegEx</value>
