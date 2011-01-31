@@ -12,11 +12,9 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
-import lombok.Data;
-
 import org.apache.commons.validator.GenericValidator;
 
-@Data
+
 public class PipeLine {
 
 	private List<BaseNlpModule> services = new ArrayList<BaseNlpModule>();
@@ -176,4 +174,35 @@ public class PipeLine {
 		return null;
 	}
 
+    public List<BaseNlpModule> getServices() {
+        return services;
+    }
+
+    public void setServices(List<BaseNlpModule> services) {
+        this.services = services;
+    }
+
+    public String getPipeLineName() {
+        return pipeLineName;
+    }
+
+    public void setPipeLineName(String pipeLineName) {
+        this.pipeLineName = pipeLineName;
+    }
+
+    public String getCustomSectionRules() {
+        return customSectionRules;
+    }
+
+    public void setCustomSectionRules(String customSectionRules) {
+        this.customSectionRules = customSectionRules;
+    }
+
+    public Corpus getCorpus() {
+        return corpus;
+    }
+
+    public void setCorpus(Corpus corpus) {
+        this.corpus = corpus;
+    }
 }

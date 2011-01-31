@@ -43,7 +43,6 @@ public class NlpUtilities {
 			} else if (j == null) {
 				
 			} else {
-				System.out.println(j);
 				throw new RuntimeException("Unknown Feature type.");
 			}
 		}

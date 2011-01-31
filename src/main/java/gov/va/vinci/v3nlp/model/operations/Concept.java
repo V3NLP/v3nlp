@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
-public class Concept extends BaseNlpModule {
+public class Concept extends BaseOperation {
 	private String expressionName;
 	private String expression;
 	private String code;
@@ -12,7 +12,7 @@ public class Concept extends BaseNlpModule {
 
     public Concept() {
         this.setModuleName("Concept");
-        this.getProvides().add("Concept");
+        this.getProvides().add("RegEx");
 		this.getRequires().add("Fetch");
 		this.getMustComeAfter().add("Output");
 		this.setDescription("Multiple expresions can be entered by seperating them with a pipe '|' symbol. (ie- signed|discharged) These expressions are 'OR', not and.");

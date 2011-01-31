@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
 
-public class OParser extends BaseNlpModule {
+public class OParser extends BaseOperation {
 
     public OParser() {
         this.setModuleName("OParser");

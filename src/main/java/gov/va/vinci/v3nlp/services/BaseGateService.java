@@ -99,7 +99,6 @@ public class BaseGateService {
 		Iterator<gate.Annotation> i = annotations.iterator();
 		while (i.hasNext()) {
 			gate.Annotation a = i.next();
-			//System.out.println(a.getType());
 			results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));		
 		}
 		return results;

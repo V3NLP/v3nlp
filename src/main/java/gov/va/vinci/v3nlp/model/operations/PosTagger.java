@@ -5,11 +5,11 @@ import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
 
-public class PosTagger extends BaseNlpModule {
+public class PosTagger extends BaseOperation {
 
     public PosTagger() {
         this.setModuleName("PosTagger");
-		this.getProvides().add("PosTagger");
+		this.getProvides().add("PartOfSpeech");
 		this.getRequires().add("Fetch");
 		this.getRequires().add("Token");
 		this.getRequires().add("SpaceToken");

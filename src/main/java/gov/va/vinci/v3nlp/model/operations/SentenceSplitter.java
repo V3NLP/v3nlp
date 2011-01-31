@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
-public class SentenceSplitter extends BaseNlpModule {
+public class SentenceSplitter extends BaseOperation {
 
     public SentenceSplitter()
     {
         	this.setModuleName("SentenceSplitter");
-			this.getProvides().add("SentenceSplitter");
+			this.getProvides().add("Sentence");
 			this.getRequires().add("Fetch");
 			this.getRequires().add("Token");
 			this.getRequires().add("SpaceToken");

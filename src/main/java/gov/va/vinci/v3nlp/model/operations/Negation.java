@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
-public class Negation extends BaseNlpModule {
+public class Negation extends BaseOperation {
 	private String configuration;
 	private Boolean useCustomConfiguration;
 

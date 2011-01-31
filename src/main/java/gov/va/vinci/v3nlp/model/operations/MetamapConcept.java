@@ -5,7 +5,7 @@ import gov.va.vinci.v3nlp.model.BaseNlpModule;
 import java.util.Arrays;
 
 
-public class MetamapConcept extends BaseNlpModule {
+public class MetamapConcept extends BaseOperation {
 
 	private String[] semanticGroups;
 

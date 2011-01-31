@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
 
-public class Tokenizer extends BaseNlpModule {
+public class Tokenizer extends BaseOperation {
 
     public Tokenizer()
     {

@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
-public class Sectionizer extends BaseNlpModule {
+public class Sectionizer extends BaseOperation {
 
 	private String[] sections;
 	private boolean exclude=false;
@@ -12,7 +12,8 @@ public class Sectionizer extends BaseNlpModule {
     public Sectionizer()
     {
         this.setModuleName("Sectionizer");
-		this.getProvides().add("Sectionizer");
+		this.getProvides().add("section");
+		this.getProvides().add("section_header");
 		this.getRequires().add("Fetch");
 		this.getMustComeBefore().add("Concept");
 		this.getMustComeBefore().add("Output");

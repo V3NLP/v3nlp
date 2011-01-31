@@ -15,9 +15,7 @@ public abstract class BaseNlpModule extends Object {
 	private boolean singleton = false;
 	private List<String> mustComeAfter =  new ArrayList<String>();
 	private List<String> mustComeBefore =  new ArrayList<String>();
-	private FormatInfo formatInfo;
     private String description;
-    private boolean keepFeatureInResult= true;
 
     public String getModuleName() {
         return moduleName;
@@ -67,14 +65,6 @@ public abstract class BaseNlpModule extends Object {
         this.mustComeBefore = mustComeBefore;
     }
 
-    public FormatInfo getFormatInfo() {
-        return formatInfo;
-    }
-
-    public void setFormatInfo(FormatInfo formatInfo) {
-        this.formatInfo = formatInfo;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -83,11 +73,4 @@ public abstract class BaseNlpModule extends Object {
         this.description = description;
     }
 
-    public boolean isKeepFeatureInResult() {
-        return keepFeatureInResult;
-    }
-
-    public void setKeepFeatureInResult(boolean keepFeatureInResult) {
-        this.keepFeatureInResult = keepFeatureInResult;
-    }
 }
