@@ -19,6 +19,7 @@ public class PipeLine {
 
 	private List<BaseNlpModule> services = new ArrayList<BaseNlpModule>();
 	private String pipeLineName = "";
+    private String description;
 	private String customSectionRules = null;
 	private Corpus corpus;
 
@@ -204,5 +205,13 @@ public class PipeLine {
 
     public void setCorpus(Corpus corpus) {
         this.corpus = corpus;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

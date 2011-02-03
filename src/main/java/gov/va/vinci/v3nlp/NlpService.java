@@ -41,4 +41,8 @@ public interface NlpService {
 
 	public abstract CorpusSummary deSerializeCorpusToCorpusSummary(String content);
 
+    public abstract String serializePipeline(PipeLine pipeLine);
+
+    public abstract PipeLine deserializePipeline(String content);
+
 }

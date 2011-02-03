@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UtilityServiceImpl {
+public class UtilityServiceImpl implements UtilityService {
 	
 	
-	public List<LabelValue>  getSemanticGroupDescriptionMap() {
+	@Override
+    public List<LabelValue>  getSemanticGroupDescriptionMap() {
 
 		List<LabelValue> resultList = new ArrayList<LabelValue>();
 		Map<String, String> results= Util.getSemanticGroupDescriptionMap();

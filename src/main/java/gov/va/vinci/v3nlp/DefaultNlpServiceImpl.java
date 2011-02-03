@@ -155,4 +155,12 @@ public class DefaultNlpServiceImpl implements NlpService {
     public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {
         return new CorpusSummary(deSerializeCorpus(content));
     }
+
+   public String serializePipeline(PipeLine pipeLine){
+       return serializationService.serialize(pipeLine);
+   }
+
+    public PipeLine deserializePipeline(String content) {
+        return serializationService.deserialize(content, PipeLine.class);
+    }
 }
