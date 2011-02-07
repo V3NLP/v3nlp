@@ -123,4 +123,7 @@
           p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
           p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" p:name="Zeng Repository"/>
 
+    <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
+          p:templateDirectory="${templateDirectory}" />
+
 </beans>
