@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-  <wb-module deploy-name="keywords-server-1.4.0-SNAPSHOT">
+  <wb-module deploy-name="keywords-server-1.4.1-SNAPSHOT">
     <property name="java-output-path" value="/target/classes"/>
         <property name="context-root" value="v3nlp-server"/>
     <wb-resource deploy-path="/" source-path="src/main/webapp"/>
@@ -115,9 +115,6 @@
     <dependent-module archiveName="log4j-1.2.14.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
-    <dependent-module archiveName="lombok-0.9.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/projectlombok/lombok/0.9.2/lombok-0.9.2.jar">
-      <dependency-type>uses</dependency-type>
-    </dependent-module>
     <dependent-module archiveName="maxent-2.5.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/gate/plugins/maxent/2.5.2/maxent-2.5.2.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
@@ -191,6 +188,9 @@
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="spring-oxm-3.0.3.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/springframework/spring-oxm/3.0.3.RELEASE/spring-oxm-3.0.3.RELEASE.jar">
+      <dependency-type>uses</dependency-type>
+    </dependent-module>
+    <dependent-module archiveName="spring-test-3.0.3.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/springframework/spring-test/3.0.3.RELEASE/spring-test-3.0.3.RELEASE.jar">
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="spring-tx-3.0.3.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/springframework/spring-tx/3.0.3.RELEASE/spring-tx-3.0.3.RELEASE.jar">
