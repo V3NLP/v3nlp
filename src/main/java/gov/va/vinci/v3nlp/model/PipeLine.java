@@ -9,6 +9,7 @@ import gov.va.vinci.v3nlp.model.operations.Sectionizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class PipeLine {
     private String description;
 	private String customSectionRules = null;
 	private Corpus corpus;
-
+	private Date createdDate;
+	
 	/**
 	 * Get the negation module in this pipeline if there is one.
 	 * 
@@ -214,4 +216,15 @@ public class PipeLine {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+
+    
 }
