@@ -9,8 +9,8 @@ body {
 	margin: 0px;
 	background: url(../img/top_bg.gif);
 	background-repeat: repeat-x;
-	font-family: Verdana, Arial, sans-serif;
-    font-size: 12px;
+	font-family: PALATINO, Verdana, Arial, sans-serif;
+    font-size: 14px;
 }
 
 p {
@@ -23,7 +23,7 @@ h2 {
 	color: #9f9f9f;
 	margin:0px;
 	padding:0px;
-	font-size: 15px;
+	font-size: 18px;
 }
 
 h3 {
@@ -31,12 +31,12 @@ h3 {
 	margin:0px;
 	padding-top: 10px;
 	padding-bottom: 5px;
-	font-size: 13px;
+	font-size: 16px;
 }
 
 
 ul {
-	font-size: 12px;
+	font-size: 14px;
 	margin:0;
 	padding:0;
 	list-style-image: url(../img/bullet.gif);

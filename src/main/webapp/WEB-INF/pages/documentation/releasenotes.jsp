@@ -1,10 +1,21 @@
      <h1>Release Notes</h1>
      
-     <h2>Known Issues</h2>
-     	<ul>
-     		<li>TLF hides rows if background color is changed. Workaround: <strong>Currently only changing foreground.</strong></li>
-    	</ul>
-     		
+
+     <h2>February 24, 2011</h2>
+     <ul>
+     	<li>Changed <strong>Template</strong> label to <strong>App Library</strong></li>
+     	<li>Added a <strong>Create New</strong> button on App Library tab that creates a new pipeline and makes that pipeline tab visible</li>
+     	<li>Added <strong>(right click to modify)</strong> to document details text above document display</li>
+     	<li>Removed <strong>Annotation</strong> place holder panel in document details</li>
+     	<li>Fetch panel now shows <strong>Fetch - {type}</strong> in the title bar, and the info button was moved to the right</li>
+     	<li><strong>Delete</strong> works in annotation text area, how should it work in the summary table above? Simply adjust the number as needed? Or show it differently?</li>
+     	<li><strong>Tag Editor</strong> should now work (at the corpus level). Was at the document level before, but does not make sense at that level.</li>
+     	<li>In Labels grid, <strong>double clicking</strong> now opens the tag editor</li>
+     	<li>Templates are now <strong>grouped</strong> by their sub-directory.</li>
+     	<li>Color of pipeline <strong>canvas background</strong> is now a darker shade of grey. We may wish to investigate a common CSS theme for all Flex apps in the future.</li>
+     	<li>Pipeline operation sizes are now variable height, and start at minimum height</li>
+     </ul>
+     
      
      <h2>Version 2.0 - January 2011</h2>
       <ul>

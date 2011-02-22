@@ -2,6 +2,8 @@ package gov.va.vinci.v3nlp.services;
 
 import org.springframework.beans.factory.annotation.Required;
 
+import gov.va.vinci.v3nlp.model.Template;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,17 +20,33 @@ public class TemplateServiceImpl implements TemplateService {
     private File templateDirectory;
 
     @Override
-    public String[] getTemplates() {
-    	List<String> resultList = new ArrayList<String>();
+    public Template[] getTemplates() {
+    	List<Template> resultList = new ArrayList<Template>();
     	
-        for (File f : templateDirectory.listFiles(new OnlyExt("v3nlp"))) {
-            resultList.add(readFile(f));
-        }
+    
+    	for (String dir: templateDirectory.list()) {
+    		if (new File(templateDirectory + "/" + dir).isDirectory()) {
+    			resultList.addAll(processDirectory(new File(templateDirectory + "/" + dir), dir));
+    		}
+    	}
         
-        String[] results = new String[resultList.size()];
+        Template[] results = new Template[resultList.size()];
         resultList.toArray(results);
         return results;
     }
+    
+    private List<Template> processDirectory(File d, String groupName) {
+    	List<Template> resultList = new ArrayList<Template>();
+    	
+    	for (File f : d.listFiles(new OnlyExt("v3nlp"))) {
+    		Template t = new Template();
+    		t.setGroup(groupName);
+    		t.setXmlTemplate(readFile(f));
+            resultList.add(t);
+        }
+        return resultList;
+    }
+    
 
     @Required
     public void setTemplateDirectory(String templateDirectory) {
