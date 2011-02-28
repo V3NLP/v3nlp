@@ -14,10 +14,12 @@
      	<li>Templates are now <strong>grouped</strong> by their sub-directory.</li>
      	<li>Color of pipeline <strong>canvas background</strong> is now a darker shade of grey. We may wish to investigate a common CSS theme for all Flex apps in the future.</li>
      	<li>Pipeline operation sizes are now variable height, and start at minimum height</li>
+     	<li>Default templates in place.</li>
+     	<li>Initial Architecture Draft ready for review.</li>
      </ul>
      
      
-     <h2>Version 2.0 - January 2011</h2>
+     <h2>January 2011</h2>
       <ul>
 	 	<li>[UI] Codebase moved to Flex 4.x</li>
 	 	<li>[UI] Now using Common Model</li>
@@ -36,7 +38,7 @@
 	 	<li>[Common Model] Added some unit test coverage</li>
 	 </ul>
 
-     <h2>Version 1.2 - August 2011</h2>
+     <h2>August 2010</h2>
      <ul>
 	 	<li>Advanced panel to Negation.</li>
 		<li>Sectionizer:

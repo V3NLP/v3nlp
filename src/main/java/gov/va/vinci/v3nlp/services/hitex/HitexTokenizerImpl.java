@@ -22,6 +22,7 @@ public class HitexTokenizerImpl extends BaseGateService implements TokenizerServ
 		gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
 
 		try {
+			// Instantiate a gate controller
 			controller = (SerialAnalyserController) Factory.createResource(
 					"gate.creole.SerialAnalyserController", Factory
 							.newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
@@ -36,6 +37,8 @@ public class HitexTokenizerImpl extends BaseGateService implements TokenizerServ
 			
 			// run the application
 			controller.execute();
+			
+			// Process gate results to common model.
 			results = processGateResults(corpusDocKeyDocument);
 			results.setCorpusName(_corpus.getCorpusName());
 

@@ -84,7 +84,7 @@
 	<div id="wrap">
 		<div id="top">
 			<h2><a href="<%=request.getContextPath()%>/app/home.html"
-				title="Back to main application page">v3nlp.KEYWORDS [v1.3]</a></h2>
+				title="Back to main application page">v3nlp.KEYWORDS [v1.4]</a></h2>
 			<div id="menu">
 			<ul>
 				<li><a href="<%=request.getContextPath()%>/app/home.html"
