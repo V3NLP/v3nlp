@@ -5,8 +5,9 @@ import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.services.NegationImpl;
-import gov.va.vinci.v3nlp.services.PipeLineProcessorImpl;
+import gov.va.vinci.v3nlp.services.PipeLineProcessor;
 import gov.va.vinci.v3nlp.services.SectionizerService;
+import org.apache.uima.jcas.JCas;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +23,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
 
-    private PipeLineProcessorImpl pipeLineProcessor;
+    private PipeLineProcessor pipeLineProcessor;
 
     private SerializationService serializationService;
 
@@ -41,7 +42,7 @@ public class DefaultNlpServiceImpl implements NlpService {
         this.directoryToStoreResults = directoryToStoreResults;
     }
 
-    public void setPipeLineProcessor(PipeLineProcessorImpl pipeLineProcessor) {
+    public void setPipeLineProcessor(PipeLineProcessor pipeLineProcessor) {
         this.pipeLineProcessor = pipeLineProcessor;
     }
 
@@ -156,11 +157,16 @@ public class DefaultNlpServiceImpl implements NlpService {
         return new CorpusSummary(deSerializeCorpus(content));
     }
 
-   public String serializePipeline(PipeLine pipeLine){
-       return serializationService.serialize(pipeLine);
-   }
+    public String serializePipeline(PipeLine pipeLine) {
+        return serializationService.serialize(pipeLine);
+    }
 
     public PipeLine deserializePipeline(String content) {
         return serializationService.deserialize(content, PipeLine.class);
+    }
+
+    public  JCas getPipeLineCasResult(String pipeLineId) {
+        // TODO Stubbed in for testing.
+        return null;
     }
 }

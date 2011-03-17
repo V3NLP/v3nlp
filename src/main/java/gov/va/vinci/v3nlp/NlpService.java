@@ -3,6 +3,7 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
+import org.apache.uima.jcas.JCas;
 
 import java.util.List;
 
@@ -29,7 +30,9 @@ public interface NlpService {
 	 * @return the results of the pipeline processing. 
 	 */
 	public abstract CorpusSummary getPipeLineResults(String pipeLineId);
-	
+
+    public abstract JCas getPipeLineCasResult(String pipeLineId);
+
 	/**
 	 * Returns the list of section headers available in this service.
 	 * 

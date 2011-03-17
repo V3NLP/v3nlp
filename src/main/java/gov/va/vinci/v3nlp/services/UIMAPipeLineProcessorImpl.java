@@ -1,30 +1,23 @@
 package gov.va.vinci.v3nlp.services;
 
-import gov.va.vinci.cm.Annotation;
-import gov.va.vinci.cm.AnnotationInterface;
-import gov.va.vinci.cm.Corpus;
-import gov.va.vinci.cm.DocumentInterface;
-import gov.va.vinci.cm.Feature;
-import gov.va.vinci.cm.FeatureElement;
+import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
-import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
-import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
-import gov.va.vinci.v3nlp.model.operations.*;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-
+import gov.va.vinci.v3nlp.model.operations.BaseOperation;
+import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
+import org.apache.uima.aae.client.UimaAsynchronousEngine;
+import org.apache.uima.adapter.jms.client.BaseUIMAAsynchronousEngine_impl;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.springframework.scheduling.annotation.Async;
 
-public class PipeLineProcessorImpl implements PipeLineProcessor {
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
 
     private String directoryToStoreResults;
 
@@ -76,95 +69,58 @@ public class PipeLineProcessorImpl implements PipeLineProcessor {
         }
     }
 
-    @Override
     @Async
     public void processPipeLine(String pipeLineId, PipeLine dataToProcess,
                                 Corpus corpus) {
-        Corpus returnCorpus = corpus;
+        // TODO Implement via UIMA
 
-        System.out.println("Begin pipeline processing [" + dataToProcess.getPipeLineName() + "] at " + new Date());
+        UimaAsynchronousEngine uimaAsEngine2 = new BaseUIMAAsynchronousEngine_impl();
+
+        Map<String, Object> appCtx = new HashMap<String, Object>();
+        appCtx.put(UimaAsynchronousEngine.ServerUri,
+                "tcp://Ryan-Cornias-MacBook-Pro.local:61616");
+        appCtx.put(UimaAsynchronousEngine.Endpoint, "TokenizerSimple");
+        appCtx.put(UimaAsynchronousEngine.CasPoolSize, 2);
+
         try {
-            // Step 0 - Add documents from chosen data source.
-            for (BaseNlpModule m : dataToProcess.getServices()) {
-                if (m instanceof DataServiceSource) {
-                    // Get data and add to corpus for this dataServiceSource.
-                    List<DocumentInterface> rdocs = databaseRepositoryService
-                            .getDocuments((DataServiceSource) m);
-                    for (DocumentInterface doc : rdocs) {
-                        returnCorpus.addDocument(doc);
-                    }
-                }
-            }
-
-            for (BaseNlpModule m : dataToProcess.getServices()) {
-                if (m instanceof DataServiceSource) {
-                    continue;
-                } else if (m instanceof Concept) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.conceptFinderService.conceptFinder(dataToProcess.getRegularExpressionConfiguration(), dataToProcess.getSectionCriteriaExpression(), returnCorpus);
-
-                } else if (m instanceof MetamapConcept) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.metamapProvider.processPipeLine(dataToProcess, returnCorpus);
-
-                } else if (m instanceof Negation) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.negationService.process(returnCorpus, dataToProcess
-                            .getNegation());
-
-                } else if (m instanceof OParser) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.oParserService.parse(returnCorpus);
-
-                } else if (m instanceof PosTagger) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.posTaggerService.posTagging(returnCorpus);
-
-                } else if (m instanceof Sectionizer) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.sectionizerService.sectionize(dataToProcess.getCustomSectionRules(), returnCorpus);
-
-                } else if (m instanceof SentenceSplitter) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.sentenceSplitterService.splitSentences(returnCorpus);
-
-                } else if (m instanceof Tokenizer) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = tokenizerService.tokenize(returnCorpus);
-
-                }
-            }
+            CAS cas;
+            appCtx = new HashMap<String, Object>();
+            appCtx.put(UimaAsynchronousEngine.ServerUri, "tcp://Ryan-Cornias-MacBook-Pro.local:61616");
+            appCtx.put(UimaAsynchronousEngine.Endpoint, "TokenizerSimple"); //"SentenceTokenizerSimple");
+            appCtx.put(UimaAsynchronousEngine.CasPoolSize, 2);
+            uimaAsEngine2.initialize(appCtx);
+            cas = uimaAsEngine2.getCAS();
 
 
-            // Remmove annotations not in return list before potentially sending
-            // to Negation.
-            CorpusSummary finalCorpus = new CorpusSummary(removeUnneededAnnotations(returnCorpus, dataToProcess));
+            cas.setDocumentText("This is a test. This is only a test. ");
+            String result = uimaAsEngine2.sendAndReceiveCAS(cas);
 
-            System.out.println("End pipeline processing [" + dataToProcess.getPipeLineName() + "] at " + new Date());
+            System.out.println("Result=" + result);
 
-            serializeObject(this.directoryToStoreResults + pipeLineId
-                    + ".results", finalCorpus);
+
+            //   XmiCasSerializer ser = new XmiCasSerializer(new TypeSystem(uimaAsEngine2.getMetaData().getTypeSystem()));
+            //   String xml =
+
+            FileOutputStream out = null;
+            try {
+                File xmiOutFile = new File(this.directoryToStoreResults , pipeLineId + ".results");
+                out = new FileOutputStream(xmiOutFile);
+                XmiCasSerializer.serialize(cas, out);
+            } catch (Exception e) {
+                e.getStackTrace().toString();
+            } finally {
+                try {
+                    if (out != null) out.close();
+                } catch (Exception e) { /* Don't care if there is an exception closing */ }
+            }//finally
+
+
+            // serializeObject(this.directoryToStoreResults + pipeLineId
+            //         + ".results", cas);
             return;
         } catch (Exception e) {
             e.printStackTrace();
-            serializeObject(this.directoryToStoreResults + pipeLineId + ".err",
-                    e);
+            serializeObject(this.directoryToStoreResults + pipeLineId + ".err", e);
         } finally {
             new File(directoryToStoreResults + pipeLineId + ".lck").delete();
         }
