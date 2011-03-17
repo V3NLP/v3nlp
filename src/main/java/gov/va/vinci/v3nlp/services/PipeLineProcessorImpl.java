@@ -99,61 +99,30 @@ public class PipeLineProcessorImpl implements PipeLineProcessor {
             for (BaseNlpModule m : dataToProcess.getServices()) {
                 if (m instanceof DataServiceSource) {
                     continue;
-                } else if (m instanceof Concept) {
+                }
 
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
+                System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
+                        + m.getClass().getName() + " at " + new Date());
+
+                if (m instanceof Concept) {
                     returnCorpus = this.conceptFinderService.conceptFinder(dataToProcess.getRegularExpressionConfiguration(), dataToProcess.getSectionCriteriaExpression(), returnCorpus);
-
                 } else if (m instanceof MetamapConcept) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = this.metamapProvider.processPipeLine(dataToProcess, returnCorpus);
-
                 } else if (m instanceof Negation) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
-                    returnCorpus = this.negationService.process(returnCorpus, dataToProcess
-                            .getNegation());
-
+                    returnCorpus = this.negationService.process(returnCorpus, dataToProcess.getNegation());
                 } else if (m instanceof OParser) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = this.oParserService.parse(returnCorpus);
-
                 } else if (m instanceof PosTagger) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = this.posTaggerService.posTagging(returnCorpus);
-
                 } else if (m instanceof Sectionizer) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = this.sectionizerService.sectionize(dataToProcess.getCustomSectionRules(), returnCorpus);
-
                 } else if (m instanceof SentenceSplitter) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = this.sentenceSplitterService.splitSentences(returnCorpus);
-
                 } else if (m instanceof Tokenizer) {
-
-                    System.out.println("-> [" + dataToProcess.getPipeLineName() + "] Running modules for "
-                            + m.getClass().getName());
                     returnCorpus = tokenizerService.tokenize(returnCorpus);
-
                 }
             }
 
-
-            // Remmove annotations not in return list before potentially sending
-            // to Negation.
             CorpusSummary finalCorpus = new CorpusSummary(removeUnneededAnnotations(returnCorpus, dataToProcess));
 
             System.out.println("End pipeline processing [" + dataToProcess.getPipeLineName() + "] at " + new Date());

@@ -31,7 +31,7 @@ public interface NlpService {
 	 */
 	public abstract CorpusSummary getPipeLineResults(String pipeLineId);
 
-    public abstract JCas getPipeLineCasResult(String pipeLineId);
+    public abstract String getPipeLineCasResult(String pipeLineId);
 
 	/**
 	 * Returns the list of section headers available in this service.

@@ -28,25 +28,32 @@
           class="gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl"
           p:dataSource-ref="dataSource"/>
 
-    <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.PipeLineProcessorImpl" init-method="init"
+    <!-- UIMA Test Pipeline Processor
+    <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.UIMAPipeLineProcessorImpl" init-method="init"
           p:databaseRepositoryService-ref="databaseRepositoryService"
-          p:directoryToStoreResults="${directoryToStoreResults}"
-          p:conceptFinderService-ref="conceptFinderService"
-          p:metamapProvider-ref="metamapProvider"
-          p:negationService-ref="negationService"
-          p:posTaggerService-ref="posTaggerService"
-          p:oParserService-ref="oParserService"
-          p:sectionizerService-ref="sectionizerService"
-          p:sentenceSplitterService-ref="sentenceSplitterService"
-          p:tokenizerService-ref="tokenizerService">
-    </bean>
+          p:directoryToStoreResults="${directoryToStoreResults}"/>
+      -->
+
+    <!-- Standard Pipeline Processor   -->
+     <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.PipeLineProcessorImpl" init-method="init"
+           p:databaseRepositoryService-ref="databaseRepositoryService"
+           p:directoryToStoreResults="${directoryToStoreResults}"
+           p:conceptFinderService-ref="conceptFinderService"
+           p:metamapProvider-ref="metamapProvider"
+           p:negationService-ref="negationService"
+           p:posTaggerService-ref="posTaggerService"
+           p:oParserService-ref="oParserService"
+           p:sectionizerService-ref="sectionizerService"
+           p:sentenceSplitterService-ref="sentenceSplitterService"
+           p:tokenizerService-ref="tokenizerService">
+     </bean>
+
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
           p:negationProvider-ref="negationService"
           p:pipeLineProcessor-ref="pipeLineProcessor"
-          p:serializationService-ref="serializationService"
-            />
+          p:serializationService-ref="serializationService" />
 
     <bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl"/>
 
@@ -124,6 +131,6 @@
           p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" p:name="Zeng Repository"/>
 
     <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
-          p:templateDirectory="${templateDirectory}" />
+          p:templateDirectory="${templateDirectory}"/>
 
 </beans>

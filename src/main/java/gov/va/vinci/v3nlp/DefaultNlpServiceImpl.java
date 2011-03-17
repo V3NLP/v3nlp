@@ -165,8 +165,23 @@ public class DefaultNlpServiceImpl implements NlpService {
         return serializationService.deserialize(content, PipeLine.class);
     }
 
-    public  JCas getPipeLineCasResult(String pipeLineId) {
-        // TODO Stubbed in for testing.
-        return null;
+    public  String getPipeLineCasResult(String pipeLineId) {
+        if (new File(directoryToStoreResults + pipeLineId + ".results")
+                .exists()) {
+            // TODO Read in XML Result and return it as a string.
+            String results = "";
+            new File(directoryToStoreResults + pipeLineId + ".results")
+                    .delete();
+            return results;
+        } else if (new File(directoryToStoreResults + pipeLineId + ".err")
+                .exists()) {
+            Exception e = (Exception) this
+                    .deSerialize(this.directoryToStoreResults + pipeLineId
+                            + ".err");
+            new File(directoryToStoreResults + pipeLineId + ".err").delete();
+            throw new RuntimeException(e);
+        } else {
+            throw new RuntimeException("Results not found.");
+        }
     }
 }

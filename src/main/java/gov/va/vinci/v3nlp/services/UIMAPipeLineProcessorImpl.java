@@ -29,28 +29,7 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
      * ***********************************************************
      */
 
-    /* Concept */
-    private ConceptFinderService conceptFinderService;
 
-    /* MetamapConcept */
-    private MetamapProviderServiceImpl metamapProvider;
-
-    /* Negation */
-    private NegationImpl negationService;
-
-    /* OParser */
-    private OParserService oParserService;
-
-    /* PosTagger */
-    private POSTaggerService posTaggerService;
-
-    /* Sectionizer */
-    private SectionizerService sectionizerService;
-
-    /* SentenceSplitterService */
-    private SentenceSplitterService sentenceSplitterService;
-
-    private TokenizerService tokenizerService;
 
     /* TokenizerService */
 
@@ -192,36 +171,6 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
         this.databaseRepositoryService = databaseRepositoryService;
     }
 
-    public void setConceptFinderService(ConceptFinderService conceptFinderService) {
-        this.conceptFinderService = conceptFinderService;
-    }
 
-    public void setMetamapProvider(MetamapProviderServiceImpl metamapProvider) {
-        this.metamapProvider = metamapProvider;
-    }
-
-    public void setNegationService(NegationImpl negationService) {
-        this.negationService = negationService;
-    }
-
-    public void setoParserService(OParserService oParserService) {
-        this.oParserService = oParserService;
-    }
-
-    public void setPosTaggerService(POSTaggerService posTaggerService) {
-        this.posTaggerService = posTaggerService;
-    }
-
-    public void setSectionizerService(SectionizerService sectionizerService) {
-        this.sectionizerService = sectionizerService;
-    }
-
-    public void setSentenceSplitterService(SentenceSplitterService sentenceSplitterService) {
-        this.sentenceSplitterService = sentenceSplitterService;
-    }
-
-    public void setTokenizerService(TokenizerService tokenizerService) {
-        this.tokenizerService = tokenizerService;
-    }
 
 }
