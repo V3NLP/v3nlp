@@ -22,8 +22,12 @@ public class NlpUtilities {
 		Feature feature = new Feature((String) gateAnnotation.getFeatures()
 				.get("type"), (String) gateAnnotation.getFeatures().get("name"));
 		feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
-		feature.getMetaData().setCreatedDate(new Date());
-		if (gateAnnotation.getFeatures().get("type") != null) {
+        feature.getMetaData().setCreatedDate(new Date());
+
+        // Set Pedigree.
+        if (gateAnnotation.getType() != null) {
+            feature.getMetaData().setPedigree((String) gateAnnotation.getType());
+        } else if (gateAnnotation.getFeatures().get("type") != null) {
 			feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
 		} else {
 			feature.getMetaData().setPedigree(gateAnnotation.getType());	

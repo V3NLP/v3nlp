@@ -7,13 +7,8 @@ import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.services.NegationImpl;
 import gov.va.vinci.v3nlp.services.PipeLineProcessor;
 import gov.va.vinci.v3nlp.services.SectionizerService;
-import org.apache.uima.jcas.JCas;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
@@ -165,16 +160,39 @@ public class DefaultNlpServiceImpl implements NlpService {
         return serializationService.deserialize(content, PipeLine.class);
     }
 
-    public  String getPipeLineCasResult(String pipeLineId) {
-        if (new File(directoryToStoreResults + pipeLineId + ".results")
-                .exists()) {
-            // TODO Read in XML Result and return it as a string.
-            String results = "";
+    public String getPipeLineCasResult(String pipeLineId) {
+        File aFile = new File(directoryToStoreResults + pipeLineId + ".results");
+        if (aFile.exists()) {
+            StringBuffer contents = null;
+            BufferedReader input = null;
+
+            try {
+                input = new BufferedReader(new FileReader(aFile));
+                String line = null;
+                contents = new StringBuffer(); //not declared within while loop
+                /*
+                * readLine is a bit quirky :
+                * it returns the content of a line MINUS the newline.
+                * it returns null only for the END of the stream.
+                * it returns an empty String if two newlines appear in a row.
+                */
+                while ((line = input.readLine()) != null) {
+                    contents.append(line);
+                    contents.append(System.getProperty("line.separator"));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    input.close();
+                } catch (Exception e) {
+                }
+            }
             new File(directoryToStoreResults + pipeLineId + ".results")
                     .delete();
-            return results;
-        } else if (new File(directoryToStoreResults + pipeLineId + ".err")
-                .exists()) {
+            return contents.toString();
+        } else if (new File(directoryToStoreResults + pipeLineId + ".err").exists()) {
+
             Exception e = (Exception) this
                     .deSerialize(this.directoryToStoreResults + pipeLineId
                             + ".err");

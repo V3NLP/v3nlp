@@ -56,10 +56,7 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
         UimaAsynchronousEngine uimaAsEngine2 = new BaseUIMAAsynchronousEngine_impl();
 
         Map<String, Object> appCtx = new HashMap<String, Object>();
-        appCtx.put(UimaAsynchronousEngine.ServerUri,
-                "tcp://Ryan-Cornias-MacBook-Pro.local:61616");
-        appCtx.put(UimaAsynchronousEngine.Endpoint, "TokenizerSimple");
-        appCtx.put(UimaAsynchronousEngine.CasPoolSize, 2);
+
 
         try {
             CAS cas;

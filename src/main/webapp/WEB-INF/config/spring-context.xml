@@ -32,9 +32,9 @@
     <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.UIMAPipeLineProcessorImpl" init-method="init"
           p:databaseRepositoryService-ref="databaseRepositoryService"
           p:directoryToStoreResults="${directoryToStoreResults}"/>
-      -->
+     -->
 
-    <!-- Standard Pipeline Processor   -->
+    <!-- Standard Pipeline Processor -->
      <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.PipeLineProcessorImpl" init-method="init"
            p:databaseRepositoryService-ref="databaseRepositoryService"
            p:directoryToStoreResults="${directoryToStoreResults}"
