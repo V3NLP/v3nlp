@@ -8,14 +8,13 @@ import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
 import org.apache.uima.aae.client.UimaAsynchronousEngine;
 import org.apache.uima.adapter.jms.client.BaseUIMAAsynchronousEngine_impl;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.springframework.scheduling.annotation.Async;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
 
@@ -73,6 +72,8 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
 
             System.out.println("Result=" + result);
 
+            Document d = convertCasToDocument(cas);
+            System.out.println("d=" + d);
 
             //   XmiCasSerializer ser = new XmiCasSerializer(new TypeSystem(uimaAsEngine2.getMetaData().getTypeSystem()));
             //   String xml =
@@ -158,6 +159,24 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
 
         }
         return c;
+    }
+
+    public Document convertCasToDocument(CAS cas) {
+        Document d = new Document();
+        d.setContent(cas.getDocumentText());
+
+        AnnotationIndex ai = cas.getAnnotationIndex();
+        Iterator it = ai.iterator();
+        while (it.hasNext()) {
+            FeatureStructure fs = (FeatureStructure)it.next();
+
+            System.out.println("TYPE=" + fs.getType());
+            System.out.println("TYPEFeatures=" + fs.getType().getFeatures());
+
+
+            System.out.println("NEXT:" + fs);
+        }
+        return d;
     }
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
