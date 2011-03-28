@@ -59,6 +59,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @Override
     public CorpusSummary getPipeLineResults(String pipeLineId) {
+        System.out.println("Getting file:" + directoryToStoreResults + pipeLineId + ".results");
         if (new File(directoryToStoreResults + pipeLineId + ".results")
                 .exists()) {
             CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
@@ -80,6 +81,9 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @Override
     public String getPipeLineStatus(String pipeLineId) {
+        System.out.println("Getting stats for:" + pipeLineId);
+
+        System.out.println("Lock exists:" + directoryToStoreResults + pipeLineId + ".lck");
         if (new File(directoryToStoreResults + pipeLineId + ".lck").exists()) {
             return "PROCESSING";
         }
