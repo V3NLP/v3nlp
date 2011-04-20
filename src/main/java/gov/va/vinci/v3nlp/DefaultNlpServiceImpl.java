@@ -4,9 +4,10 @@ import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
+import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.services.NegationImpl;
-import gov.va.vinci.v3nlp.services.PipeLineProcessor;
 import gov.va.vinci.v3nlp.services.SectionizerService;
+import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
 import java.io.*;
 import java.util.Date;
@@ -18,12 +19,11 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
 
-    private PipeLineProcessor pipeLineProcessor;
-
     private SerializationService serializationService;
 
     private SectionizerService sectionizerService;
 
+    private ServicePipeLineProcessor servicePipeLineProcessor;
 
     public NegationImpl getNegationProvider() {
         return negationProvider;
@@ -35,10 +35,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
-    }
-
-    public void setPipeLineProcessor(PipeLineProcessor pipeLineProcessor) {
-        this.pipeLineProcessor = pipeLineProcessor;
     }
 
     public void setSerializationService(SerializationService serializationService) {
@@ -59,7 +55,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @Override
     public CorpusSummary getPipeLineResults(String pipeLineId) {
-        System.out.println("Getting file:" + directoryToStoreResults + pipeLineId + ".results");
         if (new File(directoryToStoreResults + pipeLineId + ".results")
                 .exists()) {
             CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
@@ -81,9 +76,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @Override
     public String getPipeLineStatus(String pipeLineId) {
-        System.out.println("Getting stats for:" + pipeLineId);
-
-        System.out.println("Lock exists:" + directoryToStoreResults + pipeLineId + ".lck");
         if (new File(directoryToStoreResults + pipeLineId + ".lck").exists()) {
             return "PROCESSING";
         }
@@ -97,14 +89,14 @@ public class DefaultNlpServiceImpl implements NlpService {
         return null;
     }
 
-    @Override
-    public String submitPipeLine(PipeLine dataToProcess, Corpus corpus) {
+
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         try {
             String pipeLineId = new Date().getTime() + "-"
-                    + dataToProcess.hashCode() + "-" + corpus.hashCode();
+                    + pipeLine.hashCode() + "-" + corpus.hashCode();
             new File(directoryToStoreResults + pipeLineId + ".lck").createNewFile();
-            pipeLineProcessor
-                    .processPipeLine(pipeLineId, dataToProcess, corpus);
+
+            servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
             return pipeLineId;
 
         } catch (Exception e) {
@@ -205,5 +197,10 @@ public class DefaultNlpServiceImpl implements NlpService {
         } else {
             throw new RuntimeException("Results not found.");
         }
+    }
+
+
+    public void setServicePipeLineProcessor(ServicePipeLineProcessor servicePipeLineProcessor) {
+        this.servicePipeLineProcessor = servicePipeLineProcessor;
     }
 }

@@ -84,7 +84,7 @@
 	<div id="wrap">
 		<div id="top">
 			<h2><a href="<%=request.getContextPath()%>/app/home.html"
-				title="Back to main application page">v3nlp.KEYWORDS [v1.4]</a></h2>
+				title="Back to main application page">v3nlp.KEYWORDS</a></h2>
 			<div id="menu">
 			<ul>
 				<li><a href="<%=request.getContextPath()%>/app/home.html"
@@ -92,7 +92,9 @@
 				<li><a
 					href="<%=request.getContextPath()%>/app/documentation.html"
 					<%=getCurrentMenuCssClass(request, "documentation")%>>documentation</a></li>
-				<li><a href="<%=request.getContextPath()%>/app/expressionlib.html"
+                <li><a href="<%=request.getContextPath()%>/app/registry.html"
+                                    <%=getCurrentMenuCssClass(request, "registry")%>>registry</a></li>
+                <li><a href="<%=request.getContextPath()%>/app/expressionlib.html"
 					<%=getCurrentMenuCssClass(request, "expressionlib")%>>expression lib</a></li>
 				
 			</ul>

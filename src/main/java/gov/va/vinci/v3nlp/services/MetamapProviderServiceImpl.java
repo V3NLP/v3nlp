@@ -123,7 +123,7 @@ public class MetamapProviderServiceImpl {
 				.getFeatureElementsByName("categories");
 
 		for (FeatureElement categoryElement : categories) {
-			String[] cats = categoryElement.getValue().split(",");
+			String[] cats = ((String)categoryElement.getValue()).split(",");
 			for (int i = 0; i < cats.length; i++) {
 				returnList.add(cats[i].trim());
 			}

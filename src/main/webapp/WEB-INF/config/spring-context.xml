@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,6 +9,10 @@
             http://www.springframework.org/schema/task/spring-task-3.0.xsd">
     <bean
             class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <bean id="applicationContextProvider" class="gov.va.vinci.v3nlp.StaticApplicationContext"></bean>
 
     <bean
             class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -34,102 +37,20 @@
           p:directoryToStoreResults="${directoryToStoreResults}"/>
      -->
 
-    <!-- Standard Pipeline Processor  -->
-     <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.PipeLineProcessorImpl" init-method="init"
-           p:databaseRepositoryService-ref="databaseRepositoryService"
-           p:directoryToStoreResults="${directoryToStoreResults}"
-           p:conceptFinderService-ref="conceptFinderService"
-           p:metamapProvider-ref="metamapProvider"
-           p:negationService-ref="negationService"
-           p:posTaggerService-ref="posTaggerService"
-           p:oParserService-ref="oParserService"
-           p:sectionizerService-ref="sectionizerService"
-           p:sentenceSplitterService-ref="sentenceSplitterService"
-           p:tokenizerService-ref="tokenizerService">
-     </bean>
-
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
           p:negationProvider-ref="negationService"
-          p:pipeLineProcessor-ref="pipeLineProcessor"
-          p:serializationService-ref="serializationService" />
+          p:serializationService-ref="serializationService"
+          p:servicePipeLineProcessor-ref="servicePipeLineProcessor"/>
 
     <bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl"/>
 
-    <bean name="conceptFinderService" class="gov.va.vinci.v3nlp.services.hitex.HitexConceptFinderImpl">
-        <lookup-method name="createConceptFinder" bean="defaultRegexConceptFinder"/>
-    </bean>
-
-    <bean name="negationService" class="gov.va.vinci.v3nlp.services.NegationImpl"
-          init-method="init">
-        <property name="sentenceRulesFile">
-            <value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
-        </property>
-        <property name="negationRulesFile">
-            <value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt</value>
-        </property>
-    </bean>
-
-    <bean name="oParserService" class="gov.va.vinci.v3nlp.services.hitex.HitexOParserImpl"/>
-
-    <bean name="posTaggerService" class="gov.va.vinci.v3nlp.services.hitex.HitexPOSTaggerImpl"/>
-
-    <bean name="sentenceSplitterService" class="gov.va.vinci.v3nlp.services.hitex.HitexSentenceSplitterImpl"/>
-
-    <bean name="sectionizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexSectionizerImpl">
-        <lookup-method name="createSectionizer" bean="defaultSectionizer"/>
-        <property name="sectionizerHeaders">
-            <value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
-            </value>
-        </property>
-    </bean>
-
-    <bean name="tokenizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexTokenizerImpl"/>
-
-
     <bean id="utilityService" class="gov.va.vinci.v3nlp.UtilityServiceImpl"/>
-
-    <bean id="metamapProvider"
-          class="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
-          p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService"/>
-
-    <bean id="metamapService"
-          class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
-          p:serviceUrl="${metamapServerUrl}"
-          p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker"/>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
 
-    <bean id="databaseRepositoryService"
-          class="gov.va.vinci.v3nlp.services.DatabaseRespositoryServiceImpl">
-        <property name="repositories">
-            <list>
-                <ref bean="vinciTuiRepository"/>
-                <ref bean="ordZengRepository"/>
-            </list>
-        </property>
-    </bean>
+    <bean id="registryService" class="gov.va.vinci.v3nlp.registry.RegistryServiceJPAImpl" init-method="init"/>
 
-    <!--
-         p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;user={username};password={password}"
-     -->
-    <bean id="vinciTuiRepository" class="gov.va.research.v3nlp.repo.DBRepository"
-          p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=VINCI_TIU;integratedSecurity=true;"
-          p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-          p:schema="VINCI_TIU.TIU" p:table="TIUDocument" p:uidColumn="TIUDocumentSID"
-          p:textColumn="ReportText" p:firstRow="1" p:maxResults="1000"
-          p:name="VINCI TUI Repository"/>
-
-    <!--
-         p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;user={username};password={password}"
-      -->
-    <bean id="ordZengRepository" class="gov.va.research.v3nlp.repo.DBRepository"
-          p:url="jdbc:sqlserver://vhacdwrb01:1433;databaseName=ORD_Zeng_20100321;integratedSecurity=true;"
-          p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-          p:schema="ORD_Zeng_20100321.dflt" p:table="TIUDocument_subset"
-          p:uidColumn="TIUDocumentSID" p:textColumn="ReportText" p:name="Zeng Repository"/>
-
-    <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
-          p:templateDirectory="${templateDirectory}"/>
-
+    <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessor"
+          p:directoryToStoreResults="${directoryToStoreResults}" />
 </beans>

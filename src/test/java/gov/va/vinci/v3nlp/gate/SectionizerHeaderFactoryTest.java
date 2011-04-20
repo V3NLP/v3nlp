@@ -105,7 +105,7 @@ public class SectionizerHeaderFactoryTest extends TestCase {
 	public void testNoCaptGroupNum() throws Exception {
 		String tXml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n" +
 					  "<headers>\n" +
-					  "<header categories=\"test\"  >" +
+					  "<header categories.jsp=\"test\"  >" +
 					  "    <![CDATA[(?i)ABDOMINAL\\s{0,3}(:|;)]]>\n" +
 					  "</header>\n" +
 					  "</headers>";
@@ -122,7 +122,7 @@ public class SectionizerHeaderFactoryTest extends TestCase {
 	public void testBadCategoryNameXML() throws Exception {
 		String tXml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n" +
 					  "<headers>\n" +
-					  "<header categories=\"\" captGroupNum=\"0\" >" +
+					  "<header categories.jsp=\"\" captGroupNum=\"0\" >" +
 					  "    <![CDATA[(?i)ABDOMINAL\\s{0,3}(:|;)]]>\n" +
 					  "</header>\n" +
 					  "</headers>";

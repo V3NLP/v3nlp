@@ -8,11 +8,15 @@
        		http://www.springframework.org/schema/flex 
             http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 
+    <flex:message-broker />
 
-
-	<flex:remoting-destination ref="databaseRepositoryService"/>
+    <!--
+       These are services that are exposed to FLEX, and are simply spring beans defined in WEB-INF/config/*-context
+    -->
+    <flex:remoting-destination ref="databaseRepositoryService"/>
 	<flex:remoting-destination ref="expressionService"/>
-	<flex:remoting-destination ref="nlpService" />	
-	<flex:remoting-destination ref="utilityService" />
+    <flex:remoting-destination ref="nlpService" />
+    <flex:remoting-destination ref="registryService" />
     <flex:remoting-destination ref="templateService" />
+    <flex:remoting-destination ref="utilityService" />
 </beans>

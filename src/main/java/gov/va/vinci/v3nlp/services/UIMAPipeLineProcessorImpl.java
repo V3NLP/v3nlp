@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import java.io.*;
 import java.util.*;
 
-public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
+public class UIMAPipeLineProcessorImpl {
 
     private String directoryToStoreResults;
 
@@ -213,7 +213,9 @@ public class UIMAPipeLineProcessorImpl implements PipeLineProcessor {
             fmd.setPedigree(fs.getType().getName());
             f.setMetaData(fmd);
 
-           // System.out.println("TYPE=" + fs.getType() + " >>>> " + "start/end:" + begin + "/" + end);
+
+            // TODO Remove when debugging complete.
+            System.out.println("TYPE=" + fs.getType() + " >>>> " + "start/end:" + begin + "/" + end);
             List<org.apache.uima.cas.Feature> features = fs.getType().getFeatures();
 
             /** Add Feature Elements **/

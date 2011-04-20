@@ -10,7 +10,7 @@ public class LabelValue {
 	
 	public LabelValue(String label, String value) {
 		this.label = label;
-		this.value = value;
+		this.setValue(value);
 	}
 
     public String getLabel() {
@@ -19,5 +19,13 @@ public class LabelValue {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

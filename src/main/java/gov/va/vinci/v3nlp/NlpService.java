@@ -3,18 +3,18 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
+import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import org.apache.uima.jcas.JCas;
 
 import java.util.List;
 
 public interface NlpService {
 
-	/**
-	 * Given a pipeline, submit for processing.
-	 * @param dataToProcess
-	 * @return
-	 */
-	public abstract String submitPipeLine(PipeLine dataToProcess, Corpus corpus);
+
+    public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
+
+
+
 
 	/**
 	 * Given a pipeLineId, determine if it is still processing, or if processing has completed. 

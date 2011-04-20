@@ -9,7 +9,7 @@
 <h1>Expression Library</h1>
 
 <display:table name="expressions" sort="list" requestURI="<%= request.getContextPath() + \"/app/expressionlib.html\" %>" pagesize="15" 
-	style="width: 100%" decorator="gov.va.research.inlp.controller.ExpressionLibTableDecorator">
+	style="width: 100%" decorator="gov.va.vinci.v3nlp.controller.ExpressionLibTableDecorator">
 	<display:setProperty name="css.table" value="dataTable"/>
 	  <display:column property="title" sortable="true"  title="Title" style="width: 25%" />
 	  <display:column property="description" sortable="true" title="Description" style="width: 45%"/>

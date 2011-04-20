@@ -17,9 +17,6 @@
 	-->
 	<context:component-scan base-package="gov.va.vinci.v3nlp" />
 
-	<bean
-		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
-
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix">
@@ -46,5 +43,9 @@
 		view-name="documentation/releasenotes" />
 	<mvc:view-controller path="/documentation/regularexpressions.html"
 		view-name="documentation/regularexpressions" />
+
+    <mvc:view-controller path="/registry.html"
+		view-name="registry" />
+
 
 </beans>

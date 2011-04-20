@@ -17,7 +17,7 @@
     </channels>
 
     <logging>
-        <target class="flex.messaging.log.ConsoleTarget" level="Error">
+        <target class="flex.messaging.log.ConsoleTarget" level="ERROR">
             <properties>
                 <prefix>[BlazeDS] </prefix>
                 <includeDate>false</includeDate>

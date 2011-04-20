@@ -33,7 +33,7 @@ public final class SectionizerHeaderFactory {
 	/**
 	 * The name of the attribute of the header node in the XML file containing
 	 * section header definitions that contains the comma-separated list of the
-	 * section header categories
+	 * section header categories.jsp
 	 */
 	public static final String HEADER_CATEGS_ATTR = "categories";
 
@@ -75,7 +75,7 @@ public final class SectionizerHeaderFactory {
 
 		// Get the list of header nodes. Each of these nodes has
 		// two attributes:
-		// 'categories' - comma-separated list of header categories
+		// 'categories.jsp' - comma-separated list of header categories.jsp
 		// 'captGroupNum' - the capturing group number defining
 		// the header inside of the regular expression
 
@@ -94,10 +94,10 @@ public final class SectionizerHeaderFactory {
 			validateNotNull(categsAttr, "Header node doesn't contain "
 					+ "the required '" + HEADER_CATEGS_ATTR + "' attribute.");
 
-			// get the categories value
+			// get the categories.jsp value
 			String categories = categsAttr.getNodeValue();
 			if (GenericValidator.isBlankOrNull(categories)) {
-				String message = "Header categories name cannot be null or empty.";
+				String message = "Header categories.jsp name cannot be null or empty.";
 				LOG.severe(message);
 				throw new ExecutionException(message);
 			}
