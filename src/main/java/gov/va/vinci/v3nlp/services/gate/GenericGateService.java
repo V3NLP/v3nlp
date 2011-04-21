@@ -17,7 +17,9 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
         this.resource = resource;
     }
 
-    public gov.va.vinci.cm.Corpus execute(String config, Corpus _corpus) {
+
+
+    public gov.va.vinci.cm.Corpus process(String config, Corpus _corpus) {
         SerialAnalyserController controller = null;
 		gate.Corpus corpus = null;
 		Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
@@ -51,4 +53,13 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 		return results;
     }
 
+    @Override
+    public void initialize() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void destroy() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

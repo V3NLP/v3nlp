@@ -36,7 +36,7 @@ public class ServicePipeLineProcessor {
                 }
                 System.out.println("\t\tComponent:" + comp.getServiceUid() + " Starting: " + new Date());
                 NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
-                returnCorpus = bean.execute(comp.getConfiguration(), returnCorpus);
+                returnCorpus = bean.process(comp.getConfiguration(), returnCorpus);
             }
 
             System.out.println("End pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date());
