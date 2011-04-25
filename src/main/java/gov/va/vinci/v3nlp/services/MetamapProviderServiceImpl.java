@@ -19,11 +19,71 @@ import java.util.Set;
 
 import org.springframework.web.client.RestTemplate;
 
-public class MetamapProviderServiceImpl {
+public class MetamapProviderServiceImpl implements NlpProcessingUnit {
 
 	private RestTemplate restTemplate;
 
 	private MetaMapServiceHttpInvoker metamapService;
+
+    @Override
+    public Corpus process(String config, Corpus c) {
+        /**
+         *
+         * need sections and metamap concept lists.
+         */
+        List<String> sections =  new ArrayList<String>(); //= dataToProcess.getSectionList();
+		MetamapConcept mmc = null; //dataToProcess.getMetamapConcept();
+		List<String> semanticGroups = new ArrayList<String>();
+		if (mmc.getSemanticGroups() != null
+				&& mmc.getSemanticGroups().length > 0) {
+
+			semanticGroups = Arrays.asList(mmc.getSemanticGroups());
+		}
+
+		for (DocumentInterface d : c.getDocuments()) {
+			if (!sections.isEmpty()) { // Processing sections only.
+				List<Annotation> sectionsToBeProcessed = getSectionAnnotations(
+						d, sections);
+
+				// Send each section to metamap
+				for (Annotation a : sectionsToBeProcessed) {
+					// Run Metamap on this section.
+					Document newDocument = null;
+					try {
+						newDocument = metamapService.getMapping(
+								d.getContent().substring(a.getBeginOffset(),
+										a.getEndOffset()), false,
+								new ArrayList<String>(), semanticGroups);
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new RuntimeException(e);
+					}
+					// Add annotation back in.
+					for (AnnotationInterface newAnnotation : newDocument
+							.getAnnotations().getAll()) {
+						newAnnotation.setBeginOffset(newAnnotation
+								.getBeginOffset()
+								+ a.getBeginOffset());
+						newAnnotation.setEndOffset(newAnnotation.getBeginOffset() + a.getLength() - 1);
+						d.getAnnotations().getAll().add(newAnnotation);
+					}
+				}
+			} else { // Processing whole document.
+				Document newDocument = null;
+				try {
+					newDocument = metamapService.getMapping(d.getContent(),
+							false, new ArrayList<String>(), semanticGroups);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+
+				}
+				d.getAnnotations().getAll().addAll(
+						newDocument.getAnnotations().getAll());
+			}
+		}
+		return c;
+    }
 
 	public gov.va.vinci.cm.Corpus processPipeLine(PipeLine dataToProcess,
 			Corpus c) {
@@ -145,5 +205,15 @@ public class MetamapProviderServiceImpl {
 
     public void setMetamapService(MetaMapServiceHttpInvoker metamapService) {
         this.metamapService = metamapService;
+    }
+
+    @Override
+    public void initialize() {
+        // No-op in this implementation.
+    }
+
+    @Override
+    public void destroy() {
+        // No-op in this implementation.
     }
 }

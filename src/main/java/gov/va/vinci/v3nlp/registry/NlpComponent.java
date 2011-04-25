@@ -30,6 +30,9 @@ public class NlpComponent implements Serializable {
     @Column(name="configuration_form")
     private String configurationForm;
 
+    @Column(name="default_configuration")
+    private String defaultConfiguration;
+
     @OneToMany(mappedBy="component", cascade=CascadeType.ALL)
     private List<NlpComponentRequires> requires;
 
@@ -129,6 +132,13 @@ public class NlpComponent implements Serializable {
         this.active = active;
     }
 
+    public String getDefaultConfiguration() {
+        return defaultConfiguration;
+    }
+
+    public void setDefaultConfiguration(String defaultConfiguration) {
+        this.defaultConfiguration = defaultConfiguration;
+    }
 
     private String listToString(List<?> list) {
         if (list == null || list.isEmpty()) {
@@ -145,5 +155,6 @@ public class NlpComponent implements Serializable {
         }
         return b.toString();
     }
+
 
 }

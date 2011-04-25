@@ -5,7 +5,6 @@ import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
-import gov.va.vinci.v3nlp.services.NegationImpl;
 import gov.va.vinci.v3nlp.services.SectionizerService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
@@ -15,8 +14,6 @@ import java.util.List;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
-    private NegationImpl negationProvider;
-
     private String directoryToStoreResults;
 
     private SerializationService serializationService;
@@ -25,13 +22,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     private ServicePipeLineProcessor servicePipeLineProcessor;
 
-    public NegationImpl getNegationProvider() {
-        return negationProvider;
-    }
 
-    public void setNegationProvider(NegationImpl negationProvider) {
-        this.negationProvider = negationProvider;
-    }
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
@@ -112,11 +103,8 @@ public class DefaultNlpServiceImpl implements NlpService {
     @Override
     public String getDefaultNegationConfiguration() throws Exception {
         StringBuffer sb = new StringBuffer();
-        for (String s : negationProvider.getDefaultNegationConfiguration()) {
-            sb.append(s);
-            sb.append("\n");
-        }
-        return sb.toString();
+
+        return "TODO FIX THIS!";
     }
 
     @Override

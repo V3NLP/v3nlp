@@ -1,6 +1,7 @@
 package gov.va.vinci.v3nlp.negex;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // Utility class to sort the negation rules by length in descending order.
 // Rules need to be matched by longest first because there is overlap between the
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class Sorter {
 
-	public ArrayList<String> sortRules(ArrayList<String> unsortedRules) {
+	public List<String> sortRules(List<String> unsortedRules) {
 
 		try {
 			// Sort the negation rules by length to make sure

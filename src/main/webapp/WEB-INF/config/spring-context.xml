@@ -39,7 +39,6 @@
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
-          p:negationProvider-ref="negationService"
           p:serializationService-ref="serializationService"
           p:servicePipeLineProcessor-ref="servicePipeLineProcessor"/>
 

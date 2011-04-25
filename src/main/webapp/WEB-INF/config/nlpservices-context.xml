@@ -14,15 +14,6 @@
           p:serviceUrl="${metamapServerUrl}"
           p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker"/>
 
-    <bean name="negationService" class="gov.va.vinci.v3nlp.services.NegationImpl"
-          init-method="init">
-        <property name="sentenceRulesFile">
-            <value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
-        </property>
-        <property name="negationRulesFile">
-            <value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt</value>
-        </property>
-    </bean>
 
     <bean name="sectionizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexSectionizerImpl">
         <lookup-method name="createSectionizer" bean="defaultSectionizer"/>
@@ -48,6 +39,14 @@
     </bean>
     <bean name="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" class="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService">
             <constructor-arg><ref bean="defaultRegexConceptFinder"/></constructor-arg>
+    </bean>
+    <bean name="gov.va.vinci.v3nlp.services.NegationService" class="gov.va.vinci.v3nlp.services.NegationService" init-method="initialize">
+        <property name="sentenceRulesFile">
+            <value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
+        </property>
+        <property name="negationRulesFile">
+            <value type="org.springframework.core.io.Resource">WEB-INF/resources/negex/rules.txt</value>
+        </property>
     </bean>
 
 </beans>

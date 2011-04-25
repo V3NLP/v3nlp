@@ -2,6 +2,7 @@ package gov.va.vinci.v3nlp.negex;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,13 +42,13 @@ public class GenNegEx {
 
     String[] TO_ESCAPE = {"+", "*", "."};
 
-    public String negCheck(String sentenceString, String phraseString, ArrayList<String> ruleStrings,
+    public String negCheck(String sentenceString, String phraseString, List<String> ruleStrings,
                            boolean negatePossible) throws Exception {
 
         Sorter s = new Sorter();
         String sToReturn = "";
         String sScope = "";
-        ArrayList<String> sortedRules = new ArrayList<String>();
+        List<String> sortedRules = new ArrayList<String>();
 
         String filler = "_";
         boolean negPoss = negatePossible;

@@ -1,12 +1,13 @@
 package gov.va.vinci.v3nlp.services;
 
+
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.Span;
-import gov.va.vinci.v3nlp.model.operations.Negation;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import opennlp.maxent.MaxentModel;
 import opennlp.maxent.io.BinaryGISModelReader;
 import opennlp.tools.sentdetect.SentenceDetectorME;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
@@ -14,8 +15,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class NegationImpl {
+public class NegationService implements NlpProcessingUnit {
 
     Resource sentenceRulesFile;
 
@@ -23,47 +25,38 @@ public class NegationImpl {
 
     SentenceDetectorME sentenceDetector;
 
-    String defaultNegationRules = "";
+    GenNegEx genNegEx = new GenNegEx();
 
-    GenNegEx g = new GenNegEx();
+    /**
+     * This is processed to not have empty lines or comments, from the default configuration file.
+     */
+    List<String> defaultNegationConfigurationList = new ArrayList<String>();
 
-    public void init() {
-        MaxentModel model;
-        try {
-            model = new BinaryGISModelReader(sentenceRulesFile.getFile())
-                    .getModel();
-            sentenceDetector = new SentenceDetectorME(model);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+    @Override
+    public Corpus process(String config, Corpus c) {
 
-    }
-
-    public ArrayList<String> getDefaultNegationConfiguration() {
-        try {
-            ArrayList<String> toReturn = new ArrayList<String>();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    negationRulesFile.getInputStream()));
-            String str = null;
-            while ((str = in.readLine()) != null) {
-                toReturn.add(str);
+        List<String> negationRules = new ArrayList<String>();
+        if (!GenericValidator.isBlankOrNull(config)) {
+            for (String s : config.split("\r")) {
+                if (s.startsWith("##") || s.trim().length() == 0) {
+                    continue;
+                }
+                negationRules.add(s); // Convert to ArrayList.
             }
-            return toReturn;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-
-        }
-    }
-
-    public Corpus process(Corpus c, Negation neg) {
-        ArrayList<String> negationRules = new ArrayList<String>();
-        for (String s : neg.getConfiguration().split("\r")) {
-            if (s.startsWith("##") || s.trim().length() == 0) {
-                continue;
+        } else {
+            if (defaultNegationConfigurationList.isEmpty()) {
+                for (String s : this.getDefaultNegationConfiguration()) {
+                    if (s.startsWith("##") || s.trim().isEmpty()) {
+                        continue;
+                    }
+                    negationRules.add(s);
+                }
+                defaultNegationConfigurationList = negationRules;
+            } else {
+                negationRules = defaultNegationConfigurationList;
             }
-            negationRules.add(s); // Convert to ArrayList.
         }
+
         for (DocumentInterface d : c.getDocuments()) {
             // No Annotations, skip
             if (d.getAnnotations().getAll().size() < 1) {
@@ -89,7 +82,7 @@ public class NegationImpl {
 
                 try {
                     // Step 4 run negation algorithm on sentence / annotation
-                    String result = g.negCheck(sentence, ann.getContent(),
+                    String result = genNegEx.negCheck(sentence, ann.getContent(),
                             negationRules, false);
                     if (result.trim().endsWith("negated")) {
                         Feature f = new Feature("type", "Negated");
@@ -105,6 +98,35 @@ public class NegationImpl {
         }
 
         return c;
+    }
+
+    @Override
+    public void initialize() {
+        MaxentModel model;
+        try {
+            model = new BinaryGISModelReader(sentenceRulesFile.getFile())
+                    .getModel();
+            sentenceDetector = new SentenceDetectorME(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<String> getDefaultNegationConfiguration() {
+        try {
+            ArrayList<String> toReturn = new ArrayList<String>();
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    negationRulesFile.getInputStream()));
+            String str = null;
+            while ((str = in.readLine()) != null) {
+                toReturn.add(str);
+            }
+            return toReturn;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
     /**
@@ -156,5 +178,10 @@ public class NegationImpl {
 
     public void setNegationRulesFile(Resource negationRulesFile) {
         this.negationRulesFile = negationRulesFile;
+    }
+
+    @Override
+    public void destroy() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
