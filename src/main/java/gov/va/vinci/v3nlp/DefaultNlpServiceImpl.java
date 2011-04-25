@@ -22,8 +22,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     private ServicePipeLineProcessor servicePipeLineProcessor;
 
-
-
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
     }
@@ -100,12 +98,6 @@ public class DefaultNlpServiceImpl implements NlpService {
         return sectionizerService.getAvailableSectionHeaders();
     }
 
-    @Override
-    public String getDefaultNegationConfiguration() throws Exception {
-        StringBuffer sb = new StringBuffer();
-
-        return "TODO FIX THIS!";
-    }
 
     @Override
     public String getDefaultSectionizerConfiguration() throws Exception {

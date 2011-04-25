@@ -13,9 +13,6 @@ public interface NlpService {
 
     public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
 
-
-
-
 	/**
 	 * Given a pipeLineId, determine if it is still processing, or if processing has completed. 
 	 * @param pipeLineId
@@ -46,14 +43,7 @@ public interface NlpService {
 	 * @throws Exception
 	 */
 	public abstract String getDefaultSectionizerConfiguration() throws Exception;
-	
-	/**
-	 * Returns the default negation configuration available in this service. 
-	 * @return the default negation configuration
-	 * @throws Exception
-	 */
-	public abstract String getDefaultNegationConfiguration() throws Exception;
-	
+
 	/**
 	 * Serialize a corpus. 
 	 * @param c
