@@ -3,7 +3,6 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
-import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
@@ -109,13 +108,7 @@ public class DefaultNlpServiceImpl implements NlpService {
         return new CorpusSummary(deSerializeCorpus(content));
     }
 
-    public String serializePipeline(PipeLine pipeLine) {
-        return serializationService.serialize(pipeLine);
-    }
 
-    public PipeLine deserializePipeline(String content) {
-        return serializationService.deserialize(content, PipeLine.class);
-    }
 
     public String getPipeLineCasResult(String pipeLineId) {
         File aFile = new File(directoryToStoreResults + pipeLineId + ".results");

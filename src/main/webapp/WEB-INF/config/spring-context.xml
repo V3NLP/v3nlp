@@ -31,11 +31,6 @@
           class="gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl"
           p:dataSource-ref="dataSource"/>
 
-    <!-- UIMA Test Pipeline Processor
-    <bean name="pipeLineProcessor" class="gov.va.vinci.v3nlp.services.UIMAPipeLineProcessorImpl" init-method="init"
-          p:databaseRepositoryService-ref="databaseRepositoryService"
-          p:directoryToStoreResults="${directoryToStoreResults}"/>
-     -->
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:directoryToStoreResults="${directoryToStoreResults}"

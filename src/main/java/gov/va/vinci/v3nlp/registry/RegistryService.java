@@ -1,7 +1,6 @@
 package gov.va.vinci.v3nlp.registry;
 
 
-import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 
 import java.util.List;
