@@ -38,13 +38,11 @@
      -->
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
-          p:sectionizerService-ref="sectionizerService" p:directoryToStoreResults="${directoryToStoreResults}"
+          p:directoryToStoreResults="${directoryToStoreResults}"
           p:serializationService-ref="serializationService"
           p:servicePipeLineProcessor-ref="servicePipeLineProcessor"/>
 
     <bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl"/>
-
-    <bean id="utilityService" class="gov.va.vinci.v3nlp.UtilityServiceImpl"/>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
 

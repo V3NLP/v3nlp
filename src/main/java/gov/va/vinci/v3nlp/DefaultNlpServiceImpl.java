@@ -5,20 +5,16 @@ import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.PipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
-import gov.va.vinci.v3nlp.services.SectionizerService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
 
     private SerializationService serializationService;
-
-    private SectionizerService sectionizerService;
 
     private ServicePipeLineProcessor servicePipeLineProcessor;
 
@@ -28,10 +24,6 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     public void setSerializationService(SerializationService serializationService) {
         this.serializationService = serializationService;
-    }
-
-    public void setSectionizerService(SectionizerService sectionizerService) {
-        this.sectionizerService = sectionizerService;
     }
 
     public void init() {
@@ -91,17 +83,6 @@ public class DefaultNlpServiceImpl implements NlpService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public List<String> getAvailableSectionHeaders() {
-        return sectionizerService.getAvailableSectionHeaders();
-    }
-
-
-    @Override
-    public String getDefaultSectionizerConfiguration() throws Exception {
-        return sectionizerService.getDefaultSectionizerConfiguration();
     }
 
     private Object deSerialize(String path) {

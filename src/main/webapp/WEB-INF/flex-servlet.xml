@@ -18,5 +18,4 @@
     <flex:remoting-destination ref="nlpService" />
     <flex:remoting-destination ref="registryService" />
     <flex:remoting-destination ref="templateService" />
-    <flex:remoting-destination ref="utilityService" />
 </beans>

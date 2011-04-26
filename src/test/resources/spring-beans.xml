@@ -29,7 +29,7 @@
 	
 	<bean name="sentenceSplitterService" class="gov.va.vinci.v3nlp.services.hitex.HitexSentenceSplitterImpl" />
 	
-	<bean name="sectionizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexSectionizerImpl">
+	<bean name="sectionizerService" class="gov.va.vinci.v3nlp.services.gate.HitexSectionizerImpl">
 		<lookup-method name="createSectionizer" bean="defaultSectionizer" />
 		<property name="sectionizerHeaders">
 			<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/sectionizer/dis_headers.xml
@@ -40,7 +40,6 @@
 	<bean name="tokenizerService" class="gov.va.vinci.v3nlp.services.hitex.HitexTokenizerImpl" />
 
 
-	<bean id="utilityService" class="gov.va.vinci.v3nlp.UtilityServiceImpl" />
 
 	<bean id="metamapProvider"
 		class="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
