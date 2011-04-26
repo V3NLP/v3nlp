@@ -35,8 +35,6 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
      */
     @Override
     public Corpus process(String config, Corpus c) {
-        System.out.println("Config=\n" + config);
-
         /**
          *
          * need sections and metamap concept lists.

@@ -18,7 +18,7 @@ public class RegistryServiceJPAImpl implements RegistryService {
 
     @Override
     @Transactional(readOnly = true)
-    public  List<NlpComponentCategory> getNlpComponentCategoryList() {
+    public List<NlpComponentCategory> getNlpComponentCategoryList() {
         List<NlpComponentCategory> queryResults = entityManager.createQuery(
                 "select cat from gov.va.vinci.v3nlp.registry.NlpComponentCategory as cat where active = true")
                 .getResultList();
@@ -26,7 +26,7 @@ public class RegistryServiceJPAImpl implements RegistryService {
         List<NlpComponentCategory> results = new ArrayList<NlpComponentCategory>();
 
         /** Eager load all the parts, copying only active components over. **/
-        for (NlpComponentCategory c: queryResults) {
+        for (NlpComponentCategory c : queryResults) {
             NlpComponentCategory cat1 = new NlpComponentCategory();
             cat1.setActive(c.isActive());
             cat1.setCategoryDescription(c.getCategoryDescription());
@@ -36,16 +36,16 @@ public class RegistryServiceJPAImpl implements RegistryService {
             cat1.setShortName(c.getShortName());
             cat1.setSortOrder(c.getSortOrder());
 
-            for (NlpComponent comp: c.getComponents()) {
+            for (NlpComponent comp : c.getComponents()) {
                 if (!comp.isActive()) {
                     continue;
                 }
 
-                for (NlpComponentProvides prov: comp.getProvides()) {
-                     prov.getName();
+                for (NlpComponentProvides prov : comp.getProvides()) {
+                    prov.getName();
                 }
-                for (NlpComponentRequires req: comp.getRequires()) {
-                     req.getName();
+                for (NlpComponentRequires req : comp.getRequires()) {
+                    req.getName();
                 }
                 comp.setCategory(cat1);
                 cat1.getComponents().add(comp);
@@ -56,34 +56,36 @@ public class RegistryServiceJPAImpl implements RegistryService {
         return results;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String validatePipeline(ServicePipeLine pipeLine) {
-         List<String> provides = new ArrayList<String>();
-         for (ServicePipeLineComponent c: pipeLine.getServices()) {
-             if (c.getServiceUid() == null) { // Null service id's are UI side services, ignore them.
-                 continue;
-             }
-             Query q = entityManager.createQuery(
-                "select comp from gov.va.vinci.v3nlp.registry.NlpComponent as comp where comp.uid = ?1");
-             q.setParameter(1, c.getServiceUid());
-             NlpComponent comp = (NlpComponent)q.getSingleResult();
-             for (NlpComponentProvides p: comp.getProvides())  { // Put provides in first.
-                  provides.add(p.getName());
-             }
-              for (NlpComponentRequires r: comp.getRequires())  { // Check requires next.
-                  if (!provides.contains(r.getName())) {
+        List<String> provides = new ArrayList<String>();
+        for (ServicePipeLineComponent c : pipeLine.getServices()) {
+            if (c.getServiceUid() == null) { // Null service id's are UI side services, ignore them.
+                continue;
+            }
+            NlpComponent comp = getNlpComponent(c.getServiceUid());
+            for (NlpComponentProvides p : comp.getProvides()) { // Put provides in first.
+                provides.add(p.getName());
+            }
+            for (NlpComponentRequires r : comp.getRequires()) { // Check requires next.
+                if (!provides.contains(r.getName())) {
                     return "Missing Dependency: " + comp.getCategory().getCategoryName()
-                                + " (" + comp.getImplementationClass() +") requires "
-                                + r.getName() + ".";
-                  }
-              }
-         }
-         return "";
+                            + " (" + comp.getImplementationClass() + ") requires "
+                            + r.getName() + ".";
+                }
+            }
+        }
+        return "";
     }
 
-   @Override
+    @Override
+    @Transactional(readOnly = true)
     public NlpComponent getNlpComponent(String uid) {
-        return null;  // TODO Implement
+        Query q = entityManager.createQuery(
+                "select comp from gov.va.vinci.v3nlp.registry.NlpComponent as comp where comp.uid = ?1");
+        q.setParameter(1, uid);
+        NlpComponent comp = (NlpComponent) q.getSingleResult();
+        return comp;
     }
 
     @Override

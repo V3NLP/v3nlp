@@ -1,17 +1,26 @@
 package gov.va.vinci.v3nlp.services;
 
-import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.StaticApplicationContext;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+import gov.va.vinci.v3nlp.registry.RegistryService;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class ServicePipeLineProcessor {
+
+    private RegistryService registryService;
 
     private String directoryToStoreResults;
 
@@ -24,6 +33,7 @@ public class ServicePipeLineProcessor {
     }
 
     @Async
+    @Transactional(readOnly = true)
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
         Corpus returnCorpus = corpus;
 
@@ -34,15 +44,17 @@ public class ServicePipeLineProcessor {
                 if (comp.getServiceUid() == null) {
                     continue;
                 }
-                System.out.println("\t\tComponent:" + comp.getServiceUid() + " Starting: " + new Date());
+                System.out.println("\t\tComponent:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
                 NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
                 returnCorpus = bean.process(comp.getConfiguration(), returnCorpus);
             }
 
             System.out.println("End pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date());
 
+            returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
+
             serializeObject(this.getDirectoryToStoreResults() + pipeLineId
-                    + ".results",  new CorpusSummary(returnCorpus));
+                    + ".results", new CorpusSummary(returnCorpus));
         } catch (Exception e) {
             e.printStackTrace();
             serializeObject(this.directoryToStoreResults + pipeLineId + ".err",
@@ -52,6 +64,58 @@ public class ServicePipeLineProcessor {
         }
 
         return;
+    }
+
+    /**
+     * Given the services in the pipeline, remove all unneeded annotations where the
+     * service component "keepAnnotationInFinalResult" is false.
+     *
+     * @param pipeLine
+     * @param returnCorpus
+     * @return
+     */
+    private Corpus removeUnneededAnnotations(ServicePipeLine pipeLine, Corpus returnCorpus) {
+        List<String> toRemove = new ArrayList<String>();
+
+        /** Get a list of annotation types to remove. **/
+        for (ServicePipeLineComponent comp : pipeLine.getServices()) {
+            if (GenericValidator.isBlankOrNull(comp.getServiceUid()))
+            {
+                continue;
+            }
+            if (!comp.isKeepAnnotationsInFinalResult()) {
+                NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
+                for (NlpComponentProvides provided : loadedComp.getProvides()) {
+                    toRemove.add(provided.getName());
+                }
+            }
+        }
+
+        /** Go through all the documents and remove those that are not needed. **/
+        for (DocumentInterface d : returnCorpus.getDocuments()) {
+            List<AnnotationInterface> anns = d.getAnnotations().getAll();
+            boolean keep = false;
+            for (int i = anns.size() - 1; i >= 0; i--) {
+                keep = false;
+                Annotation a = (Annotation) anns.get(i);
+                List<Feature> toBeRemoved = new ArrayList<Feature>();
+                if (a.getFeatures() != null) {
+                    for (Feature f : a.getFeatures()) {
+                        if (f.getMetaData() != null && f.getMetaData().getPedigree() != null) {
+                            if (toRemove.contains(f.getMetaData().getPedigree())) {
+                                toBeRemoved.add(f);
+                            }
+                        }
+                    }
+                    a.getFeatures().removeAll(toBeRemoved);
+                    if (a.getFeatures().size() == 0) {
+                        anns.remove(a);
+                    }
+
+                }
+            }
+        }
+        return returnCorpus;
     }
 
 
@@ -75,4 +139,8 @@ public class ServicePipeLineProcessor {
         this.directoryToStoreResults = directoryToStoreResults;
     }
 
+
+    public void setRegistryService(RegistryService registryService) {
+        this.registryService = registryService;
+    }
 }

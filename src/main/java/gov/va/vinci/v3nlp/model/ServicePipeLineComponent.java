@@ -4,6 +4,8 @@ package gov.va.vinci.v3nlp.model;
 public class ServicePipeLineComponent {
     private String serviceUid;
     private String configuration;
+    private boolean keepAnnotationsInFinalResult;
+
 
     public String getServiceUid() {
         return serviceUid;
@@ -21,7 +23,18 @@ public class ServicePipeLineComponent {
         this.configuration = configuration;
     }
 
+    public boolean isKeepAnnotationsInFinalResult() {
+        return keepAnnotationsInFinalResult;
+    }
+
+    public void setKeepAnnotationsInFinalResult(boolean keepAnnotationsInFinalResult) {
+        this.keepAnnotationsInFinalResult = keepAnnotationsInFinalResult;
+    }
+
     public String toString() {
          return "ServiceUid: " + serviceUid + " -- Config: " + configuration;
     }
+
+
+
 }
