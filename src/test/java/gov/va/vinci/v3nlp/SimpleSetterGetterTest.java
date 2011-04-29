@@ -1,28 +1,31 @@
 package gov.va.vinci.v3nlp;
 
 import gov.va.vinci.test.GetterSetterTester;
+import gov.va.vinci.v3nlp.controller.ExpressionSearchForm;
+import gov.va.vinci.v3nlp.gate.HeaderVO;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.DocumentPedigreeCount;
+import gov.va.vinci.v3nlp.model.Template;
+import gov.va.vinci.v3nlp.model.datasources.TextDocument;
+import gov.va.vinci.v3nlp.model.operations.Concept;
 import gov.va.vinci.v3nlp.model.operations.Sectionizer;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ryancornia
- * Date: 1/27/11
- * Time: 10:00 AM
- * To change this template use File | Settings | File Templates.
- */
 public class SimpleSetterGetterTest extends TestCase {
 
     @Test
     public void testSimpleClass() {
         GetterSetterTester  tester = new GetterSetterTester();
+        tester.testClass(Concept.class);
         tester.testClass(CorpusSummary.class);
         tester.testClass(DocumentPedigreeCount.class);
+        tester.testClass(ExpressionSearchForm.class);
+        tester.testClass(HeaderVO.class);
         tester.testClass(LabelValue.class);
         tester.testClass(Sectionizer.class);
+        tester.testClass(Template.class);
+        tester.testClass(TextDocument.class);
     }
 
 
@@ -31,6 +34,11 @@ public class SimpleSetterGetterTest extends TestCase {
         Span s = new Span(10, 15);
         assert(s.getStart() == 10);
         assert(s.getEnd() == 15);
+
+        s.setStart(20);
+        s.setEnd(30);
+        assert(s.getStart() == 20);
+        assert(s.getEnd() == 30);
     }
 
     @Test
