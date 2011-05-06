@@ -93,7 +93,7 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
         StringBuffer filter = new StringBuffer();
 
         if (GenericValidator.isBlankOrNull(config)) {
-            return "";
+            return null;
         }
 
         boolean inSections = false;
@@ -126,6 +126,10 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
                     filter.append(")\n");
                 }
             }
+        }
+
+        if (filter.toString().trim().equals("()")) {
+            return null;
         }
         return filter.toString();
     }
