@@ -3,11 +3,16 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
+import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
+
+import java.util.List;
 
 public interface NlpService {
 
 
     public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
+
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList);
 
     /**
      * Given a pipeLineId, determine if it is still processing, or if processing has completed.

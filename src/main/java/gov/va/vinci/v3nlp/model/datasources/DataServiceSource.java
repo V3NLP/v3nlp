@@ -4,10 +4,13 @@ import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
 
 public class DataServiceSource extends BaseNlpModule {
-    public Integer numberOfDocuments;
-    public String dataServiceUsername;
-    public String dataServicePassword;
-    public String dataServiceName;
+    private Integer numberOfDocuments;
+    private String dataServiceUsername;
+    private String databaseServer;
+    private String database;
+    private String table;
+    private String idColumn;
+    private String textColumn;
 
     public Integer getNumberOfDocuments() {
         return numberOfDocuments;
@@ -25,19 +28,56 @@ public class DataServiceSource extends BaseNlpModule {
         this.dataServiceUsername = dataServiceUsername;
     }
 
-    public String getDataServicePassword() {
-        return dataServicePassword;
+    public String getDatabaseServer() {
+        return databaseServer;
     }
 
-    public void setDataServicePassword(String dataServicePassword) {
-        this.dataServicePassword = dataServicePassword;
+    public void setDatabaseServer(String databaseServer) {
+        this.databaseServer = databaseServer;
     }
 
-    public String getDataServiceName() {
-        return dataServiceName;
+    public String getDatabase() {
+        return database;
     }
 
-    public void setDataServiceName(String dataServiceName) {
-        this.dataServiceName = dataServiceName;
+    public void setDatabase(String database) {
+        this.database = database;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public String getIdColumn() {
+        return idColumn;
+    }
+
+    public void setIdColumn(String idColumn) {
+        this.idColumn = idColumn;
+    }
+
+    public String getTextColumn() {
+        return textColumn;
+    }
+
+    public void setTextColumn(String textColumn) {
+        this.textColumn = textColumn;
+    }
+
+    @Override
+    public String toString() {
+        return "DataServiceSource{" +
+                "numberOfDocuments=" + numberOfDocuments +
+                ", dataServiceUsername='" + dataServiceUsername + '\'' +
+                ", databaseServer='" + databaseServer + '\'' +
+                ", database='" + database + '\'' +
+                ", table='" + table + '\'' +
+                ", idColumn='" + idColumn + '\'' +
+                ", textColumn='" + textColumn + '\'' +
+                '}';
     }
 }

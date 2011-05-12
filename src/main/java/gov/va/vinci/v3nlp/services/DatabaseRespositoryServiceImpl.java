@@ -73,19 +73,8 @@ public class DatabaseRespositoryServiceImpl implements
 
 	public List<DocumentInterface> getDocuments(DataServiceSource ds)
 			throws SQLException {
-		DBRepository repository = null;
-		for (DBRepository d : repositories) {
-			if (d.getName().equals(ds.getDataServiceName())) {
-				repository = d;
-				break;
-			}
-		}
-		if (repository == null) {
-			throw new RuntimeException("Repository " + ds.getDataServiceName()
-					+ " not configured.");
-		}
-
-		return doGetDocuments(repository, ds);
+		// FIX THIS! TODO Implement
+        return null;
 	}
 
 	/*

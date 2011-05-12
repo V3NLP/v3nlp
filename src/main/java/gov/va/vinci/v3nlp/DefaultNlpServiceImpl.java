@@ -4,10 +4,12 @@ import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
+import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 
 public class DefaultNlpServiceImpl implements NlpService {
 
@@ -69,6 +71,13 @@ public class DefaultNlpServiceImpl implements NlpService {
         return null;
     }
 
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) {
+        System.out.println("Got Database Services: " + dataServiceSourceList);
+
+        // TODO Fetch from data services and add to corpus.
+
+        return this.submitPipeLine(pipeLine, corpus);
+    }
 
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         try {
@@ -107,8 +116,6 @@ public class DefaultNlpServiceImpl implements NlpService {
     public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {
         return new CorpusSummary(deSerializeCorpus(content));
     }
-
-
 
     public String getPipeLineCasResult(String pipeLineId) {
         File aFile = new File(directoryToStoreResults + pipeLineId + ".results");
