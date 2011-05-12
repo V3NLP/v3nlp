@@ -149,10 +149,7 @@ public class DatabaseRespositoryServiceImpl implements
 				connectionUrl = connectionUrl.replace("{username}", ds
 						.getDataServiceUsername());
 			}
-			if (ds.getDataServicePassword() != null) {
-				connectionUrl = connectionUrl.replace("{password}", ds
-						.getDataServicePassword());
-			}
+
 			conn = DriverManager.getConnection(connectionUrl);
 			ps = conn.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
