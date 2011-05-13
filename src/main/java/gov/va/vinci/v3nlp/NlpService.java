@@ -5,6 +5,7 @@ import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface NlpService {
@@ -12,7 +13,7 @@ public interface NlpService {
 
     public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
 
-    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList);
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) throws SQLException;
 
     /**
      * Given a pipeLineId, determine if it is still processing, or if processing has completed.

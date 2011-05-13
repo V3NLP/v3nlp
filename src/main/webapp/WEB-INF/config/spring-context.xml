@@ -35,7 +35,8 @@
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:serializationService-ref="serializationService"
-          p:servicePipeLineProcessor-ref="servicePipeLineProcessor"/>
+          p:servicePipeLineProcessor-ref="servicePipeLineProcessor"
+          p:databaseRepositoryService-ref="databaseRepositoryService"/>
 
     <bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl"/>
 
@@ -46,4 +47,9 @@
     <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessor"
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:registryService-ref="registryService"/>
+
+    <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
+          p:templateDirectory="${templateDirectory}"/>
+
+    <bean id="databaseRepositoryService" class="gov.va.vinci.v3nlp.services.DataDirectDatabaseRespositoryServiceImpl" />
 </beans>

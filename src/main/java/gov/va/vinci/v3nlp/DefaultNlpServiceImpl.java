@@ -1,13 +1,16 @@
 package gov.va.vinci.v3nlp;
 
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
+import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,8 @@ public class DefaultNlpServiceImpl implements NlpService {
     private SerializationService serializationService;
 
     private ServicePipeLineProcessor servicePipeLineProcessor;
+
+    private DatabaseRepositoryService databaseRepositoryService;
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
@@ -71,11 +76,19 @@ public class DefaultNlpServiceImpl implements NlpService {
         return null;
     }
 
-    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) {
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
+        throws SQLException {
+
         System.out.println("Got Database Services: " + dataServiceSourceList);
 
-        // TODO Fetch from data services and add to corpus.
+        for (DataServiceSource ds: dataServiceSourceList) {
+            List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds);
 
+            for (DocumentInterface di: docs) {
+                System.out.println("adding document: " + di);
+                corpus.addDocument(di);
+            }
+        }
         return this.submitPipeLine(pipeLine, corpus);
     }
 
@@ -163,5 +176,10 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     public void setServicePipeLineProcessor(ServicePipeLineProcessor servicePipeLineProcessor) {
         this.servicePipeLineProcessor = servicePipeLineProcessor;
+    }
+
+
+    public void setDatabaseRepositoryService(DatabaseRepositoryService databaseRepositoryService) {
+        this.databaseRepositoryService = databaseRepositoryService;
     }
 }
