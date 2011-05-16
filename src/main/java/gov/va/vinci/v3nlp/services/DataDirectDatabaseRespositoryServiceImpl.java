@@ -6,6 +6,7 @@ import gov.va.vinci.cm.Annotations;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.FormatInfo;
+import gov.va.vinci.v3nlp.NlpUtilities;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import org.apache.commons.validator.GenericValidator;
 
@@ -51,13 +52,7 @@ public class DataDirectDatabaseRespositoryServiceImpl implements
         return results;
     }
 
-    private boolean validateName(String s) {
-        String regExp="^[a-zA-Z_0-9]$";
 
-        Pattern p = Pattern.compile(regExp);
-        Matcher m = p.matcher("aaaaab");
-        return(m.matches());
-    }
 
     public List<DocumentInterface> getDocuments(DataServiceSource ds)
             throws SQLException {
@@ -71,6 +66,7 @@ public class DataDirectDatabaseRespositoryServiceImpl implements
                 : new ArrayList<DocumentInterface>();
 
         Connection conn = null;
+
         try {
             // Create the query
             String query = "select " + ds.getIdColumn() + " as uid, " + ds.getTextColumn() +
@@ -105,8 +101,8 @@ public class DataDirectDatabaseRespositoryServiceImpl implements
     }
 
     private void validateDataServiceSource(DataServiceSource ds) {
-        if (GenericValidator.isBlankOrNull(ds.getDatabase()) || !validateName(ds.getDatabase())) {
-            throw new IllegalArgumentException("Database name is required, and must be only characters, numbers, and underscores.");
+        if (GenericValidator.isBlankOrNull(ds.getDatabase()) || !NlpUtilities.isValidNameNumbersAndCharacters(ds.getDatabase())) {
+            throw new IllegalArgumentException("Database name is required, and must be only characters, numbers, and underscores. (DB Name provided='" + ds.getDatabase() + "'");
         }
         if (GenericValidator.isBlankOrNull(ds.getDatabaseServer())) {
             throw new IllegalArgumentException("Database server is required, and can be in the format <server>:<port>.");
@@ -114,13 +110,13 @@ public class DataDirectDatabaseRespositoryServiceImpl implements
         if (GenericValidator.isBlankOrNull(ds.getDataServiceUsername())) {
             throw new IllegalArgumentException("Database serverice username is required.");
         }
-        if (GenericValidator.isBlankOrNull(ds.getTable()) || !validateName(ds.getTable())) {
+        if (GenericValidator.isBlankOrNull(ds.getTable()) || !NlpUtilities.isValidNameNumbersAndCharacters(ds.getTable())) {
              throw new IllegalArgumentException("Database table is required, and must be only characters, numbers, and underscores.");
         }
-        if (GenericValidator.isBlankOrNull(ds.getTextColumn()) || !validateName(ds.getTextColumn())) {
+        if (GenericValidator.isBlankOrNull(ds.getTextColumn()) || !NlpUtilities.isValidNameNumbersAndCharacters(ds.getTextColumn())) {
              throw new IllegalArgumentException("Text column is required, and must be only characters, numbers, and underscores.");
         }
-        if (GenericValidator.isBlankOrNull(ds.getIdColumn()) || !validateName(ds.getIdColumn())) {
+        if (GenericValidator.isBlankOrNull(ds.getIdColumn()) || !NlpUtilities.isValidNameNumbersAndCharacters(ds.getIdColumn())) {
              throw new IllegalArgumentException("Text column is required, and must be only characters, numbers, and underscores.");
         }
     }

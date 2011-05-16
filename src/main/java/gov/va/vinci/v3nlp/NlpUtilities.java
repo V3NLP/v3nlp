@@ -7,6 +7,8 @@ import gov.va.vinci.cm.FeatureElement;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NlpUtilities {
 
@@ -57,4 +59,12 @@ public class NlpUtilities {
 		return resultAnnotation;
 	
 	}
+
+    public static boolean isValidNameNumbersAndCharacters(String s) {
+        String regExp="^[a-zA-Z_0-9]+$";
+
+        Pattern p = Pattern.compile(regExp);
+        Matcher m = p.matcher(s);
+        return(m.matches());
+    }
 }
