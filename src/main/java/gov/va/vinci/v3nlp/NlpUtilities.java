@@ -52,7 +52,7 @@ public class NlpUtilities {
 				throw new RuntimeException("Unknown Feature type.");
 			}
 		}
-		
+
 		// TODO set theNumWhiteSpaceThatFollows if available.
 		resultAnnotation.setOriginalContent(content);
 		resultAnnotation.getFeatures().add(feature);

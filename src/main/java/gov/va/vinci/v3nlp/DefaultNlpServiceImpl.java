@@ -77,14 +77,14 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
-        throws SQLException {
+            throws SQLException {
 
         System.out.println("Got Database Services: " + dataServiceSourceList);
 
-        for (DataServiceSource ds: dataServiceSourceList) {
+        for (DataServiceSource ds : dataServiceSourceList) {
             List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds);
 
-            for (DocumentInterface di: docs) {
+            for (DocumentInterface di : docs) {
                 System.out.println("adding document: " + di);
                 corpus.addDocument(di);
             }
