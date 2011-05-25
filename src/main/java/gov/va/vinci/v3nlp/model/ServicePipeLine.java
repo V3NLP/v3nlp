@@ -10,6 +10,7 @@ import java.util.List;
 public class ServicePipeLine {
     private List<ServicePipeLineComponent> services = new ArrayList<ServicePipeLineComponent>();
 	private String pipeLineName = "";
+    private String userToken = "";
     private String description;
 	private Corpus corpus;
 	private Date createdDate;
@@ -54,6 +55,14 @@ public class ServicePipeLine {
         this.createdDate = createdDate;
     }
 
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+    }
+
     public String toString() {
         String toReturn = "PipeLine: " + pipeLineName + " - " + this.description + " [" + this.createdDate + "]\n" +
                "Services:\n\t";
@@ -62,4 +71,5 @@ public class ServicePipeLine {
          }
         return toReturn;
     }
+
 }

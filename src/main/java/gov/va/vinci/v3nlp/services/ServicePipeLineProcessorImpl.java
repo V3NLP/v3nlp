@@ -49,7 +49,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                     if (comp.getServiceUid() == null) {
                         continue;
                     }
-                    System.out.println("\t\tComponent:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
+                    System.out.println("\t\t[ " + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
                     NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
                     d = bean.process(comp.getConfiguration(), d);
                 }
