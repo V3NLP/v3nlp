@@ -44,7 +44,7 @@
 
     <bean id="registryService" class="gov.va.vinci.v3nlp.registry.RegistryServiceJPAImpl" init-method="init"/>
 
-    <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessor"
+    <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl"
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:registryService-ref="registryService"/>
 

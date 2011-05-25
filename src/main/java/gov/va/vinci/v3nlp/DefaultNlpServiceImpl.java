@@ -8,6 +8,7 @@ import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
+import gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl;
 
 import java.io.*;
 import java.sql.SQLException;

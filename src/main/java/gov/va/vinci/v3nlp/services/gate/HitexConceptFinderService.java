@@ -5,6 +5,7 @@ import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.regex.ConceptFinder;
 import org.apache.commons.validator.GenericValidator;
@@ -48,13 +49,12 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
      * This would look for the regular expression pain in the corpus. Assuming sectionizing had been done, it is
      * limited to DIAG and ADM sections. You can change <sections> to <sections exlucde='true'> to ignore sections.
      *
-     * @param _corpus  The corpus to be processed
+     * @param d  The Document to be processed
      * @return the annotated corpus.
      */
-    public gov.va.vinci.cm.Corpus process(String config, Corpus _corpus) {
+    public DocumentInterface process(String config, DocumentInterface d) {
         SerialAnalyserController controller = null;
         gate.Corpus corpus = null;
-        Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
         ConceptFinder regexConceptFinder = (ConceptFinder) resource;
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
 
@@ -64,8 +64,7 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
                     .newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
             controller.reInit();
 
-            corpus = createGateCorpusFromCommonModel(_corpus,
-                    corpusDocKeyDocument);
+            corpus = createGateCorpusFromCommonModel(d);
             controller.setCorpus(corpus);
 
             String regExFilter = getRegExFilter(config);
@@ -76,17 +75,13 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
 
             // run the application
             controller.execute();
-            results = processGateResults(corpusDocKeyDocument);
-            results.setCorpusName(_corpus.getCorpusName());
-
+            return(processGateResults(corpus));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             cleanupPipeLine(controller, corpus);
         }
-
-        return results;
     }
 
     private String getSectionFilter(String config) {

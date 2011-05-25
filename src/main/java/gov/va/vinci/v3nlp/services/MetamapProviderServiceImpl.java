@@ -16,25 +16,25 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
 
     /**
      * Processing method.
-     * @param config  The configuration is in XML, and in the format:
-     * <?xml version="1.0" encoding="ISO-8859-1" ?>
-     * <metamap-concepts>
-	 *      <semantic-group>ANAT</semantic-group>
-     * </metamap-concepts>
-     * <sections>
-     *     <section>DIAG</section>
-     *     <section>ADMIN</section>
-     *     <section>ADM</section>
-     * </sections>
      *
-     * Sections limits processing to pre-annotated sections via the HitexSectionizerImpl. Leave
-     * sections element off to process the entire document.
-     *
-     * @param c
+     * @param config The configuration is in XML, and in the format:
+     *               <?xml version="1.0" encoding="ISO-8859-1" ?>
+     *               <metamap-concepts>
+     *               <semantic-group>ANAT</semantic-group>
+     *               </metamap-concepts>
+     *               <sections>
+     *               <section>DIAG</section>
+     *               <section>ADMIN</section>
+     *               <section>ADM</section>
+     *               </sections>
+     *               <p/>
+     *               Sections limits processing to pre-annotated sections via the HitexSectionizerImpl. Leave
+     *               sections element off to process the entire document.
+     * @param d
      * @return
      */
     @Override
-    public Corpus process(String config, Corpus c) {
+    public DocumentInterface process(String config, DocumentInterface d) {
         /**
          *
          * need sections and metamap concept lists.
@@ -42,49 +42,47 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
         List<String> sections = getSectionList(config);
         List<String> semanticGroups = getSemanticGroups(config);
 
-        for (DocumentInterface d : c.getDocuments()) {
-            if (!sections.isEmpty()) { // Processing sections only.
-                List<Annotation> sectionsToBeProcessed = getSectionAnnotations(
-                        d, sections);
+        if (!sections.isEmpty()) { // Processing sections only.
+            List<Annotation> sectionsToBeProcessed = getSectionAnnotations(
+                    d, sections);
 
-                // Send each section to metamap
-                for (Annotation a : sectionsToBeProcessed) {
-                    // Run Metamap on this section.
-                    Document newDocument = null;
-                    try {
-                        newDocument = metamapService.getMapping(
-                                d.getContent().substring(a.getBeginOffset(),
-                                        a.getEndOffset()), false,
-                                new ArrayList<String>(), semanticGroups);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
-                    // Add annotation back in.
-                    for (AnnotationInterface newAnnotation : newDocument
-                            .getAnnotations().getAll()) {
-                        newAnnotation.setBeginOffset(newAnnotation
-                                .getBeginOffset()
-                                + a.getBeginOffset());
-                        newAnnotation.setEndOffset(newAnnotation.getBeginOffset() + a.getLength() - 1);
-                        d.getAnnotations().getAll().add(newAnnotation);
-                    }
-                }
-            } else { // Processing whole document.
+            // Send each section to metamap
+            for (Annotation a : sectionsToBeProcessed) {
+                // Run Metamap on this section.
                 Document newDocument = null;
                 try {
-                    newDocument = metamapService.getMapping(d.getContent(),
-                            false, new ArrayList<String>(), semanticGroups);
+                    newDocument = metamapService.getMapping(
+                            d.getContent().substring(a.getBeginOffset(),
+                                    a.getEndOffset()), false,
+                            new ArrayList<String>(), semanticGroups);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
-
                 }
-                d.getAnnotations().getAll().addAll(
-                        newDocument.getAnnotations().getAll());
+                // Add annotation back in.
+                for (AnnotationInterface newAnnotation : newDocument
+                        .getAnnotations().getAll()) {
+                    newAnnotation.setBeginOffset(newAnnotation
+                            .getBeginOffset()
+                            + a.getBeginOffset());
+                    newAnnotation.setEndOffset(newAnnotation.getBeginOffset() + a.getLength() - 1);
+                    d.getAnnotations().getAll().add(newAnnotation);
+                }
             }
+        } else { // Processing whole document.
+            Document newDocument = null;
+            try {
+                newDocument = metamapService.getMapping(d.getContent(),
+                        false, new ArrayList<String>(), semanticGroups);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+
+            }
+            d.getAnnotations().getAll().addAll(
+                    newDocument.getAnnotations().getAll());
         }
-        return c;
+        return d;
     }
 
     private List<String> getSectionList(String config) {
@@ -121,9 +119,9 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
                 "\r\n|\r|\n")) {
             if (!org.apache.commons.validator.GenericValidator
                     .isBlankOrNull(line)) {
-               if (line.contains("<semantic-group>")) {
-                   results.add(line.substring(line.indexOf("<semantic-group>") + 16, line.lastIndexOf("</semantic-group>")));
-               }
+                if (line.contains("<semantic-group>")) {
+                    results.add(line.substring(line.indexOf("<semantic-group>") + 16, line.lastIndexOf("</semantic-group>")));
+                }
             }
         }
         return results;

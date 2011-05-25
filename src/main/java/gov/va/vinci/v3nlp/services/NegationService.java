@@ -33,7 +33,7 @@ public class NegationService implements NlpProcessingUnit {
     List<String> defaultNegationConfigurationList = new ArrayList<String>();
 
     @Override
-    public Corpus process(String config, Corpus c) {
+    public DocumentInterface process(String config, DocumentInterface d) {
 
         List<String> negationRules = new ArrayList<String>();
         if (!GenericValidator.isBlankOrNull(config)) {
@@ -57,47 +57,45 @@ public class NegationService implements NlpProcessingUnit {
             }
         }
 
-        for (DocumentInterface d : c.getDocuments()) {
-            // No Annotations, skip
-            if (d.getAnnotations().getAll().size() < 1) {
-                continue;
+        // No Annotations, skip
+        if (d.getAnnotations().getAll().size() < 1) {
+            return d;
+        }
+
+        // Step 1 tokenize to find sentences.
+        Span[] spans = convertToSpans(sentenceDetector.sentPosDetect(d
+                .getContent()), d.getContent());
+
+        // Step 2 iterate through annotations
+        for (AnnotationInterface ann : d.getAnnotations().getAll()) {
+            // Step 3 find sentence for this annotation.
+            String sentence = null;
+            for (Span s : spans) {
+                if (ann.getBeginOffset() >= s.getStart()
+                        && ann.getBeginOffset() <= s.getEnd()) {
+                    // Found the sentence this annotation starts in.
+                    sentence = d.getContent().substring(s.getStart(),
+                            s.getEnd());
+                }
             }
 
-            // Step 1 tokenize to find sentences.
-            Span[] spans = convertToSpans(sentenceDetector.sentPosDetect(d
-                    .getContent()), d.getContent());
+            try {
+                // Step 4 run negation algorithm on sentence / annotation
+                String result = genNegEx.negCheck(sentence, ann.getContent(),
+                        negationRules, false);
+                if (result.trim().endsWith("negated")) {
+                    Feature f = new Feature("type", "Negated");
+                    f.getMetaData().setCreatedDate(new Date());
+                    f.getMetaData().setPedigree("Negation");
+                    ((Annotation) ann).getFeatures().add(f);
 
-            // Step 2 iterate through annotations
-            for (AnnotationInterface ann : d.getAnnotations().getAll()) {
-                // Step 3 find sentence for this annotation.
-                String sentence = null;
-                for (Span s : spans) {
-                    if (ann.getBeginOffset() >= s.getStart()
-                            && ann.getBeginOffset() <= s.getEnd()) {
-                        // Found the sentence this annotation starts in.
-                        sentence = d.getContent().substring(s.getStart(),
-                                s.getEnd());
-                    }
                 }
-
-                try {
-                    // Step 4 run negation algorithm on sentence / annotation
-                    String result = genNegEx.negCheck(sentence, ann.getContent(),
-                            negationRules, false);
-                    if (result.trim().endsWith("negated")) {
-                        Feature f = new Feature("type", "Negated");
-                        f.getMetaData().setCreatedDate(new Date());
-                        f.getMetaData().setPedigree("Negation");
-                        ((Annotation) ann).getFeatures().add(f);
-
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
-        return c;
+        return d;
     }
 
     @Override

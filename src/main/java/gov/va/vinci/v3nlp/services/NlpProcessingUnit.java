@@ -1,10 +1,12 @@
 package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.Document;
+import gov.va.vinci.cm.DocumentInterface;
 
 public interface NlpProcessingUnit {
 
-    public abstract gov.va.vinci.cm.Corpus process(String config, Corpus _corpus);
+    public abstract DocumentInterface process(String config, DocumentInterface _document);
 
     public abstract void initialize();
 

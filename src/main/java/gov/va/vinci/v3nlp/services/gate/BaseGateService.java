@@ -16,116 +16,109 @@ import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
 import gov.va.vinci.v3nlp.NlpUtilities;
 
+import javax.management.RuntimeErrorException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 public class BaseGateService {
 
-	/**
-	 * Create the corpus given the pipeline and documents.
-	 * 
-	 * @param dataToProcess
-	 *            the pipeline being processes
-	 * @param docs
-	 *            the string/document hashtable of corpus items
-	 * @return a corpus
-	 * @throws ResourceInstantiationException
-	 */
-	@SuppressWarnings("unchecked")
-	protected Corpus createGateCorpusFromCommonModel(
-			gov.va.vinci.cm.Corpus dataToProcess,
-			Hashtable<String, gate.Document> docs)
-			throws ResourceInstantiationException {
-		Corpus corpus;
-		corpus = Factory.newCorpus("V3NLP Corpus From Common Model");
+    /**
+     * Create the corpus given a common model document.
+     *
+     * @param d the document to create a gate corpus for.
+     * @return a corpus
+     * @throws ResourceInstantiationException
+     */
+    @SuppressWarnings("unchecked")
+    protected Corpus createGateCorpusFromCommonModel(
+            DocumentInterface d)
+            throws ResourceInstantiationException {
+        Corpus corpus;
+        corpus = Factory.newCorpus("V3NLP Corpus From Common Model");
 
-		for (DocumentInterface d: dataToProcess.getDocuments()) {
-			String key = (String) d.getDocumentName();
-            if (key == null) {
-                key = d.getDocumentId();
+        String key = (String) d.getDocumentName();
+        if (key == null) {
+            key = d.getDocumentId();
+        }
+        gate.Document doc = Factory.newDocument(d.getContent());
+        doc.setName(key);
+
+        for (AnnotationInterface a : d.getAnnotations().getAll()) {
+            try {
+                addAnnotations(doc, a);
+            } catch (InvalidOffsetException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-			gate.Document doc = Factory.newDocument(d.getContent());
-			doc.setName(key);
-			
-			for (AnnotationInterface a: d.getAnnotations().getAll()) {
-				try {
-					addAnnotations(doc, a);
-				} catch (InvalidOffsetException e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			}
+        }
+        corpus.add(doc);
+        return corpus;
+    }
 
-			docs.put(key, doc);
-			corpus.add(doc);
-		}
-		return corpus;
-	}
-	
-	protected gov.va.vinci.cm.Corpus processGateResults(
-			Hashtable<String, Document> corpusDocKeyDocument) throws InvalidOffsetException {
-		gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
-		Enumeration<String> docEnum = corpusDocKeyDocument.keys();
+    protected DocumentInterface processGateResults(gate.Corpus corpus) throws InvalidOffsetException {
+        gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
+        List<String> docEnum = corpus.getDocumentNames();
+        Document gateDoc = (Document) corpus.iterator().next();
 
-		while (docEnum.hasMoreElements()) {
-			String s = docEnum.nextElement();
-	        gov.va.vinci.cm.Document d  = new gov.va.vinci.cm.Document();
-	        d.setDocumentName(s);
-	        d.setContent(corpusDocKeyDocument.get(s).getContent().toString());
-	        d.setDocumentId(s);
-	        d.setAnnotations(processDocumentForReturn(corpusDocKeyDocument.get(s)));
-	        results.addDocument(d);
-		}
-		return results;
-	}
+        if (docEnum.size() != 1) {
+            throw new RuntimeException("Processing module returned " + docEnum.size() + ". It should have returned one document.");
+        }
 
-	protected void cleanupPipeLine(SerialAnalyserController controller,
-			Corpus corpus) {
+        DocumentInterface d = new gov.va.vinci.cm.Document();
+        d.setDocumentName(gateDoc.getName());
+        d.setContent(gateDoc.getContent().toString());
+        d.setDocumentId(gateDoc.getName());
+        d.setAnnotations(processDocumentForReturn(gateDoc));
+        return d;
+    }
 
-		if (corpus != null) {
-			for (int i = 0; i < corpus.size(); i++) {
-				Document doc2 = (Document) corpus.get(i);
-				Factory.deleteResource(doc2);
-			}
-		}
-		corpus.clear();
-		controller.cleanup();
-	}
+    protected void cleanupPipeLine(SerialAnalyserController controller,
+                                   Corpus corpus) {
 
-	private Annotations processDocumentForReturn(Document d) throws InvalidOffsetException {
-		AnnotationSet annotations = d.getAnnotations();
-		Annotations results = new Annotations();
-		Iterator<gate.Annotation> i = annotations.iterator();
-		while (i.hasNext()) {
-			gate.Annotation a = i.next();
-			results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));		
-		}
-		return results;
-	}
+        if (corpus != null) {
+            for (int i = 0; i < corpus.size(); i++) {
+                Document doc2 = (Document) corpus.get(i);
+                Factory.deleteResource(doc2);
+            }
+        }
+        corpus.clear();
+        controller.cleanup();
+    }
 
-	private void addAnnotations(gate.Document doc, AnnotationInterface a) throws InvalidOffsetException {
+    private Annotations processDocumentForReturn(Document d) throws InvalidOffsetException {
+        AnnotationSet annotations = d.getAnnotations();
+        Annotations results = new Annotations();
+        Iterator<gate.Annotation> i = annotations.iterator();
+        while (i.hasNext()) {
+            gate.Annotation a = i.next();
+            results.put(NlpUtilities.convertAnnotation(a, d.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString()));
+        }
+        return results;
+    }
 
-		if (doc == null) {
-			String message = "Invalid document: 'null'.";
-			throw new RuntimeException(message);
-		}
+    private void addAnnotations(gate.Document doc, AnnotationInterface a) throws InvalidOffsetException {
 
-		AnnotationSet newAnnotations = doc.getAnnotations();
+        if (doc == null) {
+            String message = "Invalid document: 'null'.";
+            throw new RuntimeException(message);
+        }
 
-		for (Feature f : ((Annotation)a).getFeatures()) {
-			FeatureMap features = gate.Factory.newFeatureMap();
-			
-			for (FeatureElement fe: f.getFeatureElements()) {
-				// Copy Features over. 
-				features.put(fe.getName(), fe.getValue());
-			}
- 			
-			// Add the annotation for this particular feature. 
-			newAnnotations.add(new Long(a.getBeginOffset()), new Long(a
-					.getEndOffset()), f.getMetaData().getPedigree(), features);
+        AnnotationSet newAnnotations = doc.getAnnotations();
 
-		}
+        for (Feature f : ((Annotation) a).getFeatures()) {
+            FeatureMap features = gate.Factory.newFeatureMap();
 
-	}
+            for (FeatureElement fe : f.getFeatureElements()) {
+                // Copy Features over.
+                features.put(fe.getName(), fe.getValue());
+            }
+
+            // Add the annotation for this particular feature.
+            newAnnotations.add(new Long(a.getBeginOffset()), new Long(a
+                    .getEndOffset()), f.getMetaData().getPedigree(), features);
+        }
+
+    }
 }

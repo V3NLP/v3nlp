@@ -5,6 +5,7 @@ import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.Sectionizer;
 import org.apache.commons.validator.GenericValidator;
@@ -36,15 +37,14 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
 	 *  </header>
      * </headers>
      *
-     * @param _corpus The corpus to processes.
+     * @param d The Document to processes.
      * @return  Corpus annotated with section_header and section annotations denoting the section_headers
      * and section content.
      */
     @Override
-    public gov.va.vinci.cm.Corpus process(String config, gov.va.vinci.cm.Corpus _corpus) {
+    public DocumentInterface process(String config, DocumentInterface d) {
         SerialAnalyserController controller = null;
         Corpus corpus = null;
-        Hashtable<String, Document> corpusDocKeyDocument = new Hashtable<String, Document>();
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
 
         try {
@@ -55,22 +55,18 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
 
             addSectionizer(config, controller);
 
-            corpus = createGateCorpusFromCommonModel(_corpus, corpusDocKeyDocument);
+            corpus = createGateCorpusFromCommonModel(d);
             controller.setCorpus(corpus);
 
             // run the application
             controller.execute();
-            results = processGateResults(corpusDocKeyDocument);
-            results.setCorpusName(_corpus.getCorpusName());
-
+            return(processGateResults(corpus));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             cleanupPipeLine(controller, corpus);
         }
-
-        return results;
     }
 
     /**
