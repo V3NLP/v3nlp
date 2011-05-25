@@ -18,12 +18,12 @@ public class XORCipher {
             return result;
         }
 
-        public static String encode(String source) throws Exception {
+        public static String encode(String source)  {
             Base64 encoder = new  Base64 ();
             return encoder.encodeToString(xor(source).getBytes());
         }
 
-        public static String decode(String source) throws Exception {
+        public static String decode(String source) {
             Base64 encoder = new Base64 ();
             byte[] decoded = encoder.decode(source);
             return xor(new String(decoded));
