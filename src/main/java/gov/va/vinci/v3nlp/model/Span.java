@@ -1,4 +1,4 @@
-package gov.va.vinci.v3nlp;
+package gov.va.vinci.v3nlp.model;
 
 public class Span {
 

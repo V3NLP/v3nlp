@@ -3,9 +3,9 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.test.GetterSetterTester;
 import gov.va.vinci.v3nlp.controller.ExpressionSearchForm;
 import gov.va.vinci.v3nlp.expressionlib.Expression;
-import gov.va.vinci.v3nlp.gate.HeaderVO;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.DocumentPedigreeCount;
+import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.model.Template;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.model.datasources.TextDocument;
@@ -29,7 +29,6 @@ public class SimpleSetterGetterTest extends TestCase {
         tester.testClass(DocumentPedigreeCount.class);
         tester.testClass(Expression.class);
         tester.testClass(ExpressionSearchForm.class);
-        tester.testClass(HeaderVO.class);
         tester.testClass(LabelValue.class);
         tester.testClass(NlpComponent.class);
         tester.testClass(NlpComponentCategory.class);

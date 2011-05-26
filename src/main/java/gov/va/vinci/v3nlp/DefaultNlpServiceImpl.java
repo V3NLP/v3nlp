@@ -15,6 +15,11 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Default NlpService implementation that V3NLP Keywords
+ * currently uses.
+ *
+ */
 public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
@@ -42,20 +47,22 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-    public CorpusSummary getPipeLineResults(String pipeLineId) {
-        if (new File(directoryToStoreResults + pipeLineId + ".results")
+    public CorpusSummary getPipeLineResults(String pipeLineId, String userToken) {
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
+
+        if (new File(pathOfResults + pipeLineId + ".results")
                 .exists()) {
-            CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
+            CorpusSummary c = (CorpusSummary) this.deSerialize(pathOfResults
                     + pipeLineId + ".results");
-            new File(directoryToStoreResults + pipeLineId + ".results")
+            new File(pathOfResults + pipeLineId + ".results")
                     .delete();
             return c;
-        } else if (new File(directoryToStoreResults + pipeLineId + ".err")
+        } else if (new File(pathOfResults + pipeLineId + ".err")
                 .exists()) {
             Exception e = (Exception) this
-                    .deSerialize(this.directoryToStoreResults + pipeLineId
+                    .deSerialize(pathOfResults + pipeLineId
                             + ".err");
-            new File(directoryToStoreResults + pipeLineId + ".err").delete();
+            new File(pathOfResults + pipeLineId + ".err").delete();
             throw new RuntimeException(e);
         } else {
             throw new RuntimeException("Results not found.");
@@ -63,14 +70,15 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-    public String getPipeLineStatus(String pipeLineId) {
-        if (new File(directoryToStoreResults + pipeLineId + ".lck").exists()) {
+    public String getPipeLineStatus(String pipeLineId, String userToken) {
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
+        if (new File(pathOfResults + pipeLineId + ".lck").exists()) {
             return "PROCESSING";
         }
-        if (new File(directoryToStoreResults + pipeLineId + ".err").exists()) {
+        if (new File(pathOfResults + pipeLineId + ".err").exists()) {
             return "ERROR";
         }
-        if (new File(directoryToStoreResults + pipeLineId + ".results").exists()) {
+        if (new File(pathOfResults + pipeLineId + ".results").exists()) {
             return "COMPLETE";
         }
 
@@ -79,6 +87,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
             throws SQLException {
+
 
         System.out.println("Got Database Services: " + dataServiceSourceList);
 
@@ -94,10 +103,17 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
+
+         // Make sure output path exists, or create it.
+        if (!new File(pathOfResults).exists()) {
+           new File(pathOfResults).mkdir();
+        }
+
         try {
             String pipeLineId = new Date().getTime() + "-"
                     + pipeLine.hashCode() + "-" + corpus.hashCode();
-            new File(directoryToStoreResults + pipeLineId + ".lck").createNewFile();
+            new File(pathOfResults + pipeLineId + ".lck").createNewFile();
 
             servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
             return pipeLineId;
@@ -130,50 +146,6 @@ public class DefaultNlpServiceImpl implements NlpService {
     public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {
         return new CorpusSummary(deSerializeCorpus(content));
     }
-
-    public String getPipeLineCasResult(String pipeLineId) {
-        File aFile = new File(directoryToStoreResults + pipeLineId + ".results");
-        if (aFile.exists()) {
-            StringBuffer contents = null;
-            BufferedReader input = null;
-
-            try {
-                input = new BufferedReader(new FileReader(aFile));
-                String line = null;
-                contents = new StringBuffer(); //not declared within while loop
-                /*
-                * readLine is a bit quirky :
-                * it returns the content of a line MINUS the newline.
-                * it returns null only for the END of the stream.
-                * it returns an empty String if two newlines appear in a row.
-                */
-                while ((line = input.readLine()) != null) {
-                    contents.append(line);
-                    contents.append(System.getProperty("line.separator"));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    input.close();
-                } catch (Exception e) {
-                }
-            }
-            new File(directoryToStoreResults + pipeLineId + ".results")
-                    .delete();
-            return contents.toString();
-        } else if (new File(directoryToStoreResults + pipeLineId + ".err").exists()) {
-
-            Exception e = (Exception) this
-                    .deSerialize(this.directoryToStoreResults + pipeLineId
-                            + ".err");
-            new File(directoryToStoreResults + pipeLineId + ".err").delete();
-            throw new RuntimeException(e);
-        } else {
-            throw new RuntimeException("Results not found.");
-        }
-    }
-
 
     public void setServicePipeLineProcessor(ServicePipeLineProcessor servicePipeLineProcessor) {
         this.servicePipeLineProcessor = servicePipeLineProcessor;

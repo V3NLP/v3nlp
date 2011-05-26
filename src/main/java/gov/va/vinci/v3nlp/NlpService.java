@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface NlpService {
 
-
     public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
 
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) throws SQLException;
@@ -21,7 +20,7 @@ public interface NlpService {
      * @param pipeLineId
      * @return the processing status of the pipeLine;
      */
-    public abstract String getPipeLineStatus(String pipeLineId);
+    public abstract String getPipeLineStatus(String pipeLineId, String userToken);
 
     /**
      * For a pipeLineId, get the pipeLine results. Status should be checked first to
@@ -30,9 +29,7 @@ public interface NlpService {
      * @param pipeLineId
      * @return the results of the pipeline processing.
      */
-    public abstract CorpusSummary getPipeLineResults(String pipeLineId);
-
-    public abstract String getPipeLineCasResult(String pipeLineId);
+    public abstract CorpusSummary getPipeLineResults(String pipeLineId, String userToken);
 
     /**
      * Serialize a corpus.

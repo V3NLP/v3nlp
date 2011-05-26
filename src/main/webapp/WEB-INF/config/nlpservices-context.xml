@@ -37,7 +37,7 @@
     <bean name="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" class="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService">
             <constructor-arg><ref bean="defaultRegexConceptFinder"/></constructor-arg>
     </bean>
-    <bean name="gov.va.vinci.v3nlp.services.NegationService" class="gov.va.vinci.v3nlp.services.NegationService" init-method="initialize">
+    <bean name="gov.va.vinci.v3nlp.services.NegationService" class="gov.va.vinci.v3nlp.services.NegationServiceImpl" init-method="initialize">
         <property name="sentenceRulesFile">
             <value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
         </property>

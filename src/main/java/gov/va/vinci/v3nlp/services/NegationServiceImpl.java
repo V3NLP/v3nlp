@@ -2,7 +2,7 @@ package gov.va.vinci.v3nlp.services;
 
 
 import gov.va.vinci.cm.*;
-import gov.va.vinci.v3nlp.Span;
+import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import opennlp.maxent.MaxentModel;
 import opennlp.maxent.io.BinaryGISModelReader;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NegationService implements NlpProcessingUnit {
+public class NegationServiceImpl implements NlpProcessingUnit {
 
     Resource sentenceRulesFile;
 

@@ -2,6 +2,7 @@ package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.StaticApplicationContext;
+import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
@@ -38,7 +39,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     @Transactional(readOnly = true)
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
         Corpus returnCorpus = corpus;
-
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
         System.out.println("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date());
         try {
 
@@ -62,14 +63,15 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
 
-            serializeObject(this.getDirectoryToStoreResults() + pipeLineId
+
+            serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
         } catch (Exception e) {
             e.printStackTrace();
-            serializeObject(this.directoryToStoreResults + pipeLineId + ".err",
+            serializeObject(pathOfResults + pipeLineId + ".err",
                     e);
         } finally {
-            new File(directoryToStoreResults + pipeLineId + ".lck").delete();
+            new File(pathOfResults + pipeLineId + ".lck").delete();
         }
 
         return;
