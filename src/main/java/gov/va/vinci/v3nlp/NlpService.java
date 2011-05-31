@@ -55,4 +55,9 @@ public interface NlpService {
      */
     public abstract CorpusSummary deSerializeCorpusToCorpusSummary(String content);
 
+
+    /**
+     * Return a list of jobs and their status for a given user token.
+     */
+    public abstract String jobsForUserToken(String userToken);
 }

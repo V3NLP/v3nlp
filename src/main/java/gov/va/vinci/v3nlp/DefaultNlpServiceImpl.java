@@ -16,8 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Default NlpService implementation that V3NLP Keywords
- * currently uses.
+ * Default NlpService implementation that V3NLP Keywords.
  *
  */
 public class DefaultNlpServiceImpl implements NlpService {
@@ -52,7 +51,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
         if (new File(pathOfResults + pipeLineId + ".results")
                 .exists()) {
-            CorpusSummary c = (CorpusSummary) this.deSerialize(pathOfResults
+            CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
                     + pipeLineId + ".results");
             new File(pathOfResults + pipeLineId + ".results")
                     .delete();
@@ -85,6 +84,7 @@ public class DefaultNlpServiceImpl implements NlpService {
         return null;
     }
 
+    @Override
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
             throws SQLException {
 
@@ -95,13 +95,14 @@ public class DefaultNlpServiceImpl implements NlpService {
             List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds);
 
             for (DocumentInterface di : docs) {
-                System.out.println("adding document: " + di);
+                System.out.println("Adding document: " + di);
                 corpus.addDocument(di);
             }
         }
         return this.submitPipeLine(pipeLine, corpus);
     }
 
+    @Override
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
 
@@ -112,7 +113,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
         try {
             String pipeLineId = new Date().getTime() + "-"
-                    + pipeLine.hashCode() + "-" + corpus.hashCode();
+                    + pipeLine.hashCode();
             new File(pathOfResults + pipeLineId + ".lck").createNewFile();
 
             servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
@@ -123,16 +124,27 @@ public class DefaultNlpServiceImpl implements NlpService {
         }
     }
 
-    private Object deSerialize(String path) {
-        try {
-            InputStream is = new FileInputStream(new File(path));
-            ObjectInput oi = new ObjectInputStream(is);
-            Object newObj = oi.readObject();
-            oi.close();
-            return newObj;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    @Override
+    public String jobsForUserToken(String userToken) {
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
+
+        File userPath = new File(pathOfResults);
+        // User directory doesn't exit, no results.
+        if (!userPath.exists()) {
+           return null;
         }
+
+        if (!userPath.isDirectory()) {
+            throw new RuntimeException("User path is a file, not a directory.");
+        }
+
+        // Iterate through files in the directory to get status.
+        // TODO Implement.
+        for (String file: userPath.list()) {
+            System.out.println("File=" + file);
+        }
+
+        return "";
     }
 
     public String serializeCorpus(Corpus c) {
@@ -147,6 +159,9 @@ public class DefaultNlpServiceImpl implements NlpService {
         return new CorpusSummary(deSerializeCorpus(content));
     }
 
+    /************************************************************************************************************
+     * Setters Methods Below.
+     ***********************************************************************************************************/
     public void setServicePipeLineProcessor(ServicePipeLineProcessor servicePipeLineProcessor) {
         this.servicePipeLineProcessor = servicePipeLineProcessor;
     }
@@ -155,4 +170,21 @@ public class DefaultNlpServiceImpl implements NlpService {
     public void setDatabaseRepositoryService(DatabaseRepositoryService databaseRepositoryService) {
         this.databaseRepositoryService = databaseRepositoryService;
     }
+
+    /************************************************************************************************************
+     * Private Methods Below.
+     ***********************************************************************************************************/
+
+    private Object deSerialize(String path) {
+        try {
+            InputStream is = new FileInputStream(new File(path));
+            ObjectInput oi = new ObjectInputStream(is);
+            Object newObj = oi.readObject();
+            oi.close();
+            return newObj;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
