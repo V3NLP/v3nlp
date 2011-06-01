@@ -3,15 +3,16 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.service.SerializationService;
+import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
-import gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
         if (new File(pathOfResults + pipeLineId + ".results")
                 .exists()) {
-            CorpusSummary c = (CorpusSummary) this.deSerialize(this.directoryToStoreResults
+            CorpusSummary c = (CorpusSummary) this.deSerialize(pathOfResults
                     + pipeLineId + ".results");
             new File(pathOfResults + pipeLineId + ".results")
                     .delete();
@@ -125,26 +126,38 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-    public String jobsForUserToken(String userToken) {
+    public List<BatchJobStatus> jobsForUserToken(String userToken) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
 
         File userPath = new File(pathOfResults);
         // User directory doesn't exit, no results.
         if (!userPath.exists()) {
-           return null;
+           return new ArrayList<BatchJobStatus>();
         }
 
         if (!userPath.isDirectory()) {
             throw new RuntimeException("User path is a file, not a directory.");
         }
 
+        List<BatchJobStatus> results = new ArrayList<BatchJobStatus>();
+
         // Iterate through files in the directory to get status.
-        // TODO Implement.
         for (String file: userPath.list()) {
-            System.out.println("File=" + file);
+            Long lastModified = new File(pathOfResults + "/" + file).lastModified();
+            if (file.endsWith(".lck")) {
+                BatchJobStatus status = new BatchJobStatus();
+                status.setRunDate(new Date(lastModified));
+                status.setStatus("RUNNING");
+                results.add(status);
+            } else if (file.endsWith(".results")) {
+                BatchJobStatus status = new BatchJobStatus();
+                status.setRunDate(new Date(lastModified));
+                status.setStatus("COMPLETE");
+                results.add(status);
+            }
         }
 
-        return "";
+        return results;
     }
 
     public String serializeCorpus(Corpus c) {

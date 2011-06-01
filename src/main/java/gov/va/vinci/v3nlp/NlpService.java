@@ -1,6 +1,7 @@
 package gov.va.vinci.v3nlp;
 
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
@@ -59,5 +60,5 @@ public interface NlpService {
     /**
      * Return a list of jobs and their status for a given user token.
      */
-    public abstract String jobsForUserToken(String userToken);
+    public abstract List<BatchJobStatus> jobsForUserToken(String userToken);
 }

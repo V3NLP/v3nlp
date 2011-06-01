@@ -45,12 +45,11 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             List<DocumentInterface> newDocuments = new ArrayList<DocumentInterface>();
             for (DocumentInterface d : returnCorpus.getDocuments()) {
-                System.out.println("\tProcessing: " + d.getDocumentName());
                 for (ServicePipeLineComponent comp : pipeLine.getServices()) {
                     if (comp.getServiceUid() == null) {
                         continue;
                     }
-                    System.out.println("\t\t[ " + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
+                    System.out.println("\t\t[ " + pipeLine.getPipeLineName() + "~~" + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
                     NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
                     d = bean.process(comp.getConfiguration(), d);
                 }
