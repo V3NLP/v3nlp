@@ -62,7 +62,7 @@ public class DefaultNlpServiceImpl implements NlpService {
             Exception e = (Exception) this
                     .deSerialize(pathOfResults + pipeLineId
                             + ".err");
-            new File(pathOfResults + pipeLineId + ".err").delete();
+           // new File(pathOfResults + pipeLineId + ".err").delete();
             throw new RuntimeException(e);
         } else {
             throw new RuntimeException("Results not found.");
