@@ -148,16 +148,29 @@ public class DefaultNlpServiceImpl implements NlpService {
                 BatchJobStatus status = new BatchJobStatus();
                 status.setRunDate(new Date(lastModified));
                 status.setStatus("RUNNING");
+                status.setPipeLineId(file.substring(0, file.lastIndexOf(".")));
                 results.add(status);
             } else if (file.endsWith(".results")) {
                 BatchJobStatus status = new BatchJobStatus();
                 status.setRunDate(new Date(lastModified));
                 status.setStatus("COMPLETE");
+                status.setPipeLineId(file.substring(0, file.lastIndexOf(".")));
                 results.add(status);
             }
         }
 
         return results;
+    }
+
+    /**
+     * Given a pipeline id and user token, load the result and return it as a serialized string.
+     * @param pipeLineId
+     * @param userToken
+     * @return the corpus in serialized form.
+     */
+    public String getSerializedResults(String pipeLineId, String userToken){
+        CorpusSummary summary = this.getPipeLineResults(pipeLineId, userToken);
+        return this.serializeCorpus(summary.getCorpus());
     }
 
     public String serializeCorpus(Corpus c) {
