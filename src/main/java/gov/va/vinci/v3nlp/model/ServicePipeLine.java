@@ -9,11 +9,12 @@ import java.util.List;
 
 public class ServicePipeLine {
     private List<ServicePipeLineComponent> services = new ArrayList<ServicePipeLineComponent>();
-	private String pipeLineName = "";
+    private String pipeLineName = "";
     private String userToken = "";
     private String description;
-	private Corpus corpus;
-	private Date createdDate;
+    private Corpus corpus;
+    private Date createdDate;
+    private Integer numberOfProcesses;
 
     public List<ServicePipeLineComponent> getServices() {
         return services;
@@ -63,13 +64,23 @@ public class ServicePipeLine {
         this.userToken = userToken;
     }
 
+    public Integer getNumberOfProcesses() {
+        return numberOfProcesses;
+    }
+
+    public void setNumberOfProcesses(Integer numberOfProcesses) {
+        this.numberOfProcesses = numberOfProcesses;
+    }
+
     public String toString() {
-        String toReturn = "PipeLine: " + pipeLineName + " - " + this.description + " [" + this.createdDate + "]\n" +
-               "Services:\n\t";
-         for (ServicePipeLineComponent sp: this.services) {
-             toReturn += sp + "\n\t";
-         }
+        String toReturn = "PipeLine: " + pipeLineName + " - " + this.description +
+                " [" + this.createdDate + "] Number of processes: " + numberOfProcesses + "\n" +
+                "Services:\n\t";
+        for (ServicePipeLineComponent sp : this.services) {
+            toReturn += sp + "\n\t";
+        }
         return toReturn;
     }
+
 
 }

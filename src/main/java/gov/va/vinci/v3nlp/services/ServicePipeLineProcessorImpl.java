@@ -40,7 +40,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
         Corpus returnCorpus = corpus;
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
-        System.out.println("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date());
+        System.out.println("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date() + " Pipeline Processes: " + pipeLine.getNumberOfProcesses());
         try {
 
             List<DocumentInterface> newDocuments = new ArrayList<DocumentInterface>();
@@ -49,7 +49,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                     if (comp.getServiceUid() == null) {
                         continue;
                     }
-                    System.out.println("\t\t[ " + pipeLine.getPipeLineName() + "~~" + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
+                    System.out.println("\t\t[ " + pipeLine.getPipeLineName() + " ~~ " + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
                     NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
                     d = bean.process(comp.getConfiguration(), d);
                 }

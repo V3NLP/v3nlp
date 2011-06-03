@@ -54,15 +54,12 @@ public class DefaultNlpServiceImpl implements NlpService {
                 .exists()) {
             CorpusSummary c = (CorpusSummary) this.deSerialize(pathOfResults
                     + pipeLineId + ".results");
-            new File(pathOfResults + pipeLineId + ".results")
-                    .delete();
             return c;
         } else if (new File(pathOfResults + pipeLineId + ".err")
                 .exists()) {
             Exception e = (Exception) this
                     .deSerialize(pathOfResults + pipeLineId
                             + ".err");
-           // new File(pathOfResults + pipeLineId + ".err").delete();
             throw new RuntimeException(e);
         } else {
             throw new RuntimeException("Results not found.");
