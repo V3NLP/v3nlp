@@ -11,8 +11,25 @@ import java.util.List;
 
 public interface NlpService {
 
+    /**
+     * Submit a pipeline for processing. This returns immediately with the id of the job. The job will then process
+     * in the background.
+     * @param pipeLine the pipeline definition to process.
+     * @param corpus  the corpus to process.
+     * @return the id of the pipeline.
+     */
     public abstract String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus);
 
+    /**
+     * Submit a pipeline for processing. This returns immediately with the id of the job. The job will then process
+     * in the background.
+     * @param pipeLine the pipeline definition to process.
+     * @param corpus  the corpus to process.
+     * @param dataServiceSourceList If pulling for a database, this is a list of the database information
+     *      needed to query the database.
+     * @return the id of the pipeline.
+     * @throws SQLException
+     */
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) throws SQLException;
 
     /**

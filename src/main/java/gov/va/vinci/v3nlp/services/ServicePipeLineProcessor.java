@@ -10,6 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ServicePipeLineProcessor {
     void init();
 
+    /**
+     * Process the pipeline. Results or exceptions are serialized in the users directory. (pipeline.usertoken)
+     * @param pipeLineId the id of this job.
+     * @param pipeLine the pipeline definition to process.
+     * @param corpus  the corpus to process.
+     */
     @Async
     @Transactional(readOnly = true)
     void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus);
