@@ -1,7 +1,6 @@
 package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.cm.*;
-import gov.va.vinci.v3nlp.StaticApplicationContext;
 import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
@@ -9,14 +8,17 @@ import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.registry.RegistryService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.*;
 
 
 public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
@@ -24,6 +26,8 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     private RegistryService registryService;
 
     private String directoryToStoreResults;
+
+    private static Log logger = LogFactory.getLog(ServicePipeLineProcessorImpl.class);
 
     @Override
     public void init() {
@@ -40,32 +44,69 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
         Corpus returnCorpus = corpus;
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
-        System.out.println("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date() + " Pipeline Processes: " + pipeLine.getNumberOfProcesses());
+        logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses());
         try {
-
             List<DocumentInterface> newDocuments = new ArrayList<DocumentInterface>();
-            for (DocumentInterface d : returnCorpus.getDocuments()) {
-                for (ServicePipeLineComponent comp : pipeLine.getServices()) {
-                    if (comp.getServiceUid() == null) {
-                        continue;
-                    }
-                    System.out.println("\t\t[ " + pipeLine.getPipeLineName() + " ~~ " + d.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Starting: " + new Date() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
-                    NlpProcessingUnit bean = StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class);
-                    d = bean.process(comp.getConfiguration(), d);
-                }
-                newDocuments.add(d);
+            BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(corpus.getDocuments().size());
+
+            int processes = pipeLine.getNumberOfProcesses();
+            if (processes < 1) {
+                processes = 1;
             }
 
-            returnCorpus.setDocuments(newDocuments);
-            System.out.println("End pipeline processing [" + pipeLine.getPipeLineName() + "] at " + new Date());
+            processes = 3;    // TODO FIX THIS!
 
+
+            /** Create a thread pool for this processing. **/
+            ThreadPoolExecutor executor = new ThreadPoolExecutor(processes,
+                    processes,
+                    10,
+                    TimeUnit.SECONDS,
+                    queue);
+
+            List<Future<DocumentInterface>> futures = new ArrayList<Future<DocumentInterface>>();
+
+            /** Put the documents on the queue for processing. **/
+            for (DocumentInterface d : corpus.getDocuments()) {
+                Future<DocumentInterface> f = executor.submit(new CallableDocumentServiceProcessor(pipeLine, d));
+                futures.add(f);
+            }
+
+            /**
+             * Determine if the queue is complete.
+             * Loop through the futures, and if one is not done yet, wait for the result.
+             * Repeat until all are complete.
+             ***/
+            boolean complete = false;
+            while (!complete) {
+                Thread.sleep(1000);
+                complete = true;
+                for (Future<DocumentInterface> future : futures) {
+                    if (!future.isDone()) {
+                        complete = false;
+                    }
+                }
+            }
+
+            /** Queue complete - get results **/
+            for (Future<DocumentInterface> future : futures) {
+                newDocuments.add(future.get());
+            }
+
+            /** Clean up executor. **/
+            executor.purge();
+            executor.shutdownNow();
+            executor = null;
+
+            returnCorpus.setDocuments(newDocuments);
+            logger.info("End pipeline processing [" + pipeLine.getPipeLineName() + "]");
 
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
-
 
             serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
         } catch (Exception e) {
+            logger.error("Exception:" + e);
             e.printStackTrace();
             serializeObject(pathOfResults + pipeLineId + ".err",
                     e);
@@ -154,5 +195,10 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     @Override
     public void setRegistryService(RegistryService registryService) {
         this.registryService = registryService;
+    }
+
+
+    protected static NlpProcessingUnit getService(ThreadPoolExecutor tpe, String bean) {
+        return null;
     }
 }

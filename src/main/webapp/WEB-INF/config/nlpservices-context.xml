@@ -10,34 +10,34 @@
     <bean id="metamapService"
           class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
           p:serviceUrl="${metamapServerUrl}"
-          p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker"/>
+          p:serviceInterface="gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker" scope="prototype"/>
 
 
     <!-- NLP Processing Units -->
     <bean id="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
           class="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
-          p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService"/>
+          p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" scope="prototype"/>
 
-    <bean name="hitex.gate.SentenceSplitter" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" >
+    <bean name="hitex.gate.SentenceSplitter" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" scope="prototype">
             <constructor-arg><ref bean="defaultSentenceSplitter"/></constructor-arg>
     </bean>
-    <bean name="hitex.gate.Tokenizer" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" >
+    <bean name="hitex.gate.Tokenizer" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" scope="prototype">
             <constructor-arg><ref bean="defaultTextTokenizer"/></constructor-arg>
     </bean>
 
 
-    <bean name="gov.va.research.v3nlp.gate.pr.OpenNLPPOSTaggerAdapter" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" >
+    <bean name="gov.va.research.v3nlp.gate.pr.OpenNLPPOSTaggerAdapter" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" scope="prototype">
             <constructor-arg><ref bean="hitexPOSTagger"/></constructor-arg>
     </bean>
 
-    <bean name="gov.va.research.v3nlp.gate.pr.OParser" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" >
+    <bean name="gov.va.research.v3nlp.gate.pr.OParser" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" scope="prototype">
             <constructor-arg><ref bean="oParser"/></constructor-arg>
     </bean>
 
-    <bean name="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" class="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService">
+    <bean name="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" class="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" scope="prototype">
             <constructor-arg><ref bean="defaultRegexConceptFinder"/></constructor-arg>
     </bean>
-    <bean name="gov.va.vinci.v3nlp.services.NegationService" class="gov.va.vinci.v3nlp.services.NegationServiceImpl" init-method="initialize">
+    <bean name="gov.va.vinci.v3nlp.services.NegationService" class="gov.va.vinci.v3nlp.services.NegationServiceImpl" init-method="initialize" scope="prototype">
         <property name="sentenceRulesFile">
             <value type="org.springframework.core.io.Resource">WEB-INF/resources/EnglishSD.bin.gz</value>
         </property>
@@ -46,7 +46,7 @@
         </property>
     </bean>
 
-    <bean name="gov.va.vinci.v3nlp.services.gate.HitexSectionizerImpl" class="gov.va.vinci.v3nlp.services.gate.HitexSectionizerImpl">
+    <bean name="gov.va.vinci.v3nlp.services.gate.HitexSectionizerImpl" class="gov.va.vinci.v3nlp.services.gate.HitexSectionizerImpl" scope="prototype">
         <lookup-method name="createSectionizer" bean="defaultSectionizer"/>
     </bean>
 

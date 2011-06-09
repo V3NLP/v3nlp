@@ -109,7 +109,7 @@
 		</gate:parameters>
 	</gate:resource>
 
-	<gate:resource id="defaultTextTokenizer" resource-class="hitex.gate.Tokenizer">
+	<gate:resource id="defaultTextTokenizer" resource-class="hitex.gate.Tokenizer" scope="prototype">
 		<gate:parameters>
 			<entry key="rulesURL">
 				<value type="org.springframework.core.io.Resource">
@@ -120,7 +120,7 @@
 	</gate:resource>
 
 	<gate:resource id="defaultSentenceSplitter"
-		resource-class="hitex.gate.SentenceSplitter">
+		resource-class="hitex.gate.SentenceSplitter" scope="prototype">
 	</gate:resource>
 
 	<gate:resource id="defaultRegexConceptFinder" scope="prototype"
@@ -143,12 +143,12 @@
 	</gate:resource>
 
 	<gate:resource id="sentenceSplitter" resource-class="hitex.gate.SentenceSplitter"
-		resource-name="sentenceSplitter">
+		resource-name="sentenceSplitter" scope="prototype">
 	</gate:resource>
 
 
 	<gate:resource id="oParser" resource-class="gov.va.research.v3nlp.gate.pr.OParser"
-		resource-name="oParser">
+		resource-name="oParser" scope="prototype">
 		<gate:parameters>
 			<entry key="model">
 				<value type="org.springframework.core.io.Resource">
@@ -159,7 +159,7 @@
 	</gate:resource>
 
 	<gate:resource id="hitexPOSTagger" resource-class="gov.va.research.v3nlp.gate.pr.OpenNLPPOSTaggerAdapter"
-		resource-name="examplePOSTagger">
+		resource-name="examplePOSTagger" scope="prototype">
 		<gate:parameters>
 			<entry key="model">
 				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz

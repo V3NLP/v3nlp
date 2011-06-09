@@ -19,6 +19,7 @@ public class RegistryServiceJPAImpl implements RegistryService {
     @Override
     @Transactional(readOnly = true)
     public List<NlpComponentCategory> getNlpComponentCategoryList() {
+        @SuppressWarnings("unchecked")
         List<NlpComponentCategory> queryResults = entityManager.createQuery(
                 "select cat from gov.va.vinci.v3nlp.registry.NlpComponentCategory as cat where active = true")
                 .getResultList();
