@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -54,13 +53,10 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                 processes = 1;
             }
 
-            processes = 3;    // TODO FIX THIS!
-
-
             /** Create a thread pool for this processing. **/
             ThreadPoolExecutor executor = new ThreadPoolExecutor(processes,
                     processes,
-                    10,
+                    60,
                     TimeUnit.SECONDS,
                     queue);
 
