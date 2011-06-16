@@ -68,6 +68,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                 futures.add(f);
             }
 
+
             /**
              * Determine if the queue is complete.
              * Loop through the futures, and if one is not done yet, wait for the result.
@@ -91,7 +92,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             /** Clean up executor. **/
             executor.purge();
-            executor.shutdownNow();
+            executor.shutdown();
             executor = null;
 
             returnCorpus.setDocuments(newDocuments);
@@ -147,8 +148,8 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                 List<Feature> toBeRemoved = new ArrayList<Feature>();
                 if (a.getFeatures() != null) {
                     for (Feature f : a.getFeatures()) {
-                        if (f.getMetaData() != null && f.getMetaData().getPedigree() != null) {
-                            if (toRemove.contains(f.getMetaData().getPedigree())) {
+                        if (f.getFeatureName() != null) {
+                            if (toRemove.contains(f.getFeatureName())) {
                                 toBeRemoved.add(f);
                             }
                         }

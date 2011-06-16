@@ -2,7 +2,7 @@ package gov.va.vinci.v3nlp.model;
 
 import java.io.Serializable;
 
-public class DocumentPedigreeCount implements Serializable {
+public class DocumentFeatureNameCount implements Serializable {
 
 	/**
 	 * 
@@ -10,17 +10,17 @@ public class DocumentPedigreeCount implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String documentId;
-	private String pedigree;
+	private String featureName;
 	private Long count;
 	
-	public DocumentPedigreeCount() {
+	public DocumentFeatureNameCount() {
 		
 	}
 	
-	public DocumentPedigreeCount(String documentId, String pedigree, Long count) {
+	public DocumentFeatureNameCount(String documentId, String pedigree, Long count) {
 		super();
 		this.documentId = documentId;
-		this.pedigree = pedigree;
+		this.featureName = pedigree;
 		this.count = count;
 	}
 
@@ -32,12 +32,12 @@ public class DocumentPedigreeCount implements Serializable {
         this.documentId = documentId;
     }
 
-    public String getPedigree() {
-        return pedigree;
+    public String getFeatureName() {
+        return featureName;
     }
 
-    public void setPedigree(String pedigree) {
-        this.pedigree = pedigree;
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
     }
 
     public Long getCount() {

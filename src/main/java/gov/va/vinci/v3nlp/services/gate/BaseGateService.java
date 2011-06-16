@@ -117,7 +117,7 @@ public class BaseGateService {
 
             // Add the annotation for this particular feature.
             newAnnotations.add(new Long(a.getBeginOffset()), new Long(a
-                    .getEndOffset()), f.getMetaData().getPedigree(), features);
+                    .getEndOffset()), f.getFeatureName(), features);
         }
 
     }

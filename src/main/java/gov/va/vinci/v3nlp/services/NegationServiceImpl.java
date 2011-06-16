@@ -87,6 +87,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
                     Feature f = new Feature("type", "Negated");
                     f.getMetaData().setCreatedDate(new Date());
                     f.getMetaData().setPedigree("Negation");
+                    f.setFeatureName("Negation");
                     ((Annotation) ann).getFeatures().add(f);
 
                 }

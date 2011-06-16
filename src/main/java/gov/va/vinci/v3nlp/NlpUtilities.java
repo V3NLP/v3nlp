@@ -29,10 +29,13 @@ public class NlpUtilities {
         // Set Pedigree.
         if (gateAnnotation.getType() != null) {
             feature.getMetaData().setPedigree((String) gateAnnotation.getType());
+            feature.setFeatureName((String) gateAnnotation.getType());
         } else if (gateAnnotation.getFeatures().get("type") != null) {
 			feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
+            feature.setFeatureName((String) gateAnnotation.getFeatures().get("type"));
 		} else {
-			feature.getMetaData().setPedigree(gateAnnotation.getType());	
+			feature.getMetaData().setPedigree(gateAnnotation.getType());
+            feature.setFeatureName(gateAnnotation.getType());
 		}
 		
 

@@ -14921,7 +14921,7 @@ stationary-phase NN
 Inventor NNP
 Lett NNP
 keratosis NN NNP
-pedigree NN
+featureName NN
 unsuccessfully RB
 foiling VBG
 Tissues NNPS NNS

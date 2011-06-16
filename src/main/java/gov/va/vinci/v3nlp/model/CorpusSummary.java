@@ -17,9 +17,9 @@ public class CorpusSummary implements Serializable {
 
     private Corpus corpus;
 
-    private List<String> pedigrees = new ArrayList<String>();
+    private List<String> featureNames = new ArrayList<String>();
 
-    private List<DocumentPedigreeCount> documentPedigreeCounts = new ArrayList<DocumentPedigreeCount>();
+    private List<DocumentFeatureNameCount> documentFeatureNameCounts = new ArrayList<DocumentFeatureNameCount>();
 
 
     /**
@@ -45,26 +45,26 @@ public class CorpusSummary implements Serializable {
     }
 
     public void updateSummary() {
-        pedigrees.clear();
-        documentPedigreeCounts.clear();
+        featureNames.clear();
+        documentFeatureNameCounts.clear();
 
         for (DocumentInterface doc : corpus.getDocuments()) {
             HashMap<String, Long> tempResults = new HashMap<String, Long>();
             for (AnnotationInterface a : doc.getAnnotations().getAll()) {
                 if (a instanceof Annotation) {
                     for (Feature f : ((Annotation) a).getFeatures()) {
-                        if (f.getMetaData() == null || f.getMetaData().getPedigree() == null) {
+                        if (f.getFeatureName() == null) {
                             continue;
                         }
 
-                        String tempPedigree = f.getMetaData().getPedigree();
-                        if (!pedigrees.contains(tempPedigree)) {
-                            pedigrees.add(tempPedigree);
+                        String tempFeatureName = f.getFeatureName();
+                        if (!featureNames.contains(tempFeatureName)) {
+                            featureNames.add(tempFeatureName);
                         }
-                        if (tempResults.containsKey(tempPedigree)) {
-                            tempResults.put(tempPedigree, ((Long) tempResults.get(tempPedigree)).longValue() + 1L);
+                        if (tempResults.containsKey(tempFeatureName)) {
+                            tempResults.put(tempFeatureName, ((Long) tempResults.get(tempFeatureName)).longValue() + 1L);
                         } else {
-                            tempResults.put(tempPedigree, 1L);
+                            tempResults.put(tempFeatureName, 1L);
                         }
                     }
                 }
@@ -72,25 +72,25 @@ public class CorpusSummary implements Serializable {
             } // End For Annotations
 
             for (String key : tempResults.keySet()) {
-                this.documentPedigreeCounts.add(new DocumentPedigreeCount(doc.getDocumentId(), key, tempResults.get(key)));
+                this.documentFeatureNameCounts.add(new DocumentFeatureNameCount(doc.getDocumentId(), key, tempResults.get(key)));
             }
         } // End for each document
     }
 
-    public List<String> getPedigrees() {
-        return pedigrees;
+    public List<String> getFeatureNames() {
+        return featureNames;
     }
 
-    public void setPedigrees(List<String> pedigrees) {
-        this.pedigrees = pedigrees;
+    public void setFeatureNames(List<String> featureNames) {
+        this.featureNames = featureNames;
     }
 
-    public List<DocumentPedigreeCount> getDocumentPedigreeCounts() {
-        return documentPedigreeCounts;
+    public List<DocumentFeatureNameCount> getDocumentFeatureNameCounts() {
+        return documentFeatureNameCounts;
     }
 
-    public void setDocumentPedigreeCounts(List<DocumentPedigreeCount> documentPedigreeCounts) {
-        this.documentPedigreeCounts = documentPedigreeCounts;
+    public void setDocumentFeatureNameCounts(List<DocumentFeatureNameCount> documentFeatureNameCounts) {
+        this.documentFeatureNameCounts = documentFeatureNameCounts;
     }
 
     public Corpus getCorpus() {

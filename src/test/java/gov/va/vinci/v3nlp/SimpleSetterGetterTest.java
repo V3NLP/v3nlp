@@ -25,7 +25,7 @@ public class SimpleSetterGetterTest extends TestCase {
         tester.testClass(Concept.class);
         tester.testClass(CorpusSummary.class);
         tester.testClass(DataServiceSource.class);
-        tester.testClass(DocumentPedigreeCount.class);
+        tester.testClass(DocumentFeatureNameCount.class);
         tester.testClass(Expression.class);
         tester.testClass(ExpressionSearchForm.class);
         tester.testClass(LabelValue.class);
@@ -57,9 +57,9 @@ public class SimpleSetterGetterTest extends TestCase {
 
     @Test
     public void testDocumentPedigreeCount() {
-        DocumentPedigreeCount dc = new DocumentPedigreeCount("test", "pedigree", 10L);
+        DocumentFeatureNameCount dc = new DocumentFeatureNameCount("test", "pedigree", 10L);
         assertEquals(dc.getDocumentId(), "test");
-        assertEquals(dc.getPedigree(), "pedigree");
+        assertEquals(dc.getFeatureName(), "pedigree");
         assert(dc.getCount().equals(10L));
     }
 }
