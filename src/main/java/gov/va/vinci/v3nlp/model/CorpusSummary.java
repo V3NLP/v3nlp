@@ -61,7 +61,9 @@ public class CorpusSummary implements Serializable {
                         if (!featureNames.contains(tempFeatureName)) {
                             featureNames.add(tempFeatureName);
                         }
+
                         if (tempResults.containsKey(tempFeatureName)) {
+
                             tempResults.put(tempFeatureName, ((Long) tempResults.get(tempFeatureName)).longValue() + 1L);
                         } else {
                             tempResults.put(tempFeatureName, 1L);
