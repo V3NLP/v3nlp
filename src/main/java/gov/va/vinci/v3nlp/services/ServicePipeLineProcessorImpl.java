@@ -42,8 +42,9 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     @Transactional(readOnly = true)
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
         Corpus returnCorpus = corpus;
-        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
-        logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses());
+        logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses() + " for user: '" + pipeLine.getUserToken().trim() + "'");
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
+
         try {
             List<DocumentInterface> newDocuments = new ArrayList<DocumentInterface>();
             BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(corpus.getDocuments().size());
