@@ -102,7 +102,8 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @Override
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
-        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken());
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
+
 
          // Make sure output path exists, or create it.
         if (!new File(pathOfResults).exists()) {
