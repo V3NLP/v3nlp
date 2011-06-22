@@ -53,8 +53,7 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:http://inlp.bmi.utah.edu/git/v3nlp-server.git</connection>
-        <developerConnection>scm:git:http://inlp.bmi.utah.edu/git/v3nlp-server.git</developerConnection>
+	<connection>scm:git:file://localhost//media/data/git/repositories/v3nlp-server</connection>
         <url>http://inlp.bmi.utah.edu/git/v3nlp-server.git</url>
     </scm>
 
