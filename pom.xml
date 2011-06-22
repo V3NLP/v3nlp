@@ -53,9 +53,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</connection>
-        <developerConnection>scm:svn:http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</developerConnection>
-        <url>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/trunk</url>
+        <connection>scm:git:http://inlp.bmi.utah.edu/git/v3nlp-server</connection>
+        <developerConnection>scm:git:http://inlp.bmi.utah.edu/git/v3nlp-server</developerConnection>
+        <url>http://inlp.bmi.utah.edu/git/v3nlp-server</url>
     </scm>
 
 
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>gov.va.research.v3nlp</groupId>
             <artifactId>dictionary</artifactId>
-            <version>2011.03.0</version>
+            <version>2011.06.0</version>
         </dependency>
         <dependency>
             <groupId>gov.va.research</groupId>
