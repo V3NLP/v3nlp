@@ -1,0 +1,33 @@
+## Lines starting with ## are treated as comments and are ignored
+## Empty lines are ignored as well.
+## Only the first 4 non-whitespace characters of each valid line matter; the rest
+## of the line is the optional description
+
+T019: Congenital Abnormality
+T020: Acquired Abnormality
+T033: Finding
+## T034: Laboratory or Test Result
+T037: Injury or Poisoning
+## T038: Biologic Function
+## T039: Physiologic Function
+## T041: Mental Process
+T046: Pathologic Function
+T047: Disease or Syndrome
+T048: Mental or Behavioral Dysfunction
+T049: Cell or Molecular Dysfunction
+## T050: Experimental Model of Disease
+## T184: Sign or Symptom
+T190: Anatomical Abnormality
+T191: Neoplastic Process
+
+
+## Everything below corresponds to medications. It should not be included for diagnosis extraction!
+
+## T121: Pharmacologic Substance
+## T127: Vitamin
+## T195: Antibiotic
+## T200: Clinical Drug
+
+## Everything below corresponds to family groups
+
+## T099: Family Group

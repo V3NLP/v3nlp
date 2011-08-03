@@ -3,10 +3,14 @@ package gov.va.vinci.v3nlp.services;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+
+import java.util.List;
+
 
 public interface NlpProcessingUnit {
 
-    public abstract DocumentInterface process(String config, DocumentInterface _document);
+    public abstract DocumentInterface process(String config, DocumentInterface _document, List<NlpComponentProvides> previousModuleProvided);
 
     public abstract void initialize();
 

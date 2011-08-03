@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="keywords-server:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="v3nlp-server.war">
+      <element id="artifact" artifact-name="keywords-server:war exploded" />
+    </root>
+  </artifact>
+</component>

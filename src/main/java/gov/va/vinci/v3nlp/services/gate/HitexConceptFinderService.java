@@ -1,16 +1,16 @@
 package gov.va.vinci.v3nlp.services.gate;
 
-import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
-import gov.va.vinci.cm.Corpus;
-import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.cm.*;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.regex.ConceptFinder;
 import org.apache.commons.validator.GenericValidator;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hitex concept finder implementation using Regular Expressions.
@@ -52,13 +52,34 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
      * @param d  The Document to be processed
      * @return the annotated corpus.
      */
-    public DocumentInterface process(String config, DocumentInterface d) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
         SerialAnalyserController controller = null;
         gate.Corpus corpus = null;
         ConceptFinder regexConceptFinder = (ConceptFinder) resource;
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
 
+        List<Annotation> toProcess = new ArrayList<Annotation>();
+        for (NlpComponentProvides p: previousModuleProvided) {
+              System.out.println("Previous module provided:" + p);
+            toProcess.addAll(((Document)d).findAnnotationsWithFeatureName(p.getName()));
+        }
+
+        System.out.println("Annotations to process:" + toProcess.size());
+
+        /**
+        for (AnnotationInterface a: d.getAnnotations().getAll()) {
+               for (Feature f: ((Annotation)a).getFeatures()) {
+                   System.out.println("\n\n\n       Name: "+ f.getFeatureName());
+                   System.out.println("     pedigree:" + f.getMetaData().getPedigree());
+
+            }
+        }
+         *
+          */
+
+
         try {
+            // TODO Iterate through annotations...
             controller = (SerialAnalyserController) Factory.createResource(
                     "gate.creole.SerialAnalyserController", Factory
                     .newFeatureMap(), Factory.newFeatureMap(), "V3NLP");

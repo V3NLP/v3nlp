@@ -1,0 +1,580 @@
+/* Family History Components
+ *
+ *   Jape Transducer
+ *   fh_component.jape
+ * 
+ * 
+***************************************************************************
+The purpose of the Family History Components program to identify family
+members
+
+
+and
+
+
+consolidate critical pieces of information about 
+
+
+ required for Jape pattern matching by the Family History Main program.  This program must be run after the UMLS Interface and before the Family History Main program. 
+
+The Family History Components program uses the FH_UMLS AnnotationSet and the Token AnnotationSet as its inputs and it creates the FH_Component AnnotationSet as its output.
+
+The Family History Components program is an essential part of the Family History module because the Family History Main program can not use the Token AnnotationSet as part of its Jape rules.  The Family History Components program must find and annotate all information that is needed for the Jape rules of the Family History Main program.
+
+The Family History Components program creates a new Gate AnnotationSet named “FH_Component” that is used by the third and final Family History program “Family History Main”.  The FH_Component Gate AnnotationSet is populated with the following six types of Annotations:
+1)	Family Members:   An individual family member or a list of family members which appear together in a phrase or sentence.
+2)	Findings:  An individual medical finding or a list of medical findings which appear together in a phrase or sentence.
+3)	Soft Delimiters:  Token strings that can be used to delimit a phrase related to family history.
+4)	Hard Delimiters:  Token strings that delimit the end of sentences or phrases.
+5)	Patients:  Text that indicates that the phrase or sentence is probably about the patient and not a family member.
+
+Input data:	FH_UMLS, Token (Gate AnnotationSets)
+Output data:	FH_Component (Gate AnnotationSet)
+
+ *   Jape Transducer
+ *   
+ *   Chris Pastuszak  August 17, 2006
+ */
+
+
+Phase:    Family_History_Components
+Input:    FH_UMLS  Token  SpaceToken
+Options:  control = appelt
+
+
+/********************
+ * RegExConjunction
+ ********************/
+
+MACRO: RegExConjunction
+(
+   // I had to comment out use of RegEx_Concept and use the Token annotation
+   // because I need access to the string value of the conjunction to sort
+   // out ambiguous sentences
+   // {RegEx_Concept.Concept_Type == "conjunction"}
+   {Token.string == ","} |
+   {Token.string == "and"} |
+   {Token.string == "or"} |
+   {Token.string == "but"}
+)
+
+
+
+/****************************************************************************
+ * Patient
+ *
+ *   Annotation:
+ *     FH_Component
+ *
+ *   Annotation Features:
+ *     kind == "Patient"
+ *     rule == "Find_Patient"
+ *
+ ****************************************************************************/
+
+
+Rule: Find_Patient
+(
+   // "patient (has|had)"
+   ( {Token.string == Patient} | {Token.string == patient} )
+   ( {Token.string == has} |
+     {Token.string == had} )
+)
+:patient
+-->
+:patient.FH_Component = {kind="Patient", rule = "Find_Patient"}
+
+
+
+/****************************************************************************
+ * Exclude_Text
+ *
+ *   This rule is used to keep specific words or phrases from being annotated
+ *   as Family Members or Findings.
+ *
+ *   Annotation:
+ *     FH_Exclusions
+ *
+ *   Annotation Features:
+ *     kind == "exclusion"
+ *     rule == "Exclude_Text"
+ *
+ ****************************************************************************/
+
+
+Rule: Exclude_Text
+(
+   // "Maternal transfer"
+   ( {Token.string == Maternal} | {Token.string == maternal} )
+   ( {Token.string == Transfer} | {Token.string == transfer} )
+)
+:exclude
+-->
+:exclude.FH_Exclusions = {kind="exclusion", rule = "Exclude_Text"}
+
+
+
+/****************************************************************************
+ * Family Members
+ *
+ *   Annotation:
+ *     FH_Component
+ *
+ *   Annotation Features:
+ *     FMs      A colon separated list of family members and CUIs.
+ *     FMsConj  A colon separated list of conjunctions in-between family
+ *              members.
+ *     FMsOS    A colon separated list of Gate.Document offsets which
+ *              correspond to the family members in FMs
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *
+ ****************************************************************************/
+
+
+MACRO: Quantity
+(
+   {Token.string == "1"} |
+   {Token.string == "2"} |   
+   {Token.string == "3"} |
+   {Token.string == "4"} |
+   {Token.string == "5"} |
+   {Token.string == "one"} |
+   {Token.string == "two"} |
+   {Token.string == "three"} |   
+   {Token.string == "four"} |
+   {Token.string == "five"}
+)
+
+
+MACRO: FamilyMembersConjunction
+(
+   RegExConjunction |
+      // "and a"
+   ( {Token.string == "and"}
+     {Token.string == "a"} ) |
+      // "as well as her|his"
+   ( {Token.string == "as"}
+     {Token.string == "well"}
+     {Token.string == "as"}
+     ( {Token.string == "her"} | {Token.string == "his"} ) ) |
+      // ", her|his"
+   ( {Token.string == ","}
+     ( {Token.string == "her"}  | {Token.string == "his"} ) )
+)
+
+
+MACRO: Family_Member
+(
+   (Quantity)?
+   {FH_UMLS.Type == "Family Member"} |
+      // "family history"
+   ( ( {Token.string == "Family"} | {Token.string == "family"} )
+     ( {Token.string == "History"} | {Token.string == "history"} ) ) |
+      // maternal (<family member>)?
+   ( ( {Token.string == "Maternal"} | {Token.string == "maternal"} )
+     ( {FH_UMLS.Type == "Family Member"} )? ) |
+     // paternal (<family member>)?
+   ( ( {Token.string == "Paternal"} | {Token.string == "paternal"} )
+     ( {FH_UMLS.Type == "Family Member"} )? )
+ )
+
+
+MACRO: Family_Members
+(
+   Family_Member
+   (  (FamilyMembersConjunction)?
+      Family_Member  )?
+   (  (FamilyMembersConjunction)?
+      Family_Member  )?
+   (  (FamilyMembersConjunction)?
+      Family_Member  )?
+   (  (FamilyMembersConjunction)?
+      Family_Member  )?
+   (  (FamilyMembersConjunction)?
+      Family_Member  )?
+)
+
+
+Rule: Find_Family_Members
+(
+   Family_Members
+)
+:find_fms
+-->
+{
+   // get the AnnotationSet extracted by this rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("find_fms");
+
+   System.out.println("--> Running the family history components JAPE transducer...");
+
+   // Sort the annotations
+   List AnnList = new ArrayList(GAS);
+   Collections.sort(AnnList, new gate.util.OffsetComparator());
+
+   // Create an iterator with the sorted annotations
+   Iterator AnnIT = AnnList.iterator();
+
+   StringBuffer    FMs     = new StringBuffer();
+   StringBuffer    FMsConj = new StringBuffer();
+   StringBuffer    FMsOS   = new StringBuffer();
+   String		   AnnType;
+   String          familyMbr;
+   String          familyMbrCUI;
+   long           familyMbrOS = 0;
+   String		   conj;
+
+   gate.Annotation Ann;
+
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+      AnnType = Ann.getType();
+
+      if ( AnnType.equals("Token") ) {
+         familyMbr    = (String) Ann.getFeatures().get("string");
+         familyMbrCUI = "?";
+         familyMbrOS  = Ann.getStartNode().getOffset().longValue();
+
+         // If this annotation is a conjunction between two family members, then
+         // add it to FMsConj and then continue to the next annotation
+         if ( familyMbr.equals(",")   || familyMbr.equals("and") ||
+              familyMbr.equals("a") ) {
+            conj = (String) Ann.getFeatures().get("string");
+            FMsConj.append( conj + ":" );
+            continue;
+         }
+         // the following should change "as well as her" to a comma
+         if ( familyMbr.equals("her") ) {
+            FMsConj.append( ",:" );
+            continue;
+         }
+         if ( familyMbr.equals("as") || familyMbr.equals("well") ) {
+            continue;
+         }
+      }
+      else if ( AnnType.equals("FH_UMLS") ) {
+         familyMbr    = (String) Ann.getFeatures().get("umls_name");
+         familyMbrCUI = (String) Ann.getFeatures().get("cui");
+         familyMbrOS  = Ann.getStartNode().getOffset().longValue();
+      }
+      else if ( AnnType.equals("RegEx_Concept") ) {
+         // This annotation is a conjunction, continue to the next annotation
+         continue;
+      }
+      else {
+         familyMbr = "?";
+         familyMbrCUI = "?";
+         familyMbrOS  = 0;
+      }
+
+      // Replace any ':' characters in the family member with an underscore
+      // character "_"
+      if ( familyMbr.indexOf(":") != -1 ) {
+         familyMbr = familyMbr.replace(':', '_');
+      }
+
+
+      FMs.append( familyMbr + ":" + familyMbrCUI + ":" );
+      FMsOS.append( familyMbrOS + ":" );
+   }
+
+   // Family Members should never be empty, but if for some reason it is empty,
+   // then set it to "!"
+   if ( FMs.length() == 0 ) {
+      FMs.append("!:");
+   }
+   
+   // If "family:?:history:?" appears in FMs, then change it to
+   // "Family History:C0241889"
+   int i = FMs.toString().toLowerCase().indexOf("family:?:history:?");
+
+   if ( i != -1 ) {
+      StringBuffer FMs_mod = new StringBuffer();
+
+      if ( i > 0 ) {
+         FMs_mod.append( FMs.substring( 0, i-1 ) );
+      }
+      FMs_mod.append( "Family History:C0241889" );
+      FMs_mod.append( FMs.substring( i+18, FMs.length() ) );
+
+      FMs = FMs_mod;   
+   }
+
+   // Create a feature map for the new annotation
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   features.put( "FMs", FMs.substring(0, FMs.length()-1) );
+
+   // include FMsConj if not empty
+   if ( FMsConj.length() > 0 ) {
+      features.put( "FMsConj", FMsConj.substring( 0, FMsConj.length()-1) );
+   }
+
+   // include FMsOS if not empty
+   if ( FMsOS.length() > 0 ) {
+      features.put( "FMsOS", FMsOS.substring( 0, FMsOS.length()-1) );
+   }
+
+   features.put( "kind", "Family Members" );
+   features.put( "rule", "Find_Family_Members" );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "FH_Component",
+                 features );
+}
+
+
+
+/****************************************************************************
+ * Findings
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and document offsets.
+ *     negated  true when this is a negative (set of) finding(s).
+ *
+ ****************************************************************************/
+
+
+MACRO: FindingConjunction
+(
+   // I had to comment out use of RegEx_Concept and use the Token annotation
+   // because I need access to the string value of the conjunction to sort
+   // out ambiguous sentences
+   // {RegEx_Concept.Concept_Type == "conjunction"}
+   {Token.string == ","} |
+   {Token.string == "and"} |
+   {Token.string == "or"} |
+   {Token.string == "but"} |
+   {Token.string == "with"} |
+   {Token.string == "of"} |
+      // "as well as"
+   ( {Token.string == "as"}
+     {Token.string == "well"}
+     {Token.string == "as"} ) |
+     // [, and] "also had"
+   ( ({Token.string == ","})? 
+     ({Token.string == "and"})?
+     {Token.string == "also"}
+     {Token.string == "had"} )?
+     // [, and] "hx of"
+   ( ({Token.string == ","})? 
+     ({Token.string == "and"})?
+     {Token.string == "hx"}
+     {Token.string == "of"} )?
+)
+
+
+MACRO: Finding
+(
+   {FH_UMLS.Type == "Finding"}
+)
+
+
+MACRO: Findings
+(
+   Finding
+   (  (FindingConjunction)?
+      Finding  )?
+   (  (FindingConjunction)?
+      Finding  )?
+   (  (FindingConjunction)?
+      Finding  )?
+   (  (FindingConjunction)?
+      Finding  )?
+   (  (FindingConjunction)?
+      Finding  )?
+)
+
+
+Rule: Find_Findings
+(
+   Findings
+)
+:find_findings
+-->
+{
+   // get the AnnotationSet extracted by this rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("find_findings");
+
+   // Sort the annotations
+   List AnnList = new ArrayList(GAS);
+   Collections.sort(AnnList, new gate.util.OffsetComparator());
+
+   // Create an iterator with the sorted annotations
+   Iterator AnnIT = AnnList.iterator();
+
+   gate.Annotation Ann;
+   StringBuffer    Findings     = new StringBuffer();
+   StringBuffer    FindingsConj = new StringBuffer();
+   String		   AnnType;
+   String          finding   = "?";
+   String          findingID = "";
+   String          conj;
+   boolean        negated = false;
+
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+      AnnType = Ann.getType();
+
+      if ( AnnType.equals("Token") ) {
+         finding = (String) Ann.getFeatures().get("string");
+         findingID = "0";
+
+         // if this annotation is a conjunction between two findings, add it
+         //  to the FindingsConj list and then continue to the next annotation
+         if ( finding.equals(",")   || finding.equals("and") ||
+              finding.equals("but") || finding.equals("or") ||
+              finding.equals("with") ) {
+            conj = (String) Ann.getFeatures().get("string");
+            FindingsConj.append( conj + ":" );
+            continue;
+         }
+
+         // if this annotation has any of the following keywords, set the
+         // "negated" flag to true and continue to next annotation:
+         //    "no", "negative"
+         if ( finding.equalsIgnoreCase("no") ||
+              finding.equalsIgnoreCase("negative") ) {
+            negated = true;
+            continue;
+         }
+
+         // weed out extraneous token strings
+         if ( finding.equals("history") || finding.equals("of") ||
+              finding.equals("also") || finding.equals("had") ||
+              finding.equals("as") || finding.equals("well") ||
+              finding.equals("fx") ) {
+            continue;
+         }
+      }
+      else if ( AnnType.equals("FH_UMLS") ) {
+         finding = (String) Ann.getFeatures().get("umls_name");
+         findingID = (String) Ann.getFeatures().get("UMLS_Concept_ID");
+      }
+      else if ( AnnType.equals("RegEx_Concept") ) {
+         continue;
+      }
+
+      // Replace any ':' characters in the finding with an underscore
+      // character "_"
+      if ( finding.indexOf(":") != -1 ) {
+         finding = finding.replace(':', '_');
+      }
+
+      Findings.append( finding + ":" + findingID + ":" );
+   }
+
+   // Create a feature map for the new annotation
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   // Findings should never be empty, but if for some reason it is empty, then
+   // set it to "!"
+   if ( Findings.length() == 0 ) {
+      Findings.append("!:");
+   }
+
+   features.put( "Findings", Findings.substring(0, Findings.length()-1) );
+   features.put( "kind", "Findings" );
+
+   // include the FindingsConj feature if not empty
+   if ( FindingsConj.length() > 0 ) {
+      features.put( "FindConj", FindingsConj.substring( 0,
+                                                 FindingsConj.length()-1) );
+   }
+
+   // only include the negated feature when the finding has been negated
+   if ( negated ) {
+      features.put( "negated", "true" );
+   }
+   features.put( "rule", "Find_Findings" );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "FH_Component",
+                 features );
+}
+
+
+/****************************************************************************
+ * Soft Delmiter, Hard Delimiter
+ *
+ * SpaceTokens which contain at least one newline character, '\n', are
+ * included as soft delimiters because some medical record formats use
+ * the end of line as formatting and do not use punctuation!
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and CUIs.
+ *
+ ****************************************************************************/
+
+
+Rule: Find_Soft_Delimiters
+(
+   {Token.string == ","} |
+   {Token.string == "and"} |
+   {SpaceToken.kind == "newline"}
+)
+:find_sd
+-->
+{
+   // Get the GATE AnnotationSet extracted by this rule.
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("find_sd");
+
+   // Get the single GATE Annotation in this set.
+   gate.Annotation Ann = (gate.Annotation) GAS.iterator().next();
+
+   // The "string" property of this annotation will be the delimiter token,
+   // except when the delimiter is a newline and then it will be "newline".
+   String tString;
+
+   if ( Ann.getType().equals("Token") ) {
+      tString = (String) Ann.getFeatures().get("string");
+   }
+   else {
+      tString = "newline";
+   }
+
+   // Create a feature map for the new annotation
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   features.put( "kind", "Soft Delimiter" );
+   features.put( "rule", "Find_Soft_Delimiters" );
+   features.put( "string", tString );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "FH_Component",
+                 features );
+}
+
+
+Rule: Find_Hard_Delimiters
+(
+   {Token.POSTag == "."} |
+   {Token.string == ":"}
+)
+:find_hd
+-->
+{
+   // get the GATE AnnotationSet extracted by this rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("find_hd");
+
+   // get the single GATE Annotation in this set
+   gate.Annotation Ann = (gate.Annotation) GAS.iterator().next();
+
+   // get the "string" feature from the Token annotation
+   String tokenStr = (String) Ann.getFeatures().get("string");
+
+   if (tokenStr == null) {
+      tokenStr = (String) Ann.getFeatures().get("POSTag");
+   }
+
+   // Create a feature map for the new annotation
+   gate.FeatureMap features = Factory.newFeatureMap();
+   features.put( "kind", "Hard Delimiter" );
+   features.put( "rule", "Find_Hard_Delimiters" );
+   features.put( "string", tokenStr );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "FH_Component",
+                 features );
+}
+

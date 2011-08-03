@@ -2,6 +2,7 @@ package gov.va.vinci.v3nlp.services;
 
 import gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker;
 import gov.va.vinci.cm.*;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
      * @return
      */
     @Override
-    public DocumentInterface process(String config, DocumentInterface d) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
         /**
          *
          * need sections and metamap concept lists.

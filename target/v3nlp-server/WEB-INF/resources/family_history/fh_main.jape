@@ -1,0 +1,1143 @@
+/* fh_main.jape
+ * 
+ *   Family History
+ *   Jape Transducer
+ *   
+ 
+ *   Chris Pastuszak  August 7, 2006
+ */
+
+
+Phase:    Family_History_Main
+Input:    FH_Component 
+Options:  control = appelt
+
+
+
+/****************************************************************************
+ * <Patient> ... <Findings>
+ *
+ *   The purpose of this rule is to identify medical history statements that
+ *   apply to the patient and not their family and put them into a different
+ *   AnnotationSet "Family_History"
+ *
+ *   AnnotationSet:
+ *      Bogus_FH
+ * 
+ *   Annotation Features:
+ *     kind == "Patient"
+ *     rule == "Patient_Findings"
+ *
+ ****************************************************************************/
+
+Rule: Patient_Findings
+(
+   {FH_Component.kind == "Patient"}
+   ( {FH_Component.kind == "Soft Delimiter"} )?
+   {FH_Component.kind == "Findings"}
+)
+:patient_findings
+-->
+:patient_findings.Family_History = {FMs="The Patient", kind="Patient", rule = "Patient_Findings"}
+
+
+
+/****************************************************************************
+ * MACRO: <Findings> and/or <Soft Delimiter> mix
+ ****************************************************************************/
+
+MACRO: Findings_Soft_Delimiters_Mix
+(
+   ( {FH_Component.kind == "Findings"} )?
+   ( {FH_Component.kind == "Soft Delimiter"} )?
+   ( {FH_Component.kind == "Findings"} )?
+   ( {FH_Component.kind == "Soft Delimiter"} )?
+   ( {FH_Component.kind == "Findings"} )?
+   ( {FH_Component.kind == "Soft Delimiter"} )?
+)
+
+
+/****************************************************************************
+ * <Family Members> ... <Findings>
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and CUIs.
+ *     Findings A colon separated list of findings and CUIs.
+ *     negated  true when this is a negative (set of) finding(s).
+ *
+ ****************************************************************************/
+
+Rule: Family_Members_Findings
+(
+   {FH_Component.kind == "Family Members"}
+   Findings_Soft_Delimiters_Mix
+   {FH_Component.kind == "Findings"}
+   Findings_Soft_Delimiters_Mix
+   ( {FH_Component.kind == "Soft Delimiter"} |
+     {FH_Component.kind == "Hard Delimiter"} )
+)
+:family_members_findings
+-->
+{
+   // get the AnnotationSet extracted by this Rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("family_members_findings");
+
+   System.out.println("--> Running the main family history JAPE transducer...");
+
+   // Create an iterator for the unsorted Annotations
+   Iterator AnnIT = GAS.iterator();
+
+   gate.Annotation Ann;
+   String          AnnKind;
+   String          FMs = "!";
+   String          Findings = "!";
+
+   // get the FMs and Findings found by the Rule
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+      
+      FeatureMap AnnF = Ann.getFeatures();
+      
+      AnnKind = (String) AnnF.get("kind");
+
+	  // get the Family Members from the FH_Components annotation
+      if ( AnnKind.equals("Family Members") ) {
+         FMs = (String) AnnF.get("FMs");
+      }
+
+	  // Get the Findings from the FH_Components annotation.
+	  // Note: there may be mulitple sets of findings!
+      if ( AnnKind.equals("Findings") ) {
+         if ( Findings.equals("!") ) {
+            Findings = (String) AnnF.get("Findings");
+         }
+         else {
+            Findings = Findings + ":" +
+                       (String) Ann.getFeatures().get("Findings");
+         }
+      }
+   }
+
+   // Create a feature map for the new annotation in "Family_History"
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   features.put( "Findings", Findings );
+   features.put( "FMs", FMs );
+   features.put( "kind", "determined" );
+   features.put( "rule", "Family_Members_Findings" );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "Family_History",
+                 features );
+
+   /**************************************************************************
+    * Update UMLS_Concept
+    *
+    * Update every Annotation in UMLS_Concept for each of the findings.
+    * Note: Some findings have multiple Annotations in UMLS_Concept.
+    **************************************************************************/
+   gate.AnnotationSet UC_AnnSet;
+   gate.AnnotationSet UC_FindingAS;
+
+   gate.Annotation UC_Ann;
+   gate.FeatureMap UC_features;
+
+   Iterator UC_FindingIT;
+
+   Integer         UC_Ann_ID;
+   Long            UC_offset;
+
+   // split the findings, Annotation IDs into a flat array
+   String[] FindingsArr = Findings.split(":");
+
+   // get the Entire "UMLS_Concept" AnnotationSet
+   UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+   // add Family Members (FMs) to every UMLS_Concept Annotation with an
+   // Annotation ID stored in "Findings", a colon separated list of
+   // findings, IDs
+   for (int i=0; ((i+1) < FindingsArr.length); i=i+2) {
+      if ( !FindingsArr[(i+1)].equals("0") ) {
+         // the following output is for debugging:
+         System.out.println( "UPDATING UMLS_Concept (Family_Members_Findings):" );
+         System.out.println( "UMLS_Name\t" + FindingsArr[i] );
+         System.out.println( "UMLS Annotation ID\t" + FindingsArr[(i+1)] );
+
+         // get the UMLS_Concept Annotation ID that was saved in "Findings"
+         UC_Ann_ID = new Integer(FindingsArr[(i+1)]);
+
+         // get the UMLS_Concept Annotation
+         UC_Ann = UC_AnnSet.get( UC_Ann_ID );
+
+         // get the Document offset to the finding
+         UC_offset = UC_Ann.getStartNode().getOffset();
+        
+         // get a UMLS_Concept AnnotationSet containing all annotations at the
+         // Document offset for the finding.  this is necessary because there
+         // may be multiple UMLS_Concept annotations for the same finding.
+		 UC_FindingAS = UC_AnnSet.get( UC_offset );
+
+		 // Create an unsorted iterator over all Annotations for the finding
+		 UC_FindingIT = UC_FindingAS.iterator();
+
+         // update each UMLS_Concept Annotation for the finding
+         while ( UC_FindingIT.hasNext() ) {
+            System.out.println( "adding FMs to a UMLS_Concept Annotation" );
+	
+		    UC_Ann = (gate.Annotation) UC_FindingIT.next();
+
+            // add FMs to the features of the UMLS_Concept Annotation
+            UC_features = UC_Ann.getFeatures();
+            UC_features.put( "FMs", FMs );
+            UC_Ann.setFeatures( UC_features );
+         }
+      }
+   }
+}
+
+
+
+/****************************************************************************
+ *  <Findings> ... <Family Members>
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and CUIs.
+ *     Findings A colon separated list of findings and CUIs.
+ *     negated  true when this is a negative (set of) finding(s).
+ *
+ ****************************************************************************/
+
+Rule: Findings_Family_Members
+(
+   {FH_Component.kind == "Findings"}
+   {FH_Component.kind == "Family Members"}
+   ( {FH_Component.kind == "Soft Delimiter"} |
+     {FH_Component.kind == "Hard Delimiter"} )
+)
+:findings_family_members
+-->
+{
+   // get the AnnotationSet extracted by this rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("findings_family_members");
+
+   // Create an iterator for the unsorted Annotations
+   Iterator AnnIT = GAS.iterator();
+
+   gate.Annotation Ann;
+   String          AnnKind;
+   String          FMs = "!";
+   String          Findings = "!";
+
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+
+      FeatureMap AnnF = Ann.getFeatures();
+
+      AnnKind = (String) AnnF.get("kind");
+
+	  // get the Family Members from the FH_Components annotation
+      if ( AnnKind.equals("Family Members") ) {
+         FMs = (String) AnnF.get("FMs");
+      }
+
+	  // get the Findings from the FH_Components annotation
+      if ( AnnKind.equals("Findings") ) {
+         Findings = (String) AnnF.get("Findings");
+      }
+   }
+
+   // Create a feature map for the new annotation
+   gate.FeatureMap features = Factory.newFeatureMap();
+   features.put( "Findings", Findings );
+   features.put( "FMs", FMs );
+   features.put( "kind", "determined" );
+   features.put( "rule", "Findings_Family_Members" );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "Family_History",
+                 features );
+
+   /**************************************************************************
+    * Update UMLS_Concept
+    *
+    * Update every Annotation in UMLS_Concept for each of the findings.
+    * Note: Some findings have multiple Annotations in UMLS_Concept.
+    **************************************************************************/
+   gate.AnnotationSet UC_AnnSet;
+   gate.AnnotationSet UC_FindingAS;
+
+   gate.Annotation UC_Ann;
+   gate.FeatureMap UC_features;
+
+   Iterator UC_FindingIT;
+
+   Integer         UC_Ann_ID;
+   Long            UC_offset;
+
+   // split the findings, Annotation IDs into a flat array
+   String[] FindingsArr = Findings.split(":");
+
+   // get the Entire "UMLS_Concept" AnnotationSet
+   UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+   // add Family Members (FMs) to every UMLS_Concept Annotation with an
+   // Annotation ID stored in "Findings", a colon separated list of
+   // findings, IDs
+   for (int i=0; ((i+1) < FindingsArr.length); i=i+2) {
+      if ( !FindingsArr[(i+1)].equals("0") ) {
+         // the following output is for debugging:
+         System.out.println( "UPDATING UMLS_Concept (Findings_Family_Members):" );
+         System.out.println( "UMLS_Name\t" + FindingsArr[i] );
+         System.out.println( "UMLS Annotation ID\t" + FindingsArr[(i+1)] );
+
+         // get the UMLS_Concept Annotation ID that was saved in "Findings"
+         UC_Ann_ID = new Integer(FindingsArr[(i+1)]);
+
+         // get the UMLS_Concept Annotation
+         UC_Ann = UC_AnnSet.get( UC_Ann_ID );
+
+         // get the Document offset to the finding
+         UC_offset = UC_Ann.getStartNode().getOffset();
+        
+         // get a UMLS_Concept AnnotationSet containing all annotations at the
+         // Document offset for the finding.  this is necessary because there
+         // may be multiple UMLS_Concept annotations for the same finding.
+		 UC_FindingAS = UC_AnnSet.get( UC_offset );
+
+		 // Create an unsorted iterator over all Annotations for the finding
+		 UC_FindingIT = UC_FindingAS.iterator();
+
+         // update each UMLS_Concept Annotation for the finding
+         while ( UC_FindingIT.hasNext() ) {
+            System.out.println( "adding FMs to a UMLS_Concept Annotation" );
+	
+		    UC_Ann = (gate.Annotation) UC_FindingIT.next();
+
+            // add FMs to the features of the UMLS_Concept Annotation
+            UC_features = UC_Ann.getFeatures();
+            UC_features.put( "FMs", FMs );
+            UC_Ann.setFeatures( UC_features );
+         }
+      }
+   }
+}
+
+
+
+/****************************************************************************
+ *  <Family Members> ... <Findings> ... <Family Members>  (AMBIGUOUS)
+
+ * Family Members followed by Findings
+ *  ambiguous case
+ *
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and CUIs.
+ *     Findings A colon separated list of findings and CUIs.
+ *     negated  true when this is a negative (set of) finding(s).
+ *
+ ****************************************************************************/
+
+Rule: Family_Members_Findings_Family_Members
+(
+   {FH_Component.kind == "Family Members"}
+   {FH_Component.kind == "Findings"}
+   {FH_Component.kind == "Family Members"}
+   ( {FH_Component.kind == "Soft Delimiter"} |
+     {FH_Component.kind == "Hard Delimiter"} )
+)
+:family_members_findings_family_members
+-->
+{
+   // get the AnnotationSet extracted by this Rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("family_members_findings_family_members");
+
+   // Sort the annotations
+   List AnnList = new ArrayList(GAS);
+   Collections.sort(AnnList, new gate.util.OffsetComparator());
+
+   // Create an iterator for the sorted annotations
+   Iterator AnnIT = AnnList.iterator();
+
+   gate.Annotation Ann;
+
+   String    AnnKind;
+   String    FMs_left   = "!";
+   String    FMs_right  = "!";
+   String    Findings   = "!";
+   String	 FindConj   = "!";
+   String	 Find_left  = "!";
+   String    Find_right = "!";
+   String[]  FindingsArr;
+   String[]  conjArr;
+   long		 FMsLeftOS_RHS  = 0;
+   long      FMsRightOS_LHS = 0;
+
+   /***************************************************************************
+    * get FMs_left, FMS_right, Findings and FindingsConj from the FH_Components
+    * annotations matched by this rule
+    ***************************************************************************/
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+      AnnKind = (String) Ann.getFeatures().get("kind");
+
+	  // get two sets of Family Members from the FH_Components annotation, one
+	  // to the left of the findings, and one to the right of the findings
+      if ( AnnKind.equals("Family Members") ) {
+         if ( FMs_left.equals("!") ) {
+            FMs_left = (String) Ann.getFeatures().get("FMs");
+            FMsLeftOS_RHS = Ann.getEndNode().getOffset().longValue();
+         }
+         else {
+            FMs_right = (String) Ann.getFeatures().get("FMs");
+            FMsRightOS_LHS = Ann.getStartNode().getOffset().longValue();
+         }
+      }
+
+	  // get the Findings from the FH_Components annotation
+      if ( AnnKind.equals("Findings") ) {
+         Findings = (String) Ann.getFeatures().get("Findings");
+         FindConj = (String) Ann.getFeatures().get("FindConj");
+         
+         if ( FindConj == null ) {
+            FindConj = "";
+         }
+         else {
+            FindConj = FindConj.toLowerCase();
+         }
+      }
+   }
+
+   /***************************************************************************
+    * decide which rule to use to separate the findings based on the pattern of
+    * the conjunctions found in the string of findings
+    ***************************************************************************/
+   
+   // split colon separated findings, annotation IDs up into a flat array
+   FindingsArr = Findings.split(":");
+
+   // split colon separated findings conjunctions up into an array
+   conjArr = FindConj.split(":");
+
+   // The default rule is "distance"
+   String sRule = "distance";
+   
+   // if there is only one conjunction
+   if ( FindConj.equals("and") || FindConj.equals(",") ) {
+     sRule = "single conjunction";
+   }
+   else {
+      // if there is only one "and"
+      int fi = FindConj.indexOf("and");
+      int li = FindConj.lastIndexOf("and");
+      if ( fi != -1 && fi == li ) {
+         sRule = "single and";
+      }
+   }
+
+   // single conjunction
+   //   Assign the finding that appears before the conjunction to Find_left,
+   //   and the finding that appears after the conjunction to Find_right.
+   if ( sRule.equals("single conjunction") ) {
+     if (FindingsArr.length > 1) {
+        Find_left = FindingsArr[0] + ":" + FindingsArr[1];
+     }
+     if (FindingsArr.length > 3) {
+        Find_right = FindingsArr[2] + ":" + FindingsArr[3];
+     }
+   }
+
+   // single and
+   //   Assign all findings that appear before the conjunction "and" to
+   //   Find_left, and all findings that appear after the "and" to Find_right.
+   if ( sRule.equals("single and") ) {
+      StringBuffer findLeftSB  = new StringBuffer();
+      StringBuffer findRightSB = new StringBuffer();
+      boolean     foundAnd = false;
+
+      for ( int i=0; (i+1) < FindingsArr.length; i=i+2 ) {
+         if ( !foundAnd ) {
+            findLeftSB.append( FindingsArr[i] + ":" + FindingsArr[i+1] + ":" );
+         }
+         else {
+            findRightSB.append( FindingsArr[i] + ":" + FindingsArr[i+1] + ":" );
+         }
+
+         if ( !foundAnd ) {
+            foundAnd = conjArr[(i/2)].equals("and");
+         }
+      }
+
+	  // copy findLeftSB into Find_left, removing the trailing colon
+      if ( findLeftSB.length() > 0 ) {
+         Find_left = findLeftSB.substring(0, findLeftSB.length()-1);
+      }
+
+	  // copy findRightSB into Find_right, removing the trailing colon
+	  if ( findRightSB.length() > 0 ) {
+         Find_right = findRightSB.substring(0, findRightSB.length()-1);
+      }
+   }
+
+   // distance
+   // 
+   if ( sRule.equals("distance") ) {
+      gate.AnnotationSet  UC_AnnSet;
+
+      StringBuffer findLeftSB  = new StringBuffer();
+      StringBuffer findRightSB = new StringBuffer();
+
+      long  midpoint;
+      long  finding_offset = 0;
+      int   midpoint_index = 0;
+
+      // for DEBUGGING:
+      System.out.println("Ambiguous case: using the distance algorithm" );
+
+      // find the midpoint between the right-most character of the family
+      // members on the left side and the left-most character of the
+      // family members on the right side
+      midpoint = FMsLeftOS_RHS + (long) (( FMsRightOS_LHS - FMsLeftOS_RHS ) / 2);
+
+      // get the Entire "UMLS_Concept" AnnotationSet
+      UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+      // for DEBUGGING:
+      System.out.println( "FMsLeftOS_RHS\t" + FMsLeftOS_RHS );
+      System.out.println( "FMsRightOS_LHS\t" + FMsRightOS_LHS );
+      System.out.println( "midpoint\t\t" + midpoint );
+
+      // Traverse the list of findings until a finding's document offset passes
+      // the midpoint
+      for ( int i = 0;  (((i+1) < FindingsArr.length) && 
+                          (finding_offset <= midpoint)); i=i+2 ) {
+
+         // get the document offset to this finding from UMLS_Concept
+         finding_offset = UC_AnnSet.get( new Integer(FindingsArr[i+1]) ).
+                                    getStartNode().getOffset().longValue();
+
+         if ( finding_offset > midpoint ) {
+            midpoint_index = (i-2);
+         }
+
+         // for DEBUGGING:
+         System.out.println("finding\t\t" + FindingsArr[i]);
+         System.out.println("finding_offset\t" + finding_offset);
+      }
+
+      if ( midpoint_index < 0) {
+         midpoint_index = 0;
+      }
+
+      // for DEBUGGING:
+      System.out.println("found the finding that is past the midpoint" );
+      System.out.println("using midpoint index of\t" + midpoint_index );
+      System.out.println("findings for left side \t" + ((midpoint_index/2)+1) );
+      System.out.println("findings for right side\t" + ((FindingsArr.length/2) - ((midpoint_index/2)+1)));
+
+      // Assign all findings up to the midpoint_index to Find_left
+      for ( int i = 0;  i <= midpoint_index;  i=i+2 ) {
+         // add finding and ID to left side findings
+         findLeftSB.append( FindingsArr[i] + ":" + FindingsArr[i+1] + ":" );
+      }
+
+      // Assign all findings after the midpoint_index to Find_right
+      for ( int i = (midpoint_index+2);  ((i+1) < FindingsArr.length);  i=i+2 ) {
+         // add finding and ID to right side findings
+         findRightSB.append( FindingsArr[i] + ":" + FindingsArr[i+1] + ":" );
+      }
+
+	  // copy findLeftSB into Find_left, removing the trailing colon
+      if ( findLeftSB.length() > 0 ) {
+         Find_left = findLeftSB.substring(0, findLeftSB.length()-1);
+      }
+
+	  // copy findRightSB into Find_right, removing the trailing colon
+	  if ( findRightSB.length() > 0 ) {
+         Find_right = findRightSB.substring(0, findRightSB.length()-1);
+      }
+   }
+
+   /***************************************************************************
+    * Create a feature map for the new annotation in "Family_History"
+    ***************************************************************************/
+
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   features.put( "Findings", Findings );
+   features.put( "FindConj", FindConj );
+   features.put( "Find_left", Find_left );
+   features.put( "Find_right", Find_right );
+   features.put( "FMs_left", FMs_left );
+   features.put( "FMs_right", FMs_right );
+   features.put( "kind", "ambiguous" );
+   features.put( "rule", "Family_Members_Findings_Family_Members" );
+   features.put( "sRule", sRule );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "Family_History",
+                 features );
+
+   /***************************************************************************
+    * Use two passes to update UMLS_Concept
+    *
+    * On the first pass, use the "left" side findings and family members 
+    * On the second pass, use the "right" side findings and family members 
+    * Update every Annotation in UMLS_Concept for each of the findings.
+    * Note: Some findings have multiple Annotations in UMLS_Concept.
+    ***************************************************************************/
+
+   gate.AnnotationSet UC_AnnSet;
+   gate.AnnotationSet UC_FindingAS;
+   gate.Annotation    UC_Ann;
+   gate.FeatureMap    UC_features;
+   Iterator           UC_FindingIT;
+   String             UC_FMs;
+   Integer            UC_Ann_ID;
+   Long               UC_offset;
+
+   // get the Entire "UMLS_Concept" AnnotationSet
+   UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+
+   for ( int j = 0; j < 2; j++ ) {
+      if ( j == 0 ) {
+         FindingsArr = Find_left.split(":");
+         UC_FMs = FMs_left;
+      }
+      else {
+         FindingsArr = Find_right.split(":");
+         UC_FMs = FMs_right;
+      }
+
+      // add Family Members (FMs) to every UMLS_Concept Annotation with an
+      // Annotation ID stored in "Findings", a colon separated list of
+      // findings, IDs
+      for (int i=0; ((i+1) < FindingsArr.length); i=i+2) {
+         if ( !FindingsArr[(i+1)].equals("0") ) {
+            // the following output is for debugging:
+            System.out.println( "Family_Members_Findings_Family_Members is " +
+                                "updating UMLS_Concept:" );
+            System.out.println( "UMLS_Name\t" + FindingsArr[i] );
+            System.out.println( "UMLS Annotation ID\t" + FindingsArr[(i+1)] );
+
+            // get the UMLS_Concept Annotation ID that was saved in "Findings"
+            UC_Ann_ID = new Integer(FindingsArr[(i+1)]);
+
+            // get the UMLS_Concept Annotation
+            UC_Ann = UC_AnnSet.get( UC_Ann_ID );
+
+            // get the Document offset to the finding
+            UC_offset = UC_Ann.getStartNode().getOffset();
+        
+            // get a UMLS_Concept AnnotationSet containing all annotations at the
+            // Document offset for the finding.  this is necessary because there
+            // may be multiple UMLS_Concept annotations for the same finding.
+		    UC_FindingAS = UC_AnnSet.get( UC_offset );
+
+		    // Create an unsorted iterator over all Annotations for the finding
+            UC_FindingIT = UC_FindingAS.iterator();
+
+            // update each UMLS_Concept Annotation for the finding
+            while ( UC_FindingIT.hasNext() ) {
+               System.out.println( "adding FMs to a UMLS_Concept Annotation" );
+
+               UC_Ann = (gate.Annotation) UC_FindingIT.next();
+
+               // add FMs to the features of the UMLS_Concept Annotation
+               UC_features = UC_Ann.getFeatures();
+               UC_features.put( "FMs", UC_FMs );
+               UC_Ann.setFeatures( UC_features );
+            }
+         }
+      }
+   }
+}
+
+
+
+/****************************************************************************
+ *  <Findings> ... <Family Members> ... <Findings>  (AMBIGUOUS)
+ *
+ *   Annotation Features
+ *     kind == "Family Members"
+ *     rule == "Find_Family_Members"
+ *     FMs      A colon separated list of family members and CUIs.
+ *     Findings A colon separated list of findings and CUIs.
+ *     negated  true when this is a negative (set of) finding(s).
+ *
+ ****************************************************************************/
+
+Rule: Findings_Family_Members_Findings
+(
+//   Optional_Finding_Negation
+   {FH_Component.kind == "Findings"}
+   {FH_Component.kind == "Family Members"}
+   {FH_Component.kind == "Findings"}
+   ( {FH_Component.kind == "Soft Delimiter"} |
+     {FH_Component.kind == "Hard Delimiter"} )
+)
+:findings_family_members_findings
+-->
+{
+   // get the AnnotationSet extracted by this Rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("findings_family_members_findings");
+
+   // Sort the annotations
+   List AnnList = new ArrayList(GAS);
+   Collections.sort(AnnList, new gate.util.OffsetComparator());
+
+   // Create an iterator for the sorted annotations
+   Iterator AnnIT = AnnList.iterator();
+
+   gate.Annotation Ann;
+
+   String    Find_left  = "!";
+   String    Find_right = "!";
+   String    FMs        = "!";
+   String    FMs_left   = "!";
+   String    FMs_right  = "!";
+   String	 FMsConj    = "!";
+   String	 FMsOS      = "!";
+   String    AnnKind;
+   String[]  FMsArr;
+   String[]  conjArr;
+   long		 FindLeftOS_RHS  = 0;
+   long      FindRightOS_LHS = 0;
+
+   /***************************************************************************
+    * get FMs_left, FMS_right, Findings and FindingsConj from the FH_Components
+    * annotations matched by this rule
+    ***************************************************************************/
+   while (AnnIT.hasNext()) {
+      // get the next Annotation and its "kind"
+      Ann = (gate.Annotation) AnnIT.next();
+      AnnKind = (String) Ann.getFeatures().get("kind");
+
+	  // get two sets of Family Members from the FH_Components annotation, one
+	  // to the left of the findings, and one to the right of the findings
+      if ( AnnKind.equals("Findings") ) {
+         if ( Find_left.equals("!") ) {
+            Find_left = (String) Ann.getFeatures().get("Findings");
+            FindLeftOS_RHS = Ann.getEndNode().getOffset().longValue();
+         }
+         else {
+            Find_right = (String) Ann.getFeatures().get("Findings");
+            FindRightOS_LHS = Ann.getStartNode().getOffset().longValue();
+         }
+      }
+
+	  // get the Findings from the FH_Components annotation
+      if ( AnnKind.equals("Family Members") ) {
+         FMs     = (String) Ann.getFeatures().get("FMs");
+         FMsOS   = (String) Ann.getFeatures().get("FMsOS");
+         FMsConj = (String) Ann.getFeatures().get("FMsConj");
+
+         if ( FMsConj == null ) {
+            FMsConj = "";
+         }
+         else {
+            FMsConj = FMsConj.toLowerCase();
+         }
+      }
+   }
+
+   // for DEBUGGING:
+   System.out.println("Findings_Family_Members_Findings");
+   System.out.println("FMs: " + FMs);
+
+   /***************************************************************************
+    * decide which rule to use to separate the findings based on the pattern of
+    * the conjunctions found in the string of findings
+    ***************************************************************************/
+
+   // split colon separated findings, annotation IDs up into a flat array
+   FMsArr = FMs.split(":");
+
+   // split colon separated findings conjunctions up into an array
+   conjArr = FMsConj.split(":");
+
+   // The default rule is "distance"
+   String sRule = "distance";
+
+   // if there is only one family member
+   if ( FMsConj.equals("") ) {
+     sRule = "single family member";
+   }
+      // if there is only one conjunction
+   else if ( FMsConj.equals("and") || FMsConj.equals(",") ) {
+     sRule = "single conjunction";
+   }
+
+   // single family member
+   //   Assign both FMs_left and FMs_right to the one and only family member.
+   if ( sRule.equals("single family member") ) {
+      // for DEBUGGING:
+      //System.out.println("single family member");
+
+     if (FMsArr.length > 1) {
+        FMs_left  = FMsArr[0] + ":" + FMsArr[1];
+        FMs_right = FMsArr[0] + ":" + FMsArr[1];
+     }
+   }
+
+   // single conjunction
+   //   Assign the family member that appears before the conjunction to
+   //   FMs_left, and the family member that appears after the conjunction
+   //   to FMs_right.
+   if ( sRule.equals("single conjunction") ) {
+      // for DEBUGGING:
+      // System.out.println("single conjunction");
+
+     if (FMsArr.length > 1) {
+        FMs_left = FMsArr[0] + ":" + FMsArr[1];
+     }
+     if (FMsArr.length > 3) {
+        FMs_right = FMsArr[2] + ":" + FMsArr[3];
+     }
+   }
+
+
+   // distance
+   // 
+   if ( sRule.equals("distance") ) {
+      gate.AnnotationSet  UC_AnnSet;
+
+      StringBuffer FMsLeftSB  = new StringBuffer();
+      StringBuffer FMsRightSB = new StringBuffer();
+
+      long  midpoint;
+      long  fm_offset = 0;
+      int   midpoint_index = 0;
+
+      String[] fmOSarr = FMsOS.split(":");
+
+      // for DEBUGGING:
+      System.out.println("Ambiguous case: using the distance algorithm" );
+
+      // find the midpoint between the right-most character of the findings on
+      // the left side and the left-most character of the findings on the
+      // right-most side
+      midpoint = FindLeftOS_RHS + (long) (( FindRightOS_LHS - FindLeftOS_RHS ) / 2);
+
+      // for DEBUGGING:
+      System.out.println( "FindLeftOS_RHS\t" + FindLeftOS_RHS );
+      System.out.println( "FIndRightOS_LHS\t" + FindRightOS_LHS );
+      System.out.println( "midpoint\t\t" + midpoint );
+
+      // Traverse the list of family member document offsets until one of the
+      // document offsets passes the midpoint.
+      for ( int i = 0;  ((i < fmOSarr.length) && 
+                          (fm_offset <= midpoint)); i++ ) {
+
+         // get the document offset to this family member from FMsOS
+         fm_offset = Long.parseLong( fmOSarr[i] );
+
+         if ( fm_offset > midpoint ) {
+            midpoint_index = (i-1);
+         }
+
+         // for DEBUGGING:
+         System.out.println("fm_offset\t" + fm_offset);
+      }
+
+      if ( midpoint_index < 0 ) {
+           midpoint_index = 0;
+      }
+
+      // for DEBUGGING:
+      System.out.println("using midpoint index of\t" + midpoint_index );
+      System.out.println("findings for left side \t" + (midpoint_index+1) );
+      System.out.println("findings for right side\t" + (fmOSarr.length - (midpoint_index +1)));
+
+      // Assign all family members up to the midpoint_index to FMs_left
+      for ( int i = 0;  i <= (midpoint_index*2);  i=i+2 ) {
+         // add family member and CUI to left side family members
+         FMsLeftSB.append( FMsArr[i] + ":" + FMsArr[i+1] + ":" );
+      }
+
+      // Assign all family members after the midpoint_index to FMs_right
+      for ( int i = ((midpoint_index*2)+2);  ((i+1) < FMsArr.length);  i=i+2 ) {
+         // add family member and CUI to right side family members
+         FMsRightSB.append( FMsArr[i] + ":" + FMsArr[i+1] + ":" );
+      }
+
+	  // copy FMsLeftSB into FMs_left, removing the trailing colon
+      if ( FMsLeftSB.length() > 0 ) {
+         FMs_left = FMsLeftSB.substring(0, FMsLeftSB.length()-1);
+      }
+
+	  // copy FMsRightSB into FMs_right, removing the trailing colon
+	  if ( FMsRightSB.length() > 0 ) {
+         FMs_right = FMsRightSB.substring(0, FMsRightSB.length()-1);
+      }
+   }
+
+   /***************************************************************************
+    * Create a feature map for the new annotation in "Family_History"
+    ***************************************************************************/
+
+   gate.FeatureMap features = Factory.newFeatureMap();
+
+   features.put( "Find_left", Find_left );
+   features.put( "Find_right", Find_right );
+   features.put( "FMs", FMs );
+   features.put( "FMsConj", FMsConj );
+   features.put( "FMs_left", FMs_left );
+   features.put( "FMs_right", FMs_right );
+   features.put( "kind", "ambiguous" );
+   features.put( "rule", "Findings_Family_Members_Findings" );
+   features.put( "sRule", sRule );
+
+   outputAS.add( GAS.firstNode(), GAS.lastNode(), "Family_History",
+                 features );
+
+   /***************************************************************************
+    * Use two passes to update UMLS_Concept
+    *
+    * On the first pass, use the "left" side findings and family members 
+    * On the second pass, use the "right" side findings and family members 
+    * Update every Annotation in UMLS_Concept for each of the findings.
+    * Note: Some findings have multiple Annotations in UMLS_Concept.
+    ***************************************************************************/
+
+   gate.AnnotationSet UC_AnnSet;
+   gate.AnnotationSet UC_FindingAS;
+   gate.Annotation    UC_Ann;
+   gate.FeatureMap    UC_features;
+   Iterator           UC_FindingIT;
+   String[]           FindingsArr;
+   String             UC_FMs;
+   Integer            UC_Ann_ID;
+   Long               UC_offset;
+
+   // get the Entire "UMLS_Concept" AnnotationSet
+   UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+   for ( int j = 0; j < 2; j++ ) {
+      if ( j == 0 ) {
+         FindingsArr = Find_left.split(":");
+         UC_FMs = FMs_left;
+      }
+      else {
+         FindingsArr = Find_right.split(":");
+         UC_FMs = FMs_right;
+      }
+
+      // add Family Members (FMs) to every UMLS_Concept Annotation with an
+      // Annotation ID stored in "Findings", a colon separated list of
+      // findings, IDs
+      for (int i=0; ((i+1) < FindingsArr.length); i=i+2) {
+         if ( !FindingsArr[(i+1)].equals("0") ) {
+            // the following output is for debugging:
+            System.out.println( "Findings_Family_Members_Findings is " +
+                                "updating UMLS_Concept:" );
+            System.out.println( "UMLS_Name\t" + FindingsArr[i] );
+            System.out.println( "UMLS Annotation ID\t" + FindingsArr[(i+1)] );
+
+            // get the UMLS_Concept Annotation ID that was saved in "Findings"
+            UC_Ann_ID = new Integer(FindingsArr[(i+1)]);
+
+            // get the UMLS_Concept Annotation
+            UC_Ann = UC_AnnSet.get( UC_Ann_ID );
+
+            // get the Document offset to the finding
+            UC_offset = UC_Ann.getStartNode().getOffset();
+        
+            // get a UMLS_Concept AnnotationSet containing all annotations at the
+            // Document offset for the finding.  this is necessary because there
+            // may be multiple UMLS_Concept annotations for the same finding.
+		    UC_FindingAS = UC_AnnSet.get( UC_offset );
+
+		    // Create an unsorted iterator over all Annotations for the finding
+            UC_FindingIT = UC_FindingAS.iterator();
+
+            // update each UMLS_Concept Annotation for the finding
+            while ( UC_FindingIT.hasNext() ) {
+               System.out.println( "adding FMs to a UMLS_Concept Annotation" );
+
+               UC_Ann = (gate.Annotation) UC_FindingIT.next();
+
+               // add FMs to the features of the UMLS_Concept Annotation
+               UC_features = UC_Ann.getFeatures();
+               UC_features.put( "FMs", UC_FMs );
+               UC_Ann.setFeatures( UC_features );
+            }
+         }
+      }
+   }
+}
+
+
+
+/******************************************************************************
+ *  Standalone Findings
+ *
+ * This rule handles all findings in the Family History sections of medical
+ * records that are not associated with any specific family members. The Java
+ * code checks to see if the findings are in the Family History section of the
+ * document.
+ * If the finding is in the Family History section, then the Java
+ * code updates the UMLS_Concept AnnotationSet with
+ *     FMs=”Family History: C0241889”. 
+ * If the finding is not in the Family History section of the document, then
+ * the Java code exits without making any changes.
+ ******************************************************************************/
+
+Rule: Standalone_Findings
+(
+   {FH_Component.kind == "Findings"}
+)
+:standalone_findings
+-->
+{
+   // get the AnnotationSet extracted by this rule
+   gate.AnnotationSet GAS = (gate.AnnotationSet) bindings.get("standalone_findings");
+
+   // Create an iterator for the unsorted Annotations
+   Iterator AnnIT = GAS.iterator();
+
+   gate.Annotation  Ann;
+   gate.Annotation  FindingAnn = null;
+  
+   boolean  FindingInFH = false;
+
+   String  Findings = "!";
+   String  AnnKind;
+   String  sectionName;
+
+   // get the Findings feature and Annotation from FH_Component
+   while (AnnIT.hasNext()) {
+      Ann = (gate.Annotation) AnnIT.next();
+      AnnKind = (String) Ann.getFeatures().get("kind");
+
+	  // get the Findings from the FH_Components annotation
+      if ( AnnKind.equals("Findings") ) {
+         Findings = (String) Ann.getFeatures().get("Findings");
+         FindingAnn = Ann;
+      }
+   }
+
+   // Check to see if the Finding Annotation "overlaps" with the Family History
+   // annotation in the "section" AnnotationSet.  If it is, then set
+   // FindingInFH to true.
+   if ( FindingAnn != null ) {
+
+      // Get the Entire "section" AnnotationSet
+      gate.AnnotationSet sectionAS = doc.getAnnotations().get("section");
+
+      // Create an iterator for the unsorted Annotations
+      Iterator sectionIT = sectionAS.iterator();
+
+      boolean  Found_FH_Section = false;
+   
+      while ( sectionIT.hasNext() && !Found_FH_Section ) {
+
+         Ann = (gate.Annotation) sectionIT.next();
+         sectionName = (String) Ann.getFeatures().get("name");
+
+         if (sectionName == null) {
+            sectionName = "";
+         }
+         else {
+            sectionName = sectionName.toUpperCase();
+         }
+
+         if ( ( sectionName.indexOf("FAMILY HISTORY") != -1 ) || 
+              ( sectionName.indexOf("FAM HX") != -1 ) ) {
+            Found_FH_Section = true;
+            FindingInFH = Ann.overlaps( FindingAnn );
+         }
+      } 
+   }
+
+   /********************************************************************
+    * If the standalone finding is in the Family History section of the
+    * document, then create a Family_History Annotation for it and add a
+    * Family Member (FMs) feature of "Family History:C0241889" to each
+    * Annotation in UMLS_Concept that correspond to the findings.
+    *
+    * NOTE: If the standalone finding is not in the Family History
+    * section of the document, then an annotation is not added to
+    * the Family_History AnnotatonSet and UMLS_Concept is not updated.
+    ********************************************************************/
+   if ( FindingInFH ) {
+   
+      // Create a feature map for the new annotation in Family_History
+      gate.FeatureMap features = Factory.newFeatureMap();
+
+      features.put( "Findings", Findings );
+      features.put( "FMs", "Family History:C0241889" );
+      features.put( "kind", "standalone" );
+      features.put( "rule", "Standalone_Findings" );
+
+      outputAS.add( GAS.firstNode(), GAS.lastNode(), "Family_History",
+                    features );
+
+      /**************************************************************************
+       * Update UMLS_Concept
+       *
+       * Update every Annotation in UMLS_Concept for each of the findings.
+       * Note: Some findings have multiple Annotations in UMLS_Concept.
+       **************************************************************************/
+
+      gate.AnnotationSet UC_AnnSet;
+      gate.AnnotationSet UC_FindingAS;
+      gate.Annotation    UC_Ann;
+      gate.FeatureMap    UC_features;
+      Iterator           UC_FindingIT;
+      Integer            UC_Ann_ID;
+      Long               UC_offset;
+
+      // split the findings, Annotation IDs into a flat array
+      String[] FindingsArr = Findings.split(":");
+
+      // get the Entire "UMLS_Concept" AnnotationSet
+      UC_AnnSet = doc.getAnnotations().get( "concept" );
+
+      // add Family Members (FMs) to every UMLS_Concept Annotation with an
+      // Annotation ID stored in "Findings", a colon separated list of
+      // findings, IDs
+      for (int i=0; ((i+1) < FindingsArr.length); i=i+2) {
+         if ( !FindingsArr[(i+1)].equals("0") ) {
+            // the following output is for debugging:
+            System.out.println( "Standalone_Findings is UPDATING UMLS_Concept:" );
+            System.out.println( "UMLS_Name\t" + FindingsArr[i] );
+            System.out.println( "UMLS Annotation ID\t" + FindingsArr[(i+1)] );
+
+            // get the UMLS_Concept Annotation ID that was saved in "Findings"
+            UC_Ann_ID = new Integer(FindingsArr[(i+1)]);
+
+            // get the UMLS_Concept Annotation
+            UC_Ann = UC_AnnSet.get( UC_Ann_ID );
+
+            // get the Document offset to the finding
+            UC_offset = UC_Ann.getStartNode().getOffset();
+        
+            // get a UMLS_Concept AnnotationSet containing all annotations at the
+            // Document offset for the finding.  this is necessary because there
+            // may be multiple UMLS_Concept annotations for the same finding.
+		    UC_FindingAS = UC_AnnSet.get( UC_offset );
+
+		    // Create an unsorted iterator over all Annotations for the finding
+   		    UC_FindingIT = UC_FindingAS.iterator();
+
+            // update each UMLS_Concept Annotation for the finding
+            while ( UC_FindingIT.hasNext() ) {
+               System.out.println( "adding 'Family History:C0241889' to a " +
+                                   "UMLS_Concept Annotation" );
+
+		       UC_Ann = (gate.Annotation) UC_FindingIT.next();
+
+               // add FMs to the features of the UMLS_Concept Annotation
+               UC_features = UC_Ann.getFeatures();
+               UC_features.put( "FMs", "Family History:C0241889" );
+               UC_Ann.setFeatures( UC_features );
+            }
+         }
+      }
+   }
+}

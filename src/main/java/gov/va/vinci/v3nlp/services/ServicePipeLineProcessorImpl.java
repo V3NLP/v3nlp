@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 
@@ -46,6 +48,15 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
         logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses() + " for user: '" + pipeLine.getUserToken().trim() + "'");
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
 
+        Map serviceMap = new HashMap<String, NlpComponent>();
+
+        for (ServicePipeLineComponent c: pipeLine.getServices())
+        {
+            if (!GenericValidator.isBlankOrNull(c.getServiceUid())) {
+                serviceMap.put(c.getServiceUid(), registryService.getNlpComponent(c.getServiceUid()));
+            }
+        }
+
         try {
             List<DocumentInterface> newDocuments = new ArrayList<DocumentInterface>();
             BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(corpus.getDocuments().size());
@@ -66,7 +77,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             /** Put the documents on the queue for processing. **/
             for (DocumentInterface d : corpus.getDocuments()) {
-                Future<DocumentInterface> f = executor.submit(new CallableDocumentServiceProcessor(pipeLine, d));
+                Future<DocumentInterface> f = executor.submit(new CallableDocumentServiceProcessor(pipeLine, d, serviceMap));
                 futures.add(f);
             }
 
