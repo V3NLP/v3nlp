@@ -5,6 +5,7 @@ public class Sectionizer extends BaseOperation {
 
 	private String[] sections;
 	private boolean exclude=false;
+    private String customConfiguration;
 
     public Sectionizer()
     {
@@ -30,5 +31,13 @@ public class Sectionizer extends BaseOperation {
 
     public void setExclude(boolean exclude) {
         this.exclude = exclude;
+    }
+
+    public String getCustomConfiguration() {
+        return customConfiguration;
+    }
+
+    public void setCustomConfiguration(String customConfiguration) {
+        this.customConfiguration = customConfiguration;
     }
 }

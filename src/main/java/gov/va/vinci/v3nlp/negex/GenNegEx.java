@@ -40,7 +40,7 @@ limitations under the License.
 
 public class GenNegEx {
 
-    String[] TO_ESCAPE = {"+", "*", "."};
+    String[] TO_ESCAPE = {"+", "*", ".", "(", ")", "}", "{", "?"};
 
     public String negCheck(String sentenceString, String phraseString, List<String> ruleStrings,
                            boolean negatePossible) throws Exception {
@@ -87,7 +87,7 @@ public class GenNegEx {
         } catch (Exception e) {
             // IF There was an exception, escape the phrase for special regex characters. It is more
             // efficient to only escape if an error, as most phrases will work fine.
-            System.out.println("In Special processing...");
+            System.out.println("In Special processing... (" + phrase.trim() + ")");
             pph = Pattern.compile(escapeRegexCharacters(phrase.trim()), Pattern.CASE_INSENSITIVE);
         }
          Matcher mph = pph.matcher(sentence);

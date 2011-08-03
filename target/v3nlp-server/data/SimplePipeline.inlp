@@ -1,0 +1,14 @@
+<SavedPipeLine>
+  <NLPComponent name="FetchPanel" x="25" y="5" height="141" width="491">
+    <service type="DirectoryDataSource" dataDirectory="C:\Documents and Settings\ryan\My Documents\NLP" panelName="Fetch"/>
+  </NLPComponent>
+  <NLPComponent name="ConceptPanel" x="24" y="153" height="133" width="328">
+    <service type="Concept" expression="hypertension" code="cd1" expressionName="Hypertension Expression"/>
+  </NLPComponent>
+  <NLPComponent name="ConceptPanel" x="25" y="311" height="134" width="326">
+    <service type="Concept" expression="fever" code="cd-fever" expressionName="Fever Expression"/>
+  </NLPComponent>
+  <NLPComponent name="ReviewResultsPanel" x="25" y="470" height="75" width="249">
+    <service type="ReviewResults"/>
+  </NLPComponent>
+</SavedPipeLine>

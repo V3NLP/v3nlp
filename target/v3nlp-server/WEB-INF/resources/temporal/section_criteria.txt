@@ -1,0 +1,38 @@
+## This file contains the expressions, which when compiled and evaluated,
+## define if the current section should be considered for the information
+## extraction. The expressions are sorted in the decreasing section 
+## importance order. The next expression is considered if no information
+## was extracted from the section selected by the previous expression
+
+## Lines starting with ## are treated as comments and are ignored
+## Empty lines are ignored as well.
+
+## Primary Diagnosis:
+## ==================
+## category = PRI
+## category = DIAG
+## name = REPORT_DESCRIPTION:
+
+## (category = PRI) || (name = REPORT_DESCRIPTION:)
+## category = DIAG
+
+## (category = PRI) || (category = DIAG) || (category = HIST)
+## ANY
+
+## Co-morbidity: 
+## ==================
+## category = HIST
+## category = ANY
+
+## Family History
+## (category = HIST)
+## ANY
+
+## 
+## Comorbidity
+## (!(category = PRI)) && (!(name = REPORT_DESCRIPTION:)) && (!(category = DIAG)) && (!(category = ADMIN))
+
+## This will extract UMLS concepts from all sections of the document.
+## ==================================================================
+
+ANY

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<concepts>
+
+   <!-- depression synonyms follow -->
+
+   <concept>
+      <def><![CDATA[(?i)(?m)major\s+(depression|depressive\s+disorder)|(depressed|low)\s+mood|sadness|spirits|(?<!(respiratory|neurologic|ST)\s{0,100})depression|depressed(?!\s{1,100}counts)]]></def>
+      <capt_group_num>0</capt_group_num>
+      <type>RegEx</type>
+      <name>Depression Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[DSG-NLP:depression]]></value>
+         </feature>
+      </features>
+   </concept>
+
+   <!-- unchanged synonyms follow-->
+
+   <concept>
+      <def><![CDATA[(?i)(?m)no\s+better|unchanged|unimproved|about\s+the\s+same|not\s+doing\s+well|still|continu(es|ed|ing|e)|remains\s+(poor|low|significant)|mood\s+continues\s+to\s+be\s+(poor|low)|(much\s+)?worse]]></def>
+      <capt_group_num>0</capt_group_num>
+      <type>RegEx</type>
+      <name>Unchanged Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[DSG-NLP:unchanged]]></value>
+         </feature>
+      </features>
+   </concept>
+
+   <!-- CGI3 synonyms follow-->
+
+   <concept>
+      <def><![CDATA[(?i)(?m)(?<!(not|non)\s{0,100}-?\s{0,100})dysphoric|CGI\s*(=|:|is)?\s*(3|4|5|6|7)]]></def>
+      <capt_group_num>0</capt_group_num>
+      <type>RegEx</type>
+      <name>CGI3 Keyword</name>
+      <features>
+         <feature>
+            <name>code</name>
+            <value><![CDATA[DSG-NLP:CGI3]]></value>
+         </feature>
+      </features>
+   </concept>
+
+</concepts>

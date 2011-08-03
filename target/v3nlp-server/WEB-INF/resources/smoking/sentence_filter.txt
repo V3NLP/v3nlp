@@ -1,0 +1,7 @@
+## Contains the regular expressions defining the keywords that
+## MUST be present in the original string in order for it to be
+## considered for classification
+
+(?i)smok\S+
+(?i)tobacco
+(?i)cigar

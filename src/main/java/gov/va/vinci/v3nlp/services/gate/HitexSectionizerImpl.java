@@ -1,17 +1,18 @@
 package gov.va.vinci.v3nlp.services.gate;
 
 import gate.Corpus;
-import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.Sectionizer;
 import org.apache.commons.validator.GenericValidator;
+import org.xml.sax.InputSource;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.util.List;
 
 public class HitexSectionizerImpl extends BaseGateService implements NlpProcessingUnit {
@@ -21,7 +22,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
     /**
      * Process method
      * @param config This is an xml configuration for custom section headers. Not needed
-     * if using the standard (configured) section headers. If passing in a custom
+     * if using the standard (vi tconfigured) section headers. If passing in a custom
      * configuration, it should be in the format:
      * <?xml version="1.0" encoding="ISO-8859-1" ?>
      * <!--  This file contains header definitions for Sectionizer NLP component -->
@@ -42,7 +43,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
      * and section content.
      */
     @Override
-    public DocumentInterface process(String config, DocumentInterface d) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
         SerialAnalyserController controller = null;
         Corpus corpus = null;
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
@@ -83,15 +84,23 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
                                 SerialAnalyserController controller) {
         Sectionizer s = this.createSectionizer();
         if (!GenericValidator.isBlankOrNull(customSectionizerRules)) {
-            List<String> newRules = new ArrayList<String>();
-            for (String line : customSectionizerRules.split(
-                    "\r\n|\r|\n")) {
-                if (!org.apache.commons.validator.GenericValidator
-                        .isBlankOrNull(line)) {
-                    newRules.add(line);
+
+            org.w3c.dom.Document doc = null;
+            try {
+                // Create a builder factory
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setValidating(false);
+                // Create the builder and parse the file
+                doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(customSectionizerRules)));
+                if (doc==null) {
+                    throw new RuntimeException("Custom sectionizer rules parsing returned null.");
                 }
+                s.setHeadersList(doc);
             }
-            s.setHeadersList(newRules);
+            catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+
         }
         controller.add(s);
     }

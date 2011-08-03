@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       		http://gate.ac.uk/ns/spring  
+       		http://gate.ac.uk/ns/spring.xsd
+       		http://www.springframework.org/schema/context 
+       		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       		http://www.springframework.org/schema/flex 
+            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+	<gate:init gate-home="file:src/main/webapp/WEB-INF/" site-config-file="file:src/main/webapp/WEB-INF/config/gate.xml">
+		<gate:preload-plugins>
+			<value>file:src/test/nlp-resources/</value>
+		</gate:preload-plugins>
+	</gate:init>
+
+	<gate:resource id="defaultUmlsConceptFinder"
+		resource-class="hitex.gate.UMLSConceptFinder">
+		<gate:parameters>
+			<entry key="filterMappings">
+				<value>true</value>
+			</entry>
+			<entry key="filterHostname">
+				<value>localhost</value>
+			</entry>
+			<entry key="filterPort">
+				<value>3306</value>
+			</entry>
+			<entry key="filterDbname">
+				<value>umls_2004aa</value>
+			</entry>
+			<entry key="filterUsername">
+				<value>webapp</value>
+			</entry>
+			<entry key="filterPassword">
+				<value>secret</value>
+			</entry>
+			<entry key="filterTable">
+				<value>mappings</value>
+			</entry>
+
+			<entry key="filterSemanticTypes">
+				<value>true</value>
+			</entry>
+
+			<entry key="semanticTypesList">
+				<list>
+					<value>T019: Congenital Abnormality</value>
+					<value>T020: Acquired Abnormality</value>
+					<value>T033: Finding</value>
+					<value>T037: Injury or Poisoning</value>
+					<value>T046: Pathologic Function</value>
+					<value>T047: Disease or Syndrome</value>
+					<value>T048: Mental or Behavioral Dysfunction</value>
+					<value>T049: Cell or Molecular Dysfunction</value>
+					<value>T099: Family Group</value>
+					<value>T184: Sign or Symptom</value>
+					<value>T190: Anatomical Abnormality</value>
+					<value>T191: Neoplastic Process</value>
+				</list>
+			</entry>
+
+			<entry key="filterSections">
+				<value>true</value>
+			</entry>
+			<entry key="sectionCriteriaList">
+				<list>
+					<value>ANY</value>
+				</list>
+			</entry>
+
+			<entry key="umlsHostname">
+				<value>localhost</value>
+			</entry>
+			<entry key="umlsPort">
+				<value>3306</value>
+			</entry>
+			<entry key="umlsDatabaseName">
+				<value>umls_2004aa</value>
+			</entry>
+			<entry key="umlsUsername">
+				<value>webapp</value>
+			</entry>
+			<entry key="umlsPassword">
+				<value>secret</value>
+			</entry>
+			<entry key="stop">
+				<value>true</value>
+			</entry>
+			<entry key="stem">
+				<value>true</value>
+			</entry>
+			<entry key="truncate">
+				<value>true</value>
+			</entry>
+			<entry key="suppress">
+				<value>STRONG_CHV</value>
+			</entry>
+			<entry key="cacheSize">
+				<value>0</value>
+			</entry>
+			<entry key="calcRelevanceScore">
+				<value>true</value>
+			</entry>
+			<entry key="useCustomSemanticTypes">
+				<value>false</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultTextTokenizer" resource-class="hitex.gate.Tokenizer">
+		<gate:parameters>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">
+					file:src/main/webapp/WEB-INF/resources/tokenizer/rules.txt
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultSentenceSplitter"
+		resource-class="hitex.gate.SentenceSplitter">
+	</gate:resource>
+
+	<gate:resource id="defaultRegexConceptFinder" scope="prototype"
+		resource-class="hitex.gate.regex.ConceptFinder">
+		<gate:parameters>
+			<entry key="useSections">
+				<value>true</value>
+			</entry>
+			<entry key="filterURL">
+				<value type="org.springframework.core.io.Resource">
+					file:src/main/webapp/WEB-INF/resources/regex/section_filter.txt
+				</value>
+			</entry>
+			<entry key="rulesURL">
+				<value type="org.springframework.core.io.Resource">
+					file:src/main/webapp/WEB-INF/resources/regex/rules.xml
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="sentenceSplitter" resource-class="hitex.gate.SentenceSplitter"
+		resource-name="sentenceSplitter">
+	</gate:resource>
+
+
+	<gate:resource id="oParser" resource-class="gov.va.research.v3nlp.gate.pr.OParser"
+		resource-name="oParser">
+		<gate:parameters>
+			<entry key="model">
+				<value type="org.springframework.core.io.Resource">
+					file:src/main/webapp/WEB-INF/resources/chunker_opennlp/EnglishChunk.bin.gz
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="hitexPOSTagger" resource-class="gov.va.research.v3nlp.gate.pr.OpenNLPPOSTaggerAdapter"
+		resource-name="examplePOSTagger">
+		<gate:parameters>
+			<entry key="model">
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz
+				</value>
+			</entry>
+			<entry key="dictionary">
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/tag.dictionary.txt
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+	<gate:resource id="defaultSectionizer" scope="prototype"
+		resource-class="hitex.gate.Sectionizer" resource-name="exampleSectionizer">
+		<gate:parameters>
+			<entry key="headersURL">
+				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/sectionizer/dis_headers.xml
+				</value>
+			</entry>
+		</gate:parameters>
+	</gate:resource>
+
+</beans>

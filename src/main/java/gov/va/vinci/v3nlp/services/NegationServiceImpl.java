@@ -4,6 +4,7 @@ package gov.va.vinci.v3nlp.services;
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import opennlp.maxent.MaxentModel;
 import opennlp.maxent.io.BinaryGISModelReader;
 import opennlp.tools.sentdetect.SentenceDetectorME;
@@ -23,6 +24,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
 
     Resource negationRulesFile;
 
+
     SentenceDetectorME sentenceDetector;
 
     GenNegEx genNegEx = new GenNegEx();
@@ -33,7 +35,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
     List<String> defaultNegationConfigurationList = new ArrayList<String>();
 
     @Override
-    public DocumentInterface process(String config, DocumentInterface d) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
 
         List<String> negationRules = new ArrayList<String>();
         if (!GenericValidator.isBlankOrNull(config)) {

@@ -6,9 +6,11 @@ import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 
 import java.util.Hashtable;
+import java.util.List;
 
 public class GenericGateService extends BaseGateService implements NlpProcessingUnit {
 
@@ -18,7 +20,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
         this.resource = resource;
     }
 
-    public DocumentInterface process(String config, DocumentInterface document) {
+    public DocumentInterface process(String config, DocumentInterface document,List<NlpComponentProvides> previousModuleProvided) {
         SerialAnalyserController controller = null;
 		gate.Corpus corpus = null;
 
