@@ -2,7 +2,10 @@ package gov.va.vinci.v3nlp;
 
 import org.apache.commons.validator.GenericValidator;
 import org.apache.xerces.dom.DocumentImpl;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,13 +28,12 @@ public class Utilities {
         }
     }
 
-    public static String sectionizerConfigCreator(String rawConfig) {
-        org.w3c.dom.Document doc = null;
+    public static Document sectionizerConfigCreator(String rawConfig) {
+        Document doc = null;
         try {
-            // Create a builder factory
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
-            // Create the builder and parse the file
+
             doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(rawConfig)));
             if (doc == null) {
                 throw new RuntimeException("Custom sectionizer rules parsing returned null.");
@@ -39,23 +41,23 @@ public class Utilities {
 
             DocumentImpl  resultDocument = new DocumentImpl();
             Element resultRoot = resultDocument.createElement("headers");
-            resultDocument.appendChild(resultRoot);
+
 
             NodeList headerRecords = doc.getElementsByTagName("header");
             NodeList inclusions = doc.getElementsByTagName("include");
             NodeList exclusions = doc.getElementsByTagName("exclude");
-
 
             /**
              * Parse inclusion/exclusion lists.
              */
             List<String> inclusionList = new ArrayList<String>();
             for (int i=0; i < inclusions.getLength(); i++) {
-                inclusionList.add(inclusions.item(i).getTextContent());
+                inclusionList.add(inclusions.item(i).getTextContent().trim());
             }
+
             List<String> exclusionList = new ArrayList<String>();
             for (int i=0; i < exclusions.getLength(); i++) {
-                exclusionList.add(exclusions.item(i).getTextContent());
+                exclusionList.add(exclusions.item(i).getTextContent().trim());
             }
 
             /**
@@ -68,10 +70,11 @@ public class Utilities {
 
                 String newCategories = "";
                 for (String currentNodeCat: eachCat) {
+                    currentNodeCat = currentNodeCat.trim();
                     if (exclusionList.contains(currentNodeCat)) {
-                        System.out.println("Need to do exclusion.");
+                    //   System.out.println("Need to do exclusion:" + currentNodeCat);
                     } else if (inclusionList.size() > 0 && !inclusionList.contains(currentNodeCat)) {
-                        System.out.println("Not in inclusion list, and inclusion list is populated...");
+                    //   System.out.println("Not in inclusion list, and inclusion list is populated:" + currentNodeCat);
                     } else {
                         newCategories += currentNodeCat + ", ";
                     }
@@ -84,18 +87,23 @@ public class Utilities {
                 }
             }
 
+            resultDocument.appendChild(resultRoot);
+            return resultDocument;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
+
+    public static String transformDoc(Document doc) throws Exception{
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
             //initialize StreamResult with File object to save to file
             StreamResult result = new StreamResult(new StringWriter());
-            DOMSource source = new DOMSource(resultDocument);
+            DOMSource source = new DOMSource(doc);
             transformer.transform(source, result);
 
             return result.getWriter().toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }

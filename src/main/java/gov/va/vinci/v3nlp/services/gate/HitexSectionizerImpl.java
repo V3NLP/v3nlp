@@ -5,10 +5,12 @@ import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.Sectionizer;
 import org.apache.commons.validator.GenericValidator;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,6 +38,12 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
 	 *  <header categories="OTHER" captGroupNum="0" >
 	 * 	    <![CDATA[(?i)ABD\s{0,3}(:|;)]]>
 	 *  </header>
+     *  <includes>
+     *      <include>section to include in output</include>
+     *  </includes>
+     *  <excludes>
+     *      <exclude>Section to exclude in output</exclude>
+     *  </excludes>
      * </headers>
      *
      * @param d The Document to processes.
@@ -61,7 +69,8 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
 
             // run the application
             controller.execute();
-            return(processGateResults(corpus));
+            DocumentInterface resultDoc = processGateResults(corpus, (gov.va.vinci.cm.Document)d, 0);
+            return(resultDoc);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -83,24 +92,16 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
     private void addSectionizer(String customSectionizerRules,
                                 SerialAnalyserController controller) {
         Sectionizer s = this.createSectionizer();
-        if (!GenericValidator.isBlankOrNull(customSectionizerRules)) {
 
-            org.w3c.dom.Document doc = null;
+        if (!GenericValidator.isBlankOrNull(customSectionizerRules)) {
             try {
-                // Create a builder factory
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setValidating(false);
-                // Create the builder and parse the file
-                doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(customSectionizerRules)));
-                if (doc==null) {
-                    throw new RuntimeException("Custom sectionizer rules parsing returned null.");
-                }
-                s.setHeadersList(doc);
+                Document d =  Utilities.sectionizerConfigCreator(customSectionizerRules);
+                s.setHeadersList(d);
+                s.setIncludeUnclassified(false);
             }
             catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
-
         }
         controller.add(s);
     }

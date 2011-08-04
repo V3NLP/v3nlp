@@ -145,13 +145,13 @@
 
         <!--
             Other deps.
-
+         -->
         <dependency>
             <groupId>opennlp</groupId>
             <artifactId>opennlp</artifactId>
             <version>1.1.0</version>
         </dependency>
-         -->
+
         <dependency>
             <groupId>gate.plugins</groupId>
             <artifactId>maxent</artifactId>

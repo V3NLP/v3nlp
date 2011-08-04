@@ -34,7 +34,6 @@ public class CallableDocumentServiceProcessor implements Callable {
             if (comp.getServiceUid() == null) {
                 continue;
             }
-
             logger.info("\t\t[ " + pipeLine.getPipeLineName() + " ~~ " + document.getDocumentName() + " ] Component:" + comp.getServiceUid() + " Keep in final result:" + comp.isKeepAnnotationsInFinalResult());
             if (!ServiceListThreadLocal.get().containsKey(comp.getServiceUid())) {
                 ServiceListThreadLocal.get().put(comp.getServiceUid(), StaticApplicationContext.getApplicationContext().getBean(comp.getServiceUid(), NlpProcessingUnit.class));
@@ -42,9 +41,12 @@ public class CallableDocumentServiceProcessor implements Callable {
 
             NlpProcessingUnit bean =ServiceListThreadLocal.get().get(comp.getServiceUid());
             document = bean.process(comp.getConfiguration(), document, previousModuleProvided);
-            previousModuleProvided = ((NlpComponent)serviceMap.get(comp.getServiceUid())).getProvides();
-        }
 
+
+            if (!"hitex.gate.Tokenizer".equals(comp.getServiceUid())) {
+                previousModuleProvided = ((NlpComponent)serviceMap.get(comp.getServiceUid())).getProvides();
+            }
+        }
         return document;
     }
 
