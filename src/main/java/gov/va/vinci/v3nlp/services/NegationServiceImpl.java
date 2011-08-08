@@ -1,7 +1,10 @@
 package gov.va.vinci.v3nlp.services;
 
 
-import gov.va.vinci.cm.*;
+import gov.va.vinci.cm.Annotation;
+import gov.va.vinci.cm.AnnotationInterface;
+import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.cm.Feature;
 import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;

@@ -1,7 +1,11 @@
 package gov.va.vinci.v3nlp.expressionlib;
 
 import gov.va.vinci.v3nlp.LabelValue;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,12 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.validator.GenericValidator;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 public class ExpressionServiceImpl {
 

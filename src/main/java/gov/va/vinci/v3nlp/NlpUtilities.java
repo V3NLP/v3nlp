@@ -55,7 +55,6 @@ public class NlpUtilities {
                 }
             }
 
-            // TODO set theNumWhiteSpaceThatFollows if available.
             resultAnnotation.setOriginalContent(content);
             resultAnnotation.getFeatures().add(feature);
             return resultAnnotation;

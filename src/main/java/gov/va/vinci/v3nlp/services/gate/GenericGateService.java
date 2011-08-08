@@ -1,15 +1,12 @@
 package gov.va.vinci.v3nlp.services.gate;
 
-import gate.Document;
 import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
-import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 
-import java.util.Hashtable;
 import java.util.List;
 
 public class GenericGateService extends BaseGateService implements NlpProcessingUnit {
@@ -41,7 +38,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 
 			// run the application
 			controller.execute();
-			return(processGateResults(corpus));
+			return(processGateResults(corpus, (gov.va.vinci.cm.Document)document, 0));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

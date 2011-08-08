@@ -3,9 +3,6 @@ package gov.va.vinci.v3nlp.model.operations;
 
 import gov.va.vinci.v3nlp.model.BaseNlpModule;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class BaseOperation extends BaseNlpModule {
 
     private boolean keepFeatureInResult= true;

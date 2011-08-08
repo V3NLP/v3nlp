@@ -1,7 +1,6 @@
 package gov.va.vinci.v3nlp.controller;
 
 import gov.va.vinci.v3nlp.expressionlib.Expression;
-
 import org.displaytag.decorator.TableDecorator;
 
 public class ExpressionLibTableDecorator extends TableDecorator {

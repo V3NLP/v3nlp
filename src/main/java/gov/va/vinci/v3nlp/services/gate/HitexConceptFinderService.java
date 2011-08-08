@@ -1,16 +1,16 @@
 package gov.va.vinci.v3nlp.services.gate;
 
-import gate.*;
+import gate.Factory;
+import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
-import gov.va.vinci.cm.*;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.Document;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.regex.ConceptFinder;
 import org.apache.commons.validator.GenericValidator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
