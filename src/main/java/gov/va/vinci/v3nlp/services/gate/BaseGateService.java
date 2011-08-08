@@ -1,24 +1,21 @@
 package gov.va.vinci.v3nlp.services.gate;
 
-import gate.AnnotationSet;
+import gate.*;
 import gate.Corpus;
 import gate.Document;
-import gate.Factory;
-import gate.FeatureMap;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.InvalidOffsetException;
 import gov.va.vinci.cm.Annotation;
-import gov.va.vinci.cm.AnnotationInterface;
-import gov.va.vinci.cm.DocumentInterface;
-import gov.va.vinci.cm.Feature;
-import gov.va.vinci.cm.FeatureElement;
+import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.NlpUtilities;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+import gov.va.vinci.v3nlp.services.BaseNlpProcessingUnit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class BaseGateService {
+public class BaseGateService extends BaseNlpProcessingUnit {
 
     /**
      * Create the corpus given a common model document.
@@ -43,7 +40,7 @@ public class BaseGateService {
 
         for (AnnotationInterface a : d.getAnnotations().getAll()) {
             try {
-                addAnnotations(doc, a);
+                addCommonModelAnnotationToGateDoc(doc, a);
             } catch (InvalidOffsetException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -100,21 +97,24 @@ public class BaseGateService {
      * @return
      * @throws InvalidOffsetException
      */
-    private List<Annotation> processDocumentForReturn(Document gateDoc, Integer offset) throws InvalidOffsetException {
+    protected List<Annotation> processDocumentForReturn(Document gateDoc, Integer offset) throws InvalidOffsetException {
 
         AnnotationSet annotations = gateDoc.getAnnotations();
         List<Annotation> results = new ArrayList<Annotation>();
         Iterator<gate.Annotation> i = annotations.iterator();
         while (i.hasNext()) {
             gate.Annotation a = i.next();
-            results.add(NlpUtilities.convertAnnotation(a,
+            // This feature is set on existing annotations converted from common model.
+            if (!a.getFeatures().containsKey("V3NLP-CONVERTED-FROM-COMMON-MODEL")) {
+                 results.add(NlpUtilities.convertAnnotation(a,
                     gateDoc.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString(),
                     offset));
+            }
         }
         return results;
     }
 
-    private void addAnnotations(gate.Document doc, AnnotationInterface a) throws InvalidOffsetException {
+    private void addCommonModelAnnotationToGateDoc(gate.Document doc, AnnotationInterface a) throws InvalidOffsetException {
        if (doc == null) {
             String message = "Invalid document: 'null'.";
             throw new RuntimeException(message);
@@ -130,26 +130,11 @@ public class BaseGateService {
                 features.put(fe.getName(), fe.getValue());
             }
 
+            features.put("V3NLP-CONVERTED-FROM-COMMON-MODEL", "true");
             // Add the annotation for this particular feature.
             newAnnotations.add(new Long(a.getBeginOffset()), new Long(a
                     .getEndOffset()), f.getFeatureName(), features);
         }
 
-    }
-
-    protected List<Annotation> getProcessList(DocumentInterface originalDocument, List<NlpComponentProvides> previousModuleProvided) {
-        List<Annotation> toProcess = new ArrayList<Annotation>();
-        if (previousModuleProvided == null || previousModuleProvided.size() < 1) {
-            Annotation a = new Annotation();
-            a.setBeginOffset(0);
-            a.setEndOffset(originalDocument.getContent().length());
-            a.setContent(originalDocument.getContent());
-            toProcess.add(a);
-        } else {
-            for (NlpComponentProvides p : previousModuleProvided) {
-                toProcess.addAll(((gov.va.vinci.cm.Document) originalDocument).findAnnotationsWithFeatureName(p.getName()));
-            }
-        }
-        return toProcess;
     }
 }

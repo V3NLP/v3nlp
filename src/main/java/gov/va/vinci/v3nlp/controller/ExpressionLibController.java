@@ -1,7 +1,6 @@
 package gov.va.vinci.v3nlp.controller;
 
 import gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl;
-
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

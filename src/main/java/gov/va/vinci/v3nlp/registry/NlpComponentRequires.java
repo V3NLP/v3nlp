@@ -1,7 +1,10 @@
 package gov.va.vinci.v3nlp.registry;
 
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Entity(name="nlp_component_requires")

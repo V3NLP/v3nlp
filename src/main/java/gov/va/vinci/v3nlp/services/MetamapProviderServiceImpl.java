@@ -3,17 +3,22 @@ package gov.va.vinci.v3nlp.services;
 import gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker;
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class MetamapProviderServiceImpl implements NlpProcessingUnit {
+public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
 
     private RestTemplate restTemplate;
 
     private MetaMapServiceHttpInvoker metamapService;
+
+    private static Log logger = LogFactory.getLog(ServicePipeLineProcessorImpl.class);
 
     /**
      * Processing method.
@@ -23,95 +28,44 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
      *               <metamap-concepts>
      *               <semantic-group>ANAT</semantic-group>
      *               </metamap-concepts>
-     *               <sections>
-     *               <section>DIAG</section>
-     *               <section>ADMIN</section>
-     *               <section>ADM</section>
-     *               </sections>
-     *               <p/>
-     *               Sections limits processing to pre-annotated sections via the HitexSectionizerImpl. Leave
-     *               sections element off to process the entire document.
+     *               This module only sends the previous modules annotations content to metamap.
      * @param d
-     * @return
+     * @param previousModuleProvided The list of annotations the previous module created. This modules only sends those
+     *      to metamap.
+     * @return  a document with metamap annotations.
      */
     @Override
     public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
-        /**
-         *
-         * need sections and metamap concept lists.
-         */
-        List<String> sections = getSectionList(config);
+        List<Annotation> toProcess = this.getProcessList(d, previousModuleProvided);
         List<String> semanticGroups = getSemanticGroups(config);
+        Date dt= new Date();
 
-        if (!sections.isEmpty()) { // Processing sections only.
-            List<Annotation> sectionsToBeProcessed = getSectionAnnotations(
-                    d, sections);
-
-            // Send each section to metamap
-            for (Annotation a : sectionsToBeProcessed) {
-                // Run Metamap on this section.
-                Document newDocument = null;
-                try {
-                    newDocument = metamapService.getMapping(
-                            d.getContent().substring(a.getBeginOffset(),
-                                    a.getEndOffset()), false,
-                            new ArrayList<String>(), semanticGroups);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-                // Add annotation back in.
-                for (AnnotationInterface newAnnotation : newDocument
-                        .getAnnotations().getAll()) {
-                    newAnnotation.setBeginOffset(newAnnotation
-                            .getBeginOffset()
-                            + a.getBeginOffset());
-                    newAnnotation.setEndOffset(newAnnotation.getBeginOffset() + a.getLength() - 1);
-                    d.getAnnotations().getAll().add(newAnnotation);
-                }
-            }
-        } else { // Processing whole document.
+        /**
+         * Process annotations that need processed.
+         *
+         **/
+        for (Annotation a : toProcess) {
             Document newDocument = null;
             try {
-                newDocument = metamapService.getMapping(d.getContent(),
+                newDocument = metamapService.getMapping(a.getContent(),
                         false, new ArrayList<String>(), semanticGroups);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
 
             }
-            d.getAnnotations().getAll().addAll(
-                    newDocument.getAnnotations().getAll());
-        }
-        return d;
-    }
 
-    private List<String> getSectionList(String config) {
-        List<String> results = new ArrayList<String>();
-        boolean inSections = false;
-        boolean exclude = false;
-
-        for (String line : config.split(
-                "\r\n|\r|\n")) {
-            if (!org.apache.commons.validator.GenericValidator
-                    .isBlankOrNull(line)) {
-
-                if (line.trim().equals("<sections>")) {
-                    inSections = true;
-                    exclude = false;
-                }
-                if (line.trim().equals("<sections exclude='true'>")) {
-                    inSections = true;
-                    exclude = true;
-                }
-
-                if (inSections && !exclude && line.contains("<section>")) {
-                    String section = line.substring(line.indexOf("<section>") + 9, line.lastIndexOf("</section>"));
-                    results.add(section);
-                }
+            /** Add results back to the document. **/
+            for (AnnotationInterface newAnnotation : newDocument.getAnnotations().getAll()) {
+                newAnnotation.setBeginOffset(newAnnotation.getBeginOffset() + a.getBeginOffset());
+                newAnnotation.setEndOffset(newAnnotation.getEndOffset() + a.getBeginOffset());
+                d.getAnnotations().getAll().add(newAnnotation);
             }
         }
-        return results;
+
+        logger.debug("\t\t--------> Metamap processed document in: " + (new Date().getTime() - dt.getTime()) + "ms");
+
+        return d;
     }
 
     private List<String> getSemanticGroups(String config) {
@@ -126,41 +80,6 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
             }
         }
         return results;
-    }
-
-    private List<Annotation> getSectionAnnotations(DocumentInterface d,
-                                                   List<String> sectionsSelected) {
-        FeatureElement sectionFeatureElement = new FeatureElement("type",
-                "section_header");
-        List<Annotation> annotations = new ArrayList<Annotation>();
-        // Walk through annotations
-        for (AnnotationInterface a : d.getAnnotations().getAll()) {
-            List<String> annotationSections = new ArrayList<String>();
-            // Go through all features on an annotation.
-            for (Feature f : ((Annotation) a).getFeatures()) {
-                if (f.getFeatureElements() == null) {
-                    continue;
-                }
-
-                // See if it is a section element, and if so, get the sections.
-                for (FeatureElement fe : f.getFeatureElements()) {
-                    if (fe.equals(sectionFeatureElement)) {
-                        annotationSections
-                                .addAll(getCategoriesFromFeatureElements(f));
-                    }
-                } // End FeatureElement Loop
-            } // End Feature Loop
-
-            // See if any of the sections selected are in this annotation. If
-            // so, add the
-            // annotation to return.
-            for (String section : sectionsSelected) {
-                if (annotationSections.contains(section)) {
-                    annotations.add((Annotation) a);
-                }
-            }
-        } // End each Annotation Loop
-        return annotations;
     }
 
     private List<String> getCategoriesFromFeatureElements(Feature f) {
@@ -192,15 +111,5 @@ public class MetamapProviderServiceImpl implements NlpProcessingUnit {
 
     public void setMetamapService(MetaMapServiceHttpInvoker metamapService) {
         this.metamapService = metamapService;
-    }
-
-    @Override
-    public void initialize() {
-        // No-op in this implementation.
-    }
-
-    @Override
-    public void destroy() {
-        // No-op in this implementation.
     }
 }

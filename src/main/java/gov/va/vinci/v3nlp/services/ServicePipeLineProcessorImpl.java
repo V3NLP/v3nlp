@@ -15,10 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -45,6 +42,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
 	
         Corpus returnCorpus = corpus;
+        Date startTime = new Date();
         logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses() + " for user: '" + pipeLine.getUserToken().trim() + "'");
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
 
@@ -109,7 +107,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
             executor = null;
 
             returnCorpus.setDocuments(newDocuments);
-            logger.info("End pipeline processing [" + pipeLine.getPipeLineName() + "]");
+            logger.info("End pipeline processing [" + pipeLine.getPipeLineName() + "] in " + (new Date().getTime() - startTime.getTime()) + "ms");
 
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
 
@@ -161,10 +159,14 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                 List<Feature> toBeRemoved = new ArrayList<Feature>();
                 if (a.getFeatures() != null) {
                     for (Feature f : a.getFeatures()) {
-                        if (f.getFeatureName() != null) {
-                            if (toRemove.contains(f.getFeatureName())) {
+                        String fName = f.getFeatureName();
+                        if (fName == null) {
+                            fName= f.getMetaData().getPedigree();
+                            f.setFeatureName(fName);
+                        }
+
+                        if (fName != null && toRemove.contains(fName)) {
                                 toBeRemoved.add(f);
-                            }
                         }
                     }
                     a.getFeatures().removeAll(toBeRemoved);

@@ -1,6 +1,5 @@
 package gov.va.vinci.v3nlp.negex;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Utility class to sort the negation rules by length in descending order.

@@ -1,12 +1,13 @@
 package gov.va.vinci.v3nlp.dao;
 
 
-import java.sql.Types;
 import org.hibernate.Hibernate;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.dialect.function.VarArgsSQLFunction;
+
+import java.sql.Types;
 
 public class SQLiteDialect extends Dialect {
     public SQLiteDialect() {
