@@ -1,1 +1,0 @@
-The models were created with Weka 3.5.7.
