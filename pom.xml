@@ -17,27 +17,6 @@
         <url>http://www.bmi.utah.edu</url>
     </organization>
 
-    <repositories>
-        <repository>
-            <id>v3nlp.release.repo</id>
-            <name>v3NLP Releases Repository</name>
-            <layout>default</layout>
-            <url>http://10.5.17.158/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>uima-incubator</id>
-            <name>UIMA Incubator Repository</name>
-            <layout>default</layout>
-            <url>http://people.apache.org/repo/m2-incubating-repository/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <developers>
         <developer>
             <id>rcornia</id>
@@ -77,29 +56,14 @@
             <version>1.4</version>
         </dependency>
 
-        <!--
-            UIMA Deps
-          -->
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimaj-as-core</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimaj-as-activemq</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-
-
         <dependency>
             <groupId>com.ddtek</groupId>
             <artifactId>jdbc</artifactId>
             <version>4.2</version>
             <scope>provided</scope>
         </dependency>
-        <!--
+        
+	<!--
             Spring Dependencies
           -->
         <dependency>
@@ -145,8 +109,8 @@
 
         <!--
             Other deps.
-         -->
-        <dependency>
+        
+	<dependency>
             <groupId>opennlp</groupId>
             <artifactId>opennlp</artifactId>
             <version>1.1.0</version>
@@ -157,6 +121,7 @@
             <artifactId>maxent</artifactId>
             <version>2.5.2</version>
         </dependency>
+-->
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
@@ -268,76 +233,6 @@
         </pluginManagement>
         <finalName>v3nlp-server</finalName>
     </build>
-
-    <!-- Add Jetty Profile -->
-    <profiles>
-        <profile>
-            <id>jetty-offline</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.2-beta-5</version>
-                        <configuration>
-                            <finalName>v3nlp-keywords-dist-${project.version}</finalName>
-                            <attach>false</attach>
-                            <descriptors>
-                                <descriptor>src/assembly/jetty-offline.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>make-assembly</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <!-- logging ... -->
-                <dependency>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                    <version>1.1.1</version>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                    <version>1.2.14</version>
-                    <scope>runtime</scope>
-                </dependency>
-                <!-- embedded jetty -->
-                <dependency>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>jetty</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>start</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>jetty-util</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>jsp-2.1-jetty</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-            </dependencies>
-            <properties>
-                <jetty.version>6.1.23</jetty.version>
-            </properties>
-        </profile>
-    </profiles>
-
 
     <reporting>
         <plugins>

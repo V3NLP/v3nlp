@@ -1,14 +1,9 @@
 package gov.va.vinci.v3nlp.services.uima;
 
 
-import gov.va.vinci.cm.Corpus;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FeatureStructure;
-
-import java.util.Iterator;
-
 public class UimaUtilities {
 
+    /**
     public static Corpus convertUimaCasToCommonModel(CAS aCas) {
 
             System.out.println("In PrintCasINFO");
@@ -31,4 +26,5 @@ public class UimaUtilities {
 
             return null;
     }
+     **/
 }
