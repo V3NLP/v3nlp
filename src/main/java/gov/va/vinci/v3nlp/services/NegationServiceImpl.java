@@ -8,27 +8,20 @@ import gov.va.vinci.cm.Feature;
 import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
-import opennlp.maxent.MaxentModel;
-import opennlp.maxent.io.BinaryGISModelReader;
-import opennlp.tools.sentdetect.SentenceDetectorME;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class NegationServiceImpl implements NlpProcessingUnit {
 
     Resource sentenceRulesFile;
-
     Resource negationRulesFile;
-
-
-    SentenceDetectorME sentenceDetector;
 
     GenNegEx genNegEx = new GenNegEx();
 
@@ -39,8 +32,15 @@ public class NegationServiceImpl implements NlpProcessingUnit {
 
     @Override
     public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
-
         List<String> negationRules = new ArrayList<String>();
+        HashMap<String, AnnotationInterface> sentences = new HashMap<String, AnnotationInterface>();
+        List<AnnotationInterface> conceptsToProcess = new ArrayList<AnnotationInterface>();
+
+         // No Annotations, skip
+        if (d.getAnnotations().getAll().size() < 1) {
+            return d;
+        }
+
         if (!GenericValidator.isBlankOrNull(config)) {
             for (String s : config.split("\r")) {
                 if (s.startsWith("##") || s.trim().length() == 0) {
@@ -62,28 +62,22 @@ public class NegationServiceImpl implements NlpProcessingUnit {
             }
         }
 
-        // No Annotations, skip
-        if (d.getAnnotations().getAll().size() < 1) {
-            return d;
-        }
-
-        // Step 1 tokenize to find sentences.
-        Span[] spans = convertToSpans(sentenceDetector.sentPosDetect(d
-                .getContent()), d.getContent());
-
-        // Step 2 iterate through annotations
+        // Step 1 : Build sentence map and list of concepts to process.
         for (AnnotationInterface ann : d.getAnnotations().getAll()) {
-            // Step 3 find sentence for this annotation.
-            String sentence = null;
-            for (Span s : spans) {
-                if (ann.getBeginOffset() >= s.getStart()
-                        && ann.getBeginOffset() <= s.getEnd()) {
-                    // Found the sentence this annotation starts in.
-                    sentence = d.getContent().substring(s.getStart(),
-                            s.getEnd());
-                }
+            if (((Annotation)ann).hasFeatureOfName("Sentence")) {
+                 sentences.put(ann.getBeginOffset() + "-" + ann.getEndOffset(), ann);
             }
 
+            if (((Annotation)ann).hasFeatureOfName("concept") || ((Annotation)ann).hasFeatureOfName("UMLSConcept")) {
+                conceptsToProcess.add(ann);
+            }
+        }
+
+        // Step 2 iterate through concepts to process.
+        for (AnnotationInterface ann : conceptsToProcess) {
+
+            // Step 3 find sentence for this annotation.
+            String sentence = findSentence(ann, sentences);
             try {
                 // Step 4 run negation algorithm on sentence / annotation
                 String result = genNegEx.negCheck(sentence, ann.getContent(),
@@ -94,7 +88,6 @@ public class NegationServiceImpl implements NlpProcessingUnit {
                     f.getMetaData().setPedigree("Negation");
                     f.setFeatureName("Negation");
                     ((Annotation) ann).getFeatures().add(f);
-
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -104,17 +97,22 @@ public class NegationServiceImpl implements NlpProcessingUnit {
         return d;
     }
 
+    protected String findSentence(AnnotationInterface ann, HashMap<String, AnnotationInterface> sentences) {
+        for (String key: sentences.keySet()) {
+              String[] parts=key.split("-");
+            if (ann.getBeginOffset() >= Integer.parseInt(parts[0])
+                && ann.getBeginOffset() <= Integer.parseInt(parts[1])) {
+                    return sentences.get(key).getContent();
+            }
+        }
+
+        return "";
+    }
+
+
     @Override
     public void initialize() {
-        MaxentModel model;
-        try {
-            model = new BinaryGISModelReader(sentenceRulesFile.getFile())
-                    .getModel();
-            sentenceDetector = new SentenceDetectorME(model);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+
     }
 
     public ArrayList<String> getDefaultNegationConfiguration() {

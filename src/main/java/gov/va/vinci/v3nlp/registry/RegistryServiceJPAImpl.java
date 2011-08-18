@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class RegistryServiceJPAImpl implements RegistryService {
@@ -69,10 +70,19 @@ public class RegistryServiceJPAImpl implements RegistryService {
                 provides.add(p.getName());
             }
             for (NlpComponentRequires r : comp.getRequires()) { // Check requires next.
-                if (!provides.contains(r.getName())) {
-                    return "Missing Dependency: " + comp.getCategory().getCategoryName()
-                            + " (" + comp.getImplementationClass() + ") requires "
-                            + r.getName() + ".";
+                // Handle potential or's
+                String[] requires = r.getName().split(Pattern.quote("|"));
+
+                boolean foundOr = false;
+                for (String s: requires) {
+                    if (provides.contains(s)) {
+                        foundOr = true;
+                    }
+                }
+                if (!foundOr) {
+                        return "Missing Dependency: " + comp.getCategory().getCategoryName()
+                                + " (" + comp.getImplementationClass() + ") requires "
+                                + r.getName().replace("|", " or ") + ".";
                 }
             }
         }

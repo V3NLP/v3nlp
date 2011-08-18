@@ -42,10 +42,6 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
      *                         </features>
      *                         </concept>
      *                         </concepts>
-     *                         <sections>
-     *                         <section>DIAG</section>
-     *                         <section>ADM</section>
-     *                         </sections>
      *                         <p/>
      *                         This would look for the regular expression pain in the corpus. Assuming sectionizing had been done, it is
      *                         limited to DIAG and ADM sections. You can change <sections> to <sections exlucde='true'> to ignore sections.
