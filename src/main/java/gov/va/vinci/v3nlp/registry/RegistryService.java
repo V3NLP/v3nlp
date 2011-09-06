@@ -20,6 +20,9 @@ public interface RegistryService {
      */
     public NlpComponent getNlpComponent(String uid);
 
+
+    public List<NlpAnnotation> getNlpAnnotationList();
+
     /**
      * Validates a pipeline. If there is a missing dependency, or validation issue, the
      * return value will have the failure mesage. An empty return string means a valid pipeline.

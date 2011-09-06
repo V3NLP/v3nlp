@@ -18,11 +18,11 @@ public class NlpComponent implements Serializable {
     @ManyToOne
     private NlpComponentCategory category;
 
+    @Column(name="component_name")
+    private String componentName;
+
     @Column(name="implementation_class")
     private String implementationClass;
-
-    @Column
-    private String notes;
 
     @Column(name="icon_url")
     private String iconUrl;
@@ -42,6 +42,18 @@ public class NlpComponent implements Serializable {
     @Column(name="active")
     private
     Boolean active;
+
+    @Column(name="technology")
+    private String technology;
+
+    @Column(name="description")
+    private String description;
+
+    @Column(name="assumptions")
+    private String assumptions;
+
+    @Version
+    private long version;
 
     public Integer getId() {
         return id;
@@ -73,14 +85,6 @@ public class NlpComponent implements Serializable {
 
     public void setImplementationClass(String implementationClass) {
         this.implementationClass = implementationClass;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 
     public String getIconUrl() {
@@ -125,7 +129,7 @@ public class NlpComponent implements Serializable {
     }
 
     public Boolean isActive() {
-        return active;
+        return getActive();
     }
 
     public void setActive(Boolean active) {
@@ -138,6 +142,50 @@ public class NlpComponent implements Serializable {
 
     public void setDefaultConfiguration(String defaultConfiguration) {
         this.defaultConfiguration = defaultConfiguration;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public String getTechnology() {
+        return technology;
+    }
+
+    public void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAssumptions() {
+        return assumptions;
+    }
+
+    public void setAssumptions(String assumptions) {
+        this.assumptions = assumptions;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
     }
 
     private String listToString(List<?> list) {
@@ -155,6 +203,7 @@ public class NlpComponent implements Serializable {
         }
         return b.toString();
     }
+
 
 
 }

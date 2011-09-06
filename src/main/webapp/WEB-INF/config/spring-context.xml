@@ -35,8 +35,23 @@
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:serializationService-ref="serializationService"
+          p:uimaServicePipeLineProcessor-ref="uimaServicePipeLineProcessorImpl"
           p:servicePipeLineProcessor-ref="servicePipeLineProcessor"
-          p:databaseRepositoryService-ref="databaseRepositoryService"/>
+          p:databaseRepositoryService-ref="databaseRepositoryService"
+          p:registryService-ref="registryService"/>
+
+    <!-- UIMA and Gate Service PipeLine Processors -->
+    <bean name="uimaServicePipeLineProcessorImpl" class="gov.va.vinci.v3nlp.services.UimaServicePipeLineProcessorImpl"
+          p:directoryToStoreResults="${directoryToStoreResults}"
+          p:registryService-ref="registryService"
+          p:flapPropertiesFile="${flapPropertiesFile}"
+          p:corpusSuperReaderDescriptorPath="${corpusSuperReaderDescriptorPath}">
+    </bean>
+
+    <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl"
+          p:directoryToStoreResults="${directoryToStoreResults}"
+          p:registryService-ref="registryService"/>
+    <!-- End Pipeline processors -->
 
     <bean name="serializationService" class="gov.va.vinci.cm.service.SerializationServiceXmlImpl"/>
 
@@ -44,14 +59,9 @@
 
     <bean id="registryService" class="gov.va.vinci.v3nlp.registry.RegistryServiceJPAImpl" init-method="init"/>
 
-    <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl"
-          p:directoryToStoreResults="${directoryToStoreResults}"
-          p:registryService-ref="registryService"/>
-
     <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
           p:templateDirectory="${templateDirectory}"/>
 
-
-    <bean id="databaseRepositoryService" class="gov.va.vinci.v3nlp.services.StubDatabaseRepositoryServiceImpl" />
+    <bean id="databaseRepositoryService" class="gov.va.vinci.v3nlp.services.StubDatabaseRepositoryServiceImpl"/>
 
 </beans>

@@ -22600,7 +22600,7 @@ describe  VB VBP
 described  VBD VBN
 describes  VBZ
 describing  VBG
-description  NN
+value  NN
 descriptions  NNS
 descriptive  JJ
 desecration  NN

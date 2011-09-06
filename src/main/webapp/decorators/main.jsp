@@ -102,7 +102,7 @@
 		</div>
 		<div id="content">
 			<div class="breadcrumb"><%= generateBreadCrumb(request) %></div>
-			<div id="left"><decorator:body /></div>
+			<decorator:body />
 			<div id="clear"></div>
 		</div>
 		<div id="footer">

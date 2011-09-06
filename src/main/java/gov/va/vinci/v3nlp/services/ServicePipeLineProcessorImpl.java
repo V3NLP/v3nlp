@@ -111,12 +111,12 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
 
-            serializeObject(pathOfResults + pipeLineId
+            Utilities.serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
         } catch (Exception e) {
             logger.error("Exception:" + e);
             e.printStackTrace();
-            serializeObject(pathOfResults + pipeLineId + ".err",
+            Utilities.serializeObject(pathOfResults + pipeLineId + ".err",
                     e);
         } finally {
             new File(pathOfResults + pipeLineId + ".lck").delete();
@@ -144,7 +144,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
             if (!comp.isKeepAnnotationsInFinalResult()) {
                 NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
                 for (NlpComponentProvides provided : loadedComp.getProvides()) {
-                    toRemove.add(provided.getName());
+                    toRemove.add(provided.getAnnotation().getName());
                 }
             }
         }
@@ -178,19 +178,6 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
             }
         }
         return returnCorpus;
-    }
-
-
-    private void serializeObject(String path, Object e) {
-        OutputStream os;
-        try {
-            os = new FileOutputStream(path);
-            ObjectOutput oo = new ObjectOutputStream(os);
-            oo.writeObject(e);
-            oo.close();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
     }
 
     @Override

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!-- $Id: build.xml 7451 2006-06-15 14:10:50Z ian_roberts $ -->
 <project name="GATE Tokenisers" default="jar" basedir=".">
-    <description>
+    <value>
         GATE see http://gate.ac.uk
-    </description>
+    </value>
   <!-- set global properties for this build -->
   <!-- Name of the output jar file -->
   <property name="jarFile"  location="heptag_wrapper.jar"/>
@@ -69,7 +69,7 @@
 
 	<!-- This target compiles all the classes -->  
   <target name="compile"
-          description="compile the source " >
+          value="compile the source " >
     <!-- Compile the java code from ${srcDir} into ${buildDir} -->
     <javac srcdir="${srcDir}" 
 		       destdir="${outputDir}"

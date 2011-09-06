@@ -37,6 +37,9 @@ public class NlpComponentCategory  implements Serializable
             fetch= FetchType.EAGER)
     private List<NlpComponent> components = new ArrayList<NlpComponent>();
 
+    @Version
+    private long version;
+
     public Integer getId() {
         return id;
     }
@@ -99,5 +102,13 @@ public class NlpComponentCategory  implements Serializable
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 }

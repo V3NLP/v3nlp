@@ -1,9 +1,6 @@
 package gov.va.vinci.v3nlp.registry;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity(name="nlp_component_provides")
@@ -16,9 +13,14 @@ public class NlpComponentProvides implements Serializable {
     @ManyToOne
     private NlpComponent component;
 
+    @ManyToOne
+    private NlpAnnotation annotation;
+
     @Column
     private String name;
 
+    @Version
+    private long version;
 
     public Integer getId() {
         return id;
@@ -36,15 +38,24 @@ public class NlpComponentProvides implements Serializable {
         this.component = component;
     }
 
-    public String getName() {
-        return name;
+
+    public NlpAnnotation getAnnotation() {
+        return annotation;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAnnotation(NlpAnnotation annotation) {
+        this.annotation = annotation;
     }
 
     public String toString() {
-        return this.name;
+        return this.annotation.getName();
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 }

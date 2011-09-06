@@ -14,9 +14,10 @@ import gov.va.vinci.v3nlp.services.BaseNlpProcessingUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BaseGateService extends BaseNlpProcessingUnit {
-
+    private static Logger log = Logger.getLogger(BaseGateService.class.getCanonicalName());
     /**
      * Create the corpus given a common model document.
      *
@@ -60,7 +61,7 @@ public class BaseGateService extends BaseNlpProcessingUnit {
         }
 
         if (d == null) {
-            d= new gov.va.vinci.cm.Document();
+            d = new gov.va.vinci.cm.Document();
             d.setContent(gateDoc.getContent().toString());
         }
 
@@ -74,26 +75,35 @@ public class BaseGateService extends BaseNlpProcessingUnit {
 
     /**
      * Cleans up potentially dangling resources in the controller/corpus.
+     *
      * @param controller
      * @param corpus
      */
     protected void cleanupPipeLine(SerialAnalyserController controller,
                                    Corpus corpus) {
-        if (corpus != null) {
-            for (int i = 0; i < corpus.size(); i++) {
-                Document doc2 = (Document) corpus.get(i);
-                Factory.deleteResource(doc2);
+
+        try {
+            if (corpus != null) {
+                for (int i = 0; i < corpus.size(); i++) {
+                    Document doc2 = (Document) corpus.get(i);
+                    Factory.deleteResource(doc2);
+                }
+
+                corpus.clear();
             }
+            controller.cleanup();
+        } catch (Exception e) {
+            log.info("Got exception: " + e);
         }
-        corpus.clear();
-        controller.cleanup();
+
     }
 
     /**
      * This returns a list of common model annotations from a gate document.
+     *
      * @param gateDoc the gate document to get annotations from.
-     * @param offset Because we only send pieces of a larger document, this offset is the spot in the larger document
-     *      where this piece resides. It is added to the gate annotation to get offsets relative to the larger document.
+     * @param offset  Because we only send pieces of a larger document, this offset is the spot in the larger document
+     *                where this piece resides. It is added to the gate annotation to get offsets relative to the larger document.
      * @return
      * @throws InvalidOffsetException
      */
@@ -106,16 +116,16 @@ public class BaseGateService extends BaseNlpProcessingUnit {
             gate.Annotation a = i.next();
             // This feature is set on existing annotations converted from common model.
             if (!a.getFeatures().containsKey("V3NLP-CONVERTED-FROM-COMMON-MODEL")) {
-                 results.add(NlpUtilities.convertAnnotation(a,
-                    gateDoc.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString(),
-                    offset));
+                results.add(NlpUtilities.convertAnnotation(a,
+                        gateDoc.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString(),
+                        offset));
             }
         }
         return results;
     }
 
     private void addCommonModelAnnotationToGateDoc(gate.Document doc, AnnotationInterface a) throws InvalidOffsetException {
-       if (doc == null) {
+        if (doc == null) {
             String message = "Invalid document: 'null'.";
             throw new RuntimeException(message);
         }

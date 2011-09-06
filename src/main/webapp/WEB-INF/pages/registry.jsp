@@ -11,3 +11,7 @@ a service. These services are organized into broad categories.
 <p>
     The actual processing services.
 </p>
+<h2><a href="registry/annotations.html">Annotations &gt;</a></h2>
+<p>
+    Output annotations from modules.
+</p>

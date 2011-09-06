@@ -8,7 +8,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
+import java.io.*;
 
 public class Utilities {
     public static String getUsernameAsDirectory(String userToken) {
@@ -29,5 +29,17 @@ public class Utilities {
             transformer.transform(source, result);
 
             return result.getWriter().toString();
+    }
+
+    public static void serializeObject(String path, Object e) {
+        OutputStream os;
+        try {
+            os = new FileOutputStream(path);
+            ObjectOutput oo = new ObjectOutputStream(os);
+            oo.writeObject(e);
+            oo.close();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }

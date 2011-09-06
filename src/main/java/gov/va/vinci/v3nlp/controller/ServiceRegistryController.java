@@ -37,6 +37,16 @@ public class ServiceRegistryController {
         return mav;
     }
 
+
+    @RequestMapping("/registry/annotations.html")
+    public ModelAndView annotationList() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("registry/annotations");
+        mav.addObject("model", registryService.getNlpAnnotationList());
+        return mav;
+    }
+
+
     @RequestMapping("/test/jdbctest")
     public ModelAndView doJdbcTest(HttpServletResponse response,
                                    HttpServletRequest request) throws Exception {

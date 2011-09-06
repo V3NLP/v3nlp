@@ -20,7 +20,7 @@ public class BaseNlpProcessingUnit implements NlpProcessingUnit{
             toProcess.add(a);
         } else {
             for (NlpComponentProvides p : previousModuleProvided) {
-                toProcess.addAll(((gov.va.vinci.cm.Document) originalDocument).findAnnotationsWithFeatureName(p.getName()));
+                toProcess.addAll(((gov.va.vinci.cm.Document) originalDocument).findAnnotationsWithFeatureName(p.getAnnotation().getName()));
             }
         }
         return toProcess;

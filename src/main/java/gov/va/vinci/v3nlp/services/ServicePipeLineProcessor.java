@@ -6,15 +6,21 @@ import gov.va.vinci.v3nlp.registry.RegistryService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
 
 public interface ServicePipeLineProcessor {
     void init();
 
     /**
      * Process the pipeline. Results or exceptions are serialized in the users directory. (pipeline.usertoken)
+     *
      * @param pipeLineId the id of this job.
-     * @param pipeLine the pipeline definition to process.
-     * @param corpus  the corpus to process.
+     * @param pipeLine   the pipeline definition to process.
+     * @param corpus     the corpus to process.
      */
     @Async
     @Transactional(readOnly = true)
@@ -25,4 +31,6 @@ public interface ServicePipeLineProcessor {
     void setDirectoryToStoreResults(String directoryToStoreResults);
 
     void setRegistryService(RegistryService registryService);
+
+
 }

@@ -1,7 +1,7 @@
 ## Lines starting with ## are treated as comments and are ignored
 ## Empty lines are ignored as well.
 ## Only the first 4 non-whitespace characters of each valid line matter; the rest
-## of the line is the optional description
+## of the line is the optional value
 
 T019: Congenital Abnormality
 T020: Acquired Abnormality

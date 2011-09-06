@@ -1,12 +1,15 @@
 package gov.va.vinci.v3nlp;
 
+import com.sun.org.apache.regexp.internal.RE;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.service.SerializationService;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
+import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
+import gov.va.vinci.v3nlp.registry.RegistryService;
 import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 
@@ -28,7 +31,11 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     private ServicePipeLineProcessor servicePipeLineProcessor;
 
+    private ServicePipeLineProcessor uimaServicePipeLineProcessor;
+
     private DatabaseRepositoryService databaseRepositoryService;
+
+    private RegistryService registryService;
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
@@ -86,14 +93,10 @@ public class DefaultNlpServiceImpl implements NlpService {
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
             throws SQLException {
 
-
-        System.out.println("Got Database Services: " + dataServiceSourceList);
-
         for (DataServiceSource ds : dataServiceSourceList) {
             List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds);
 
             for (DocumentInterface di : docs) {
-                System.out.println("Adding document: " + di);
                 corpus.addDocument(di);
             }
         }
@@ -115,7 +118,21 @@ public class DefaultNlpServiceImpl implements NlpService {
                     + pipeLine.hashCode();
             new File(pathOfResults + pipeLineId + ".lck").createNewFile();
 
-            servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
+            // Determine the technology of this pipeline.
+            String technology = null;
+            for (ServicePipeLineComponent comp: pipeLine.getServices()) {
+                 if (comp.getServiceUid() != null) {
+                     technology = registryService.getNlpComponent(comp.getServiceUid()).getTechnology();
+                     break;
+                 }
+            }
+
+            if ("Gate".equals(technology)) {
+                servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
+            } else if ("UIMA".equals(technology)) {
+                uimaServicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
+            }
+
             return pipeLineId;
 
         } catch (Exception e) {
@@ -190,10 +207,18 @@ public class DefaultNlpServiceImpl implements NlpService {
         this.servicePipeLineProcessor = servicePipeLineProcessor;
     }
 
-
     public void setDatabaseRepositoryService(DatabaseRepositoryService databaseRepositoryService) {
         this.databaseRepositoryService = databaseRepositoryService;
     }
+
+    public void setUimaServicePipeLineProcessor(ServicePipeLineProcessor uimaServicePipeLineProcessor) {
+        this.uimaServicePipeLineProcessor = uimaServicePipeLineProcessor;
+    }
+
+    public void setRegistryService(RegistryService r) {
+        this.registryService = r;
+    }
+
 
     /************************************************************************************************************
      * Private Methods Below.

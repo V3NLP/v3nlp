@@ -32,7 +32,7 @@
         </developer>
     </developers>
     <scm>
-	<connection>scm:git:file://localhost//media/data/git/repositories/v3nlp-server</connection>
+        <connection>scm:git:file://localhost//media/data/git/repositories/v3nlp-server</connection>
         <url>http://inlp.bmi.utah.edu/git/v3nlp-server.git</url>
     </scm>
 
@@ -49,6 +49,18 @@
             <artifactId>common-model</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>gov.va.vinci</groupId>
+            <artifactId>flap</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <artifactId>vinciNLPFramework</artifactId>
+            <groupId>gov.va.research.nlp</groupId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- End in house deps... -->
+
 
         <dependency>
             <groupId>commons-codec</groupId>
@@ -62,10 +74,10 @@
             <version>4.2</version>
             <scope>provided</scope>
         </dependency>
-        
-	<!--
-            Spring Dependencies
-          -->
+
+        <!--
+          Spring Dependencies
+        -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>

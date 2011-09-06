@@ -66711,7 +66711,7 @@ crowds NNS VBZ
 magician NN
 hinge NN VB
 Probable JJ NNP
-description NN
+value NN
 encrusted VBN
 2.9429 CD
 salmonella NN

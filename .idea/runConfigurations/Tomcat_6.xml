@@ -12,12 +12,12 @@
     </deployment>
     <server-settings>
       <option name="DEPLOY_TOMCAT_APPS" value="false" />
-      <option name="BASE_DIRECTORY_NAME" value="Unnamed_keywords-server" />
+      <option name="BASE_DIRECTORY_NAME" value="Unnamed_keywords-server_2" />
     </server-settings>
     <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <RunnerSettings RunnerId="Debug">
-      <option name="DEBUG_PORT" value="58803" />
+      <option name="DEBUG_PORT" value="8050" />
       <option name="TRANSPORT" value="0" />
       <option name="LOCAL" value="true" />
     </RunnerSettings>
@@ -27,8 +27,8 @@
       <STARTUP>
         <option name="USE_DEFAULT" value="true" />
         <option name="SCRIPT" value="%IDEA_RUN:TOMCAT_HOME%/bin/catalina.sh" />
-        <option name="VM_PARAMETERS" value="" />
-        <option name="PROGRAM_PARAMETERS" value=" run" />
+        <option name="VM_PARAMETERS" value="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8050,suspend=n" />
+        <option name="PROGRAM_PARAMETERS" value="run" />
       </STARTUP>
       <SHUTDOWN>
         <option name="USE_DEFAULT" value="true" />
@@ -43,7 +43,7 @@
         <option name="USE_DEFAULT" value="true" />
         <option name="SCRIPT" value="%IDEA_RUN:TOMCAT_HOME%/bin/catalina.sh" />
         <option name="VM_PARAMETERS" value="" />
-        <option name="PROGRAM_PARAMETERS" value=" run" />
+        <option name="PROGRAM_PARAMETERS" value="run" />
       </STARTUP>
       <SHUTDOWN>
         <option name="USE_DEFAULT" value="true" />
