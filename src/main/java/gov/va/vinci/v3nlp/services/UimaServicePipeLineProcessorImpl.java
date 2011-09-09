@@ -81,6 +81,7 @@ public class UimaServicePipeLineProcessorImpl implements ServicePipeLineProcesso
 
             myClient = null;
 
+
             // TODO Need to put new corpus with old corpus.
             Utilities.serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(c));
