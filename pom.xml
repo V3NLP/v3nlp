@@ -118,21 +118,23 @@
             <version>3.4.0.GA</version>
         </dependency>
 
+
         <!--
             Other deps.
-        
-	<dependency>
+                   -->
+	    <dependency>
             <groupId>opennlp</groupId>
-            <artifactId>opennlp</artifactId>
+            <artifactId>opennlp-tools</artifactId>
             <version>1.1.0</version>
         </dependency>
-
+        <!--
         <dependency>
             <groupId>gate.plugins</groupId>
             <artifactId>maxent</artifactId>
             <version>2.5.2</version>
         </dependency>
--->
+        -->
+
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
