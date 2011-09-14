@@ -2,6 +2,7 @@ package gov.va.vinci.v3nlp.services;
 
 import gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker;
 import gov.va.vinci.cm.*;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,7 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
      * @return  a document with metamap annotations.
      */
     @Override
-    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponent> previousModuleProvided) {
         List<Annotation> toProcess = this.getProcessList(d, previousModuleProvided);
         List<String> semanticGroups = getSemanticGroups(config);
         Date dt= new Date();
@@ -57,6 +58,9 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
 
             /** Add results back to the document. **/
             for (AnnotationInterface newAnnotation : newDocument.getAnnotations().getAll()) {
+                for (Feature f: ((Annotation)newAnnotation).getFeatures()) {
+                    f.getMetaData().setPedigree("INTERFACE:metamap");
+                }
                 newAnnotation.setBeginOffset(newAnnotation.getBeginOffset() + a.getBeginOffset());
                 newAnnotation.setEndOffset(newAnnotation.getEndOffset() + a.getBeginOffset());
                 d.getAnnotations().getAll().add(newAnnotation);

@@ -197,7 +197,8 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {
-        return new CorpusSummary(deSerializeCorpus(content));
+        CorpusSummary cs = new CorpusSummary(deSerializeCorpus(content));
+        return cs;
     }
 
     /************************************************************************************************************

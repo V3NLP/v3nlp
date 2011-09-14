@@ -143,9 +143,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
             }
             if (!comp.isKeepAnnotationsInFinalResult()) {
                 NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
-                for (NlpComponentProvides provided : loadedComp.getProvides()) {
-                    toRemove.add(provided.getAnnotation().getName());
-                }
+                toRemove.add(loadedComp.getPedigree());
             }
         }
 
@@ -159,11 +157,7 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
                 List<Feature> toBeRemoved = new ArrayList<Feature>();
                 if (a.getFeatures() != null) {
                     for (Feature f : a.getFeatures()) {
-                        String fName = f.getFeatureName();
-                        if (fName == null) {
-                            fName= f.getMetaData().getPedigree();
-                            f.setFeatureName(fName);
-                        }
+                        String fName = f.getMetaData().getPedigree();
 
                         if (fName != null && toRemove.contains(fName)) {
                                 toBeRemoved.add(f);

@@ -6,6 +6,7 @@ import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.regex.ConceptFinder;
@@ -48,7 +49,7 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
      * @param originalDocument The Document to be processed
      * @return the annotated corpus.
      */
-    public DocumentInterface process(String config, DocumentInterface originalDocument, List<NlpComponentProvides> previousModuleProvided) {
+    public DocumentInterface process(String config, DocumentInterface originalDocument, List<NlpComponent> previousModuleProvided) {
         SerialAnalyserController controller = null;
         ConceptFinder regexConceptFinder = (ConceptFinder) resource;
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
@@ -85,7 +86,7 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
                 controller.execute();
 
                 // Add results to the document;
-                processGateResults(crp, (Document) originalDocument, a.getBeginOffset());
+                processGateResults(crp, (Document) originalDocument, a.getBeginOffset(), "GATE|" +resource.getClass().getCanonicalName());
             }
         } catch (Exception e) {
             e.printStackTrace();

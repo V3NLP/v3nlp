@@ -7,6 +7,7 @@ import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.core.io.Resource;
@@ -31,7 +32,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
     List<String> defaultNegationConfigurationList = new ArrayList<String>();
 
     @Override
-    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponent> previousModuleProvided) {
         List<String> negationRules = new ArrayList<String>();
         HashMap<String, AnnotationInterface> sentences = new HashMap<String, AnnotationInterface>();
         List<AnnotationInterface> conceptsToProcess = new ArrayList<AnnotationInterface>();
@@ -64,11 +65,11 @@ public class NegationServiceImpl implements NlpProcessingUnit {
 
         // Step 1 : Build sentence map and list of concepts to process.
         for (AnnotationInterface ann : d.getAnnotations().getAll()) {
-            if (((Annotation)ann).hasFeatureOfName("Sentence")) {
+            if (((Annotation)ann).hasFeatureOfPedigree("GATE|hitex.gate.SentenceSplitter")) {
                  sentences.put(ann.getBeginOffset() + "-" + ann.getEndOffset(), ann);
             }
 
-            if (((Annotation)ann).hasFeatureOfName("concept") || ((Annotation)ann).hasFeatureOfName("UMLSConcept")) {
+            if (((Annotation)ann).hasFeatureOfPedigree("concept") || ((Annotation)ann).hasFeatureOfName("UMLSConcept")) {
                 conceptsToProcess.add(ann);
             }
         }
@@ -85,7 +86,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
                 if (result.trim().endsWith("negated")) {
                     Feature f = new Feature("type", "Negated");
                     f.getMetaData().setCreatedDate(new Date());
-                    f.getMetaData().setPedigree("Negation");
+                    f.getMetaData().setPedigree("INTERFACE|" + this.getClass().getCanonicalName());
                     f.setFeatureName("Negation");
                     ((Annotation) ann).getFeatures().add(f);
                 }

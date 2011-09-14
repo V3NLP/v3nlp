@@ -3,6 +3,7 @@ package gov.va.vinci.v3nlp;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.Feature;
 import gov.va.vinci.cm.FeatureElement;
+import org.apache.commons.validator.GenericValidator;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.regex.Pattern;
 public class NlpUtilities {
 
     public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
-			String content, Integer offset) {
+			String content, Integer offset, String pedigree) {
         Annotation resultAnnotation = new Annotation(gateAnnotation.getId());
 
             resultAnnotation.setBeginOffset(gateAnnotation.getStartNode()
@@ -24,23 +25,16 @@ public class NlpUtilities {
                     .get("type"), (String) gateAnnotation.getFeatures().get("name"));
             feature.getFeatureElements().add(new FeatureElement("type", gateAnnotation.getType()));
             feature.getMetaData().setCreatedDate(new Date());
-
-            // Set Pedigree.
-            if (gateAnnotation.getType() != null) {
-                feature.getMetaData().setPedigree((String) gateAnnotation.getType());
-            } else if (gateAnnotation.getFeatures().get("type") != null) {
-                feature.getMetaData().setPedigree((String) gateAnnotation.getFeatures().get("type"));
-            } else {
-                feature.getMetaData().setPedigree(gateAnnotation.getType());
-            }
+            feature.getMetaData().setPedigree(pedigree);
 
             /** IF gate has an name attribute, set it, otherwise use pedigree. **/
-            if (gateAnnotation.getFeatures().get("name") != null) {
-                feature.setFeatureName(gateAnnotation.getFeatures().get("name").toString());
+            if (gateAnnotation.getFeatures().get("name")!= null && !GenericValidator.isBlankOrNull(gateAnnotation.getFeatures().get("name").toString())) {
+                feature.setFeatureName(gateAnnotation.getFeatures().get("name").toString().trim());
+            } else if (gateAnnotation.getType() != null && !GenericValidator.isBlankOrNull(gateAnnotation.getType().toString())) {
+                feature.setFeatureName(gateAnnotation.getType().toString().trim());
             } else {
                 feature.setFeatureName(feature.getMetaData().getPedigree());
             }
-
 
             // Copy Features
             for (Object o : gateAnnotation.getFeatures().keySet()) {
@@ -67,8 +61,8 @@ public class NlpUtilities {
 
 	@SuppressWarnings("unchecked")
 	public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
-			String content) {
-        return(convertAnnotation(gateAnnotation, content, 0));
+			String content, String pedigree) {
+        return(convertAnnotation(gateAnnotation, content, 0, pedigree));
 	}
 
     public static boolean isValidNameNumbersAndCharacters(String s) {

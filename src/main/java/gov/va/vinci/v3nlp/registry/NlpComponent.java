@@ -52,6 +52,9 @@ public class NlpComponent implements Serializable {
     @Column(name="assumptions")
     private String assumptions;
 
+    @Column(name="pedigree")
+    private String pedigree;
+
     @Version
     private long version;
 
@@ -188,6 +191,15 @@ public class NlpComponent implements Serializable {
         this.componentName = componentName;
     }
 
+    public String getPedigree() {
+        return pedigree;
+    }
+
+    public void setPedigree(String pedigree) {
+        this.pedigree = pedigree;
+    }
+
+
     private String listToString(List<?> list) {
         if (list == null || list.isEmpty()) {
             return "";
@@ -203,7 +215,6 @@ public class NlpComponent implements Serializable {
         }
         return b.toString();
     }
-
 
 
 }

@@ -51,7 +51,7 @@ public class BaseGateService extends BaseNlpProcessingUnit {
         return corpus;
     }
 
-    protected DocumentInterface processGateResults(gate.Corpus corpus, gov.va.vinci.cm.Document d, Integer offset) throws InvalidOffsetException {
+    protected DocumentInterface processGateResults(gate.Corpus corpus, gov.va.vinci.cm.Document d, Integer offset, String pedigree) throws InvalidOffsetException {
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
         List<String> docEnum = corpus.getDocumentNames();
         Document gateDoc = (Document) corpus.iterator().next();
@@ -65,12 +65,12 @@ public class BaseGateService extends BaseNlpProcessingUnit {
             d.setContent(gateDoc.getContent().toString());
         }
 
-        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset));
+        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset, pedigree));
         return d;
     }
 
-    protected DocumentInterface processGateResults(gate.Corpus corpus) throws InvalidOffsetException {
-        return processGateResults(corpus, null, 0);
+    protected DocumentInterface processGateResults(gate.Corpus corpus, String pedigree) throws InvalidOffsetException {
+        return processGateResults(corpus, null, 0, pedigree);
     }
 
     /**
@@ -107,7 +107,7 @@ public class BaseGateService extends BaseNlpProcessingUnit {
      * @return
      * @throws InvalidOffsetException
      */
-    protected List<Annotation> processDocumentForReturn(Document gateDoc, Integer offset) throws InvalidOffsetException {
+    protected List<Annotation> processDocumentForReturn(Document gateDoc, Integer offset, String pedigree) throws InvalidOffsetException {
 
         AnnotationSet annotations = gateDoc.getAnnotations();
         List<Annotation> results = new ArrayList<Annotation>();
@@ -118,7 +118,7 @@ public class BaseGateService extends BaseNlpProcessingUnit {
             if (!a.getFeatures().containsKey("V3NLP-CONVERTED-FROM-COMMON-MODEL")) {
                 results.add(NlpUtilities.convertAnnotation(a,
                         gateDoc.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString(),
-                        offset));
+                        offset, pedigree));
             }
         }
         return results;

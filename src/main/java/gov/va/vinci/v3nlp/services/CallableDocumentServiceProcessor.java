@@ -9,6 +9,7 @@ import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -27,7 +28,7 @@ public class CallableDocumentServiceProcessor implements Callable {
 
     @Override
     public Object call() throws Exception {
-        List<NlpComponentProvides> previousModuleProvided = null;
+        List<NlpComponent> previousModuleProvided = new ArrayList<NlpComponent>();
 
         for (ServicePipeLineComponent comp : pipeLine.getServices()) {
             if (comp.getServiceUid() == null) {
@@ -43,7 +44,8 @@ public class CallableDocumentServiceProcessor implements Callable {
 
 
             if (!"hitex.gate.Tokenizer".equals(comp.getServiceUid())) {
-                previousModuleProvided = ((NlpComponent)serviceMap.get(comp.getServiceUid())).getProvides();
+                previousModuleProvided = new ArrayList<NlpComponent>();
+                previousModuleProvided.add(((NlpComponent)serviceMap.get(comp.getServiceUid())));
             }
         }
         return document;

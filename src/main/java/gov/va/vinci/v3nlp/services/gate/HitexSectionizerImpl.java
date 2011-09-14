@@ -9,6 +9,7 @@ import gate.util.InvalidOffsetException;
 import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.NlpUtilities;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.Sectionizer;
@@ -28,7 +29,6 @@ import java.util.List;
 
 public class HitexSectionizerImpl extends BaseGateService implements NlpProcessingUnit {
 
-    protected ProcessingResource sectionizer;
 
     /**
      * Process method
@@ -60,7 +60,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
      *         and section content.
      */
     @Override
-    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponentProvides> previousModuleProvided) {
+    public DocumentInterface process(String config, DocumentInterface d, List<NlpComponent> previousModuleProvided) {
         SerialAnalyserController controller = null;
         Corpus corpus = null;
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
@@ -71,7 +71,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
                     .newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
             controller.reInit();
 
-            addSectionizer(config, controller);
+            Sectionizer s = addSectionizer(config, controller);
 
             corpus = createGateCorpusFromCommonModel(d);
             controller.setCorpus(corpus);
@@ -79,10 +79,8 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
             // run the application
             controller.execute();
 
-            // TODO Remove non-selected sections.
-
             DocumentInterface resultDoc = processGateResults(corpus, (gov.va.vinci.cm.Document) d, 0,
-                    getSectionizerConfigIncludes(config), getSectionizerConfigExcludes(config));
+                    getSectionizerConfigIncludes(config), getSectionizerConfigExcludes(config), "GATE|" + s.getClass().getCanonicalName());
             return (resultDoc);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +100,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
         return null;
     }
 
-    private void addSectionizer(String customSectionizerRules,
+    private Sectionizer addSectionizer(String customSectionizerRules,
                                 SerialAnalyserController controller) {
         Sectionizer s = this.createSectionizer();
 
@@ -116,6 +114,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
             }
         }
         controller.add(s);
+        return s;
     }
 
     private static List<String> getElementList(String rawConfig, String elementName) {
@@ -189,7 +188,8 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
     protected DocumentInterface processGateResults(gate.Corpus corpus, gov.va.vinci.cm.Document d,
                                                    Integer offset,
                                                    List<String> includes,
-                                                   List<String> excludes) throws InvalidOffsetException {
+                                                   List<String> excludes,
+                                                   String pedigree) throws InvalidOffsetException {
 
         gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
         List<String> docEnum = corpus.getDocumentNames();
@@ -204,7 +204,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
             d.setContent(gateDoc.getContent().toString());
         }
 
-        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset, includes, excludes));
+        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset, includes, excludes, pedigree));
         return d;
     }
 
@@ -218,7 +218,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
      * @throws gate.util.InvalidOffsetException
      *
      */
-    protected List<Annotation> processDocumentForReturn(gate.Document gateDoc, Integer offset, List<String> includes, List<String> excludes)
+    protected List<Annotation> processDocumentForReturn(gate.Document gateDoc, Integer offset, List<String> includes, List<String> excludes, String pedigree)
             throws InvalidOffsetException {
 
         AnnotationSet annotations = gateDoc.getAnnotations();
@@ -229,6 +229,10 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
         while (i.hasNext()) {
             gate.Annotation a = i.next();
             String newCategories = "";
+
+            if (((String) a.getFeatures().get("categories")) == null) {
+                continue;
+            }
             String[] eachCat = ((String) a.getFeatures().get("categories")).split(",");
 
             for (String currentNodeCat : eachCat) {
@@ -249,7 +253,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
 
                 results.add(NlpUtilities.convertAnnotation(a,
                         gateDoc.getContent().getContent(a.getStartNode().getOffset(), a.getEndNode().getOffset()).toString(),
-                        offset));
+                        offset, pedigree));
             }
 
 

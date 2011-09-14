@@ -4,6 +4,7 @@ import gate.Factory;
 import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 
@@ -17,7 +18,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
         this.resource = resource;
     }
 
-    public DocumentInterface process(String config, DocumentInterface document,List<NlpComponentProvides> previousModuleProvided) {
+    public DocumentInterface process(String config, DocumentInterface document,List<NlpComponent> previousModuleProvided) {
         SerialAnalyserController controller = null;
 		gate.Corpus corpus = null;
 
@@ -38,7 +39,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 
 			// run the application
 			controller.execute();
-			return(processGateResults(corpus, (gov.va.vinci.cm.Document)document, 0));
+			return(processGateResults(corpus, (gov.va.vinci.cm.Document)document, 0, "GATE|" + resource.getClass().getCanonicalName()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
