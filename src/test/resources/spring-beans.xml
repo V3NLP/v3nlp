@@ -42,7 +42,7 @@
 
 
 	<bean id="metamapProvider"
-		class="gov.va.vinci.v3nlp.services.MetamapProviderServiceImpl"
+		class="gov.va.vinci.v3nlp.services.other.MetamapProviderServiceImpl"
 		p:restTemplate-ref="restTemplate" p:metamapService-ref="metamapService" />
 
 	<bean id="metamapService"

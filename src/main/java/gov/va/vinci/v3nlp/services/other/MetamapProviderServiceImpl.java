@@ -1,9 +1,11 @@
-package gov.va.vinci.v3nlp.services;
+package gov.va.vinci.v3nlp.services.other;
 
 import gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker;
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+import gov.va.vinci.v3nlp.services.BaseNlpProcessingUnit;
+import gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +15,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Calls the Metamap Provider via HTTP Invoker.
+ * Notes:
+ * <ul>
+ *     <li>Limited to mapping the previous modules pedigree if available.</li>
+ * </ul>
+ */
 public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
 
     private RestTemplate restTemplate;
@@ -56,6 +65,7 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
 
             }
 
+
             /** Add results back to the document. **/
             for (AnnotationInterface newAnnotation : newDocument.getAnnotations().getAll()) {
                 for (Feature f: ((Annotation)newAnnotation).getFeatures()) {
@@ -63,7 +73,25 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
                 }
                 newAnnotation.setBeginOffset(newAnnotation.getBeginOffset() + a.getBeginOffset());
                 newAnnotation.setEndOffset(newAnnotation.getEndOffset() + a.getBeginOffset());
-                d.getAnnotations().getAll().add(newAnnotation);
+
+
+                // See if we already have an annotation at this spot. If so, just add the
+                // new features to it, otherwise add new annotation;
+                boolean foundExisting = false;
+                for (AnnotationInterface ea: d.getAnnotations().getAll()) {
+                    Annotation existingAnnotation = (Annotation)ea;
+                    if (existingAnnotation.getBeginOffset() == newAnnotation.getBeginOffset() &&
+                        existingAnnotation.getEndOffset() == newAnnotation.getEndOffset()) {
+                        foundExisting = true;
+                        for (Feature newFeature: ((Annotation) newAnnotation).getFeatures()) {
+                            existingAnnotation.getFeatures().add(newFeature);
+                        }
+
+                    }
+                }
+                if (!foundExisting) {
+                    d.addAnnotation(newAnnotation);
+                }
             }
         }
 

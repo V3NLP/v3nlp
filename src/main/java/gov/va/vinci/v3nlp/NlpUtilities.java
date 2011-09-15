@@ -27,9 +27,9 @@ public class NlpUtilities {
             feature.getMetaData().setCreatedDate(new Date());
             feature.getMetaData().setPedigree(pedigree);
 
-            /** IF gate has an name attribute, set it, otherwise use pedigree. **/
-            if (gateAnnotation.getFeatures().get("name")!= null && !GenericValidator.isBlankOrNull(gateAnnotation.getFeatures().get("name").toString())) {
-                feature.setFeatureName(gateAnnotation.getFeatures().get("name").toString().trim());
+
+            if ("concept".equals(gateAnnotation.getType())) {
+                 feature.setFeatureName(gateAnnotation.getFeatures().get("name").toString().trim());
             } else if (gateAnnotation.getType() != null && !GenericValidator.isBlankOrNull(gateAnnotation.getType().toString())) {
                 feature.setFeatureName(gateAnnotation.getType().toString().trim());
             } else {

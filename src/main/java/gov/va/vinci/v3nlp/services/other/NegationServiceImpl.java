@@ -1,4 +1,4 @@
-package gov.va.vinci.v3nlp.services;
+package gov.va.vinci.v3nlp.services.other;
 
 
 import gov.va.vinci.cm.Annotation;
@@ -9,6 +9,7 @@ import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
+import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.core.io.Resource;
 
@@ -19,6 +20,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Negation service implementation for Interface.
+ * Notes:
+ * <ul>
+ *     <li>This modules requires sentence splitter and either Hitex Concept Finder or Metamap</li>
+ *     <li>It only looks at annotation with pedigree <strong>GATE|hitex.gate.regex.ConceptFinder</strong>
+ *          or <strong>INTERFACE:metamap</strong> to check for negation. </li>
+ *     <li>Annotations created have pedigree <strong>INTERFACE|gov.va.vinci.v3nlp.services.other.NegationServiceImpl</strong></li>
+ *     <li>Uses Wendy Chapman's Negex Alogrithm.</li>
+ * </ul>
+ */
 public class NegationServiceImpl implements NlpProcessingUnit {
 
     Resource sentenceRulesFile;
@@ -69,7 +81,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
                  sentences.put(ann.getBeginOffset() + "-" + ann.getEndOffset(), ann);
             }
 
-            if (((Annotation)ann).hasFeatureOfPedigree("concept") || ((Annotation)ann).hasFeatureOfName("UMLSConcept")) {
+           if (((Annotation)ann).hasFeatureOfPedigree("GATE|hitex.gate.regex.ConceptFinder") || ((Annotation)ann).hasFeatureOfPedigree("INTERFACE:metamap")) {
                 conceptsToProcess.add(ann);
             }
         }
