@@ -12,7 +12,11 @@ import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.registry.RegistryService;
 import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import java.util.List;
  * Default NlpService implementation that V3NLP Keywords.
  *
  */
+//@Transactional
 public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
@@ -36,6 +41,13 @@ public class DefaultNlpServiceImpl implements NlpService {
     private DatabaseRepositoryService databaseRepositoryService;
 
     private RegistryService registryService;
+
+    private EntityManager entityManager;
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this. entityManager = entityManager;
+    }
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
         this.directoryToStoreResults = directoryToStoreResults;
@@ -104,8 +116,17 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
+  //  @Transactional(readOnly = false)
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
+
+        BatchJobStatus jobStatus = new BatchJobStatus();
+        jobStatus.setJobName(pipeLine.getJobName());
+        jobStatus.setDescription(pipeLine.getJobDescription());
+        jobStatus.setRunDate(new java.util.Date());
+        jobStatus.setStatus("RUNNING");
+        jobStatus.setUsername(Utilities.getUsername(pipeLine.getUserToken().trim()));
+        jobStatus.setPipelineXml(pipeLine.getPipelineXml());
 
 
          // Make sure output path exists, or create it.
@@ -116,7 +137,10 @@ public class DefaultNlpServiceImpl implements NlpService {
         try {
             String pipeLineId = new Date().getTime() + "-"
                     + pipeLine.hashCode();
+            jobStatus.setPipeLineId(pipeLineId);
+         //   entityManager.persist(jobStatus);
             new File(pathOfResults + pipeLineId + ".lck").createNewFile();
+
 
             // Determine the technology of this pipeline.
             String technology = null;

@@ -19,6 +19,14 @@ public class Utilities {
         }
     }
 
+    public static String getUsername(String userToken) {
+        if (GenericValidator.isBlankOrNull(userToken)) {
+            return "";
+        } else {
+            return XORCipher.decode(userToken);
+        }
+    }
+
     public static String transformDoc(Document doc) throws Exception{
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");

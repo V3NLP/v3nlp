@@ -24,8 +24,6 @@
     <task:annotation-driven executor="myExecutor"/>
     <task:executor id="myExecutor" pool-size="5"/>
 
-    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
-          p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true"/>
 
     <bean id="expressionService"
           class="gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl"

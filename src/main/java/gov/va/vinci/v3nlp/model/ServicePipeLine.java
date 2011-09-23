@@ -15,6 +15,9 @@ public class ServicePipeLine {
     private Corpus corpus;
     private Date createdDate;
     private Integer numberOfProcesses;
+    private String jobName;
+    private String jobDescription;
+    private String pipelineXml;
 
     public List<ServicePipeLineComponent> getServices() {
         return services;
@@ -72,6 +75,31 @@ public class ServicePipeLine {
         this.numberOfProcesses = numberOfProcesses;
     }
 
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
+    }
+
+
+    public String getPipelineXml() {
+        return pipelineXml;
+    }
+
+    public void setPipelineXml(String pipelineXml) {
+        this.pipelineXml = pipelineXml;
+    }
+
     public String toString() {
         String toReturn = "PipeLine: " + pipeLineName + " - " + this.description +
                 " [" + this.createdDate + "] Number of processes: " + numberOfProcesses + "\n" +
@@ -81,6 +109,7 @@ public class ServicePipeLine {
         }
         return toReturn;
     }
+
 
 
 }

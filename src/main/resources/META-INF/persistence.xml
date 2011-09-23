@@ -5,6 +5,7 @@
 		<properties>
 		  	<property name="hibernate.dialect" value="gov.va.vinci.v3nlp.dao.SQLiteDialect"/>
 	    </properties>
+        <class>gov.va.vinci.v3nlp.model.BatchJobStatus</class>
         <class>gov.va.vinci.v3nlp.registry.NlpAnnotation</class>
         <class>gov.va.vinci.v3nlp.registry.NlpAnnotationAttribute</class>
         <class>gov.va.vinci.v3nlp.registry.NlpComponentCategory</class>

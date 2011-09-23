@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/v3nlp-server">
     <Resource name="jdbc/expressionlib" auth="Container" type="javax.sql.DataSource"
-        maxActive="100" maxIdle="30" maxWait="10000"
+        maxActive="100" maxIdle="30" maxWait="10000"  defaultAutoCommit="false"
         username="myusername" password="mypassword" driverClassName="org.sqlite.JDBC"
         url="jdbc:sqlite://Users/vhaislcornir/tools/tomcat/data/expressionlib.sqlite"/>
 
