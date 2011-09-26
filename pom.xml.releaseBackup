@@ -4,7 +4,7 @@
     <artifactId>keywords-server</artifactId>
     <packaging>war</packaging>
     <name>V3NLP Keywords Server</name>
-    <version>2011.09.0-SNAPSHOT</version>
+    <version>2011.09.1-SNAPSHOT</version>
 
     <properties>
         <powermock.version>1.3.6</powermock.version>
@@ -30,11 +30,11 @@
             <timezone>-7</timezone>
         </developer>
     </developers>
-    <scm>
-        <connection>scm:git:file://localhost//media/data/git/repositories/v3nlp-server</connection>
-        <url>http://inlp.bmi.utah.edu/git/v3nlp-server.git</url>
-    </scm>
 
+        <scm>
+                <connection>scm:git:http://inlp.bmi.utah.edu/git/v3nlp-server.git/</connection>
+                <url>http://inlp.bmi.utah.edu/git/v3nlp-server.git/</url>
+        </scm>
 
     <dependencies>
         <!--  In House deps.. -->
@@ -234,14 +234,6 @@
                         <target>1.6</target>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <tagBase>http://10.5.17.158/svn/vinci-nlp/v3nlp-server/tags/</tagBase>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <finalName>v3nlp-server</finalName>
@@ -258,12 +250,12 @@
     </reporting>
 
 
-    <distributionManagement>
-        <repository>
-            <id>builder</id>
-            <name>Repository Name</name>
-            <url>scp://10.5.17.158/home/builder/releases</url>
-        </repository>
-    </distributionManagement>
+        <distributionManagement>
+                <repository>
+                        <id>nexus</id>
+                        <name>Nexus Staging Repo</name>
+                        <url>http://inlp.bmi.utah.edu/nexus/content/repositories/releases</url>
+                </repository>
+        </distributionManagement>
 
 </project>
