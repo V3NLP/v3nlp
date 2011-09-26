@@ -41,7 +41,7 @@
         <dependency>
             <groupId>gov.va.research.v3nlp</groupId>
             <artifactId>dictionary</artifactId>
-            <version>2011.09.0</version>
+            <version>2011.09.1</version>
         </dependency>
         <dependency>
             <groupId>gov.va.research</groupId>
@@ -56,7 +56,7 @@
         <dependency>
             <artifactId>vinciNLPFramework</artifactId>
             <groupId>gov.va.research.nlp</groupId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2011.09.0</version>
         </dependency>
         <!-- End in house deps... -->
 
