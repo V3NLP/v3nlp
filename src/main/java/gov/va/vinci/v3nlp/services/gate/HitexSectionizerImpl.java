@@ -7,6 +7,7 @@ import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gate.util.InvalidOffsetException;
 import gov.va.vinci.cm.Annotation;
+import gov.va.vinci.cm.AnnotationInterface;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.NlpUtilities;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
@@ -204,7 +205,10 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
             d.setContent(gateDoc.getContent().toString());
         }
 
-        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset, includes, excludes, pedigree));
+
+        List<Annotation> resultsToAdd =  processDocumentForReturn(gateDoc, offset, includes, excludes, pedigree);
+        mergeAnnotations(d, resultsToAdd);
+
         return d;
     }
 
@@ -224,6 +228,11 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
         AnnotationSet annotations = gateDoc.getAnnotations();
         List<Annotation> results = new ArrayList<Annotation>();
         Iterator<gate.Annotation> i = annotations.iterator();
+
+        // No includes/excludes means no results.
+        if (includes.size() == 0 && excludes.size() == 0) {
+            return results;
+        }
 
         // See if annotation is valid, and in the users selected list.
         while (i.hasNext()) {

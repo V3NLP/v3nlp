@@ -65,8 +65,26 @@ public class BaseGateService extends BaseNlpProcessingUnit {
             d.setContent(gateDoc.getContent().toString());
         }
 
-        d.getAnnotations().getAll().addAll(processDocumentForReturn(gateDoc, offset, pedigree));
+        List<Annotation> resultsToAdd =  processDocumentForReturn(gateDoc, offset, pedigree);
+
+        mergeAnnotations(d, resultsToAdd);
         return d;
+    }
+
+    protected void mergeAnnotations(gov.va.vinci.cm.Document d, List<Annotation> resultsToAdd) {
+        for (Annotation toAdd : resultsToAdd){
+            boolean found = false;
+            for (AnnotationInterface alreadyInDocument: d.getAnnotations().getAll()) {
+                if (alreadyInDocument.getBeginOffset() == toAdd.getBeginOffset() &&
+                    alreadyInDocument.getEndOffset() == toAdd.getEndOffset()) {
+                    ((Annotation)alreadyInDocument).getFeatures().addAll(toAdd.getFeatures());
+                    found = true;
+                }
+            }
+            if (!found) {
+                d.getAnnotations().getAll().add(toAdd);
+            }
+        }
     }
 
     protected DocumentInterface processGateResults(gate.Corpus corpus, String pedigree) throws InvalidOffsetException {
