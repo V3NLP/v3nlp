@@ -42,7 +42,6 @@ public class CallableDocumentServiceProcessor implements Callable {
             NlpProcessingUnit bean =ServiceListThreadLocal.get().get(comp.getServiceUid());
             document = bean.process(comp.getConfiguration(), document, previousModuleProvided);
 
-
             if (!"hitex.gate.Tokenizer".equals(comp.getServiceUid())) {
                 previousModuleProvided = new ArrayList<NlpComponent>();
                 previousModuleProvided.add(((NlpComponent)serviceMap.get(comp.getServiceUid())));

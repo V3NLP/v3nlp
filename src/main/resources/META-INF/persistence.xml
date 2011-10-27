@@ -3,9 +3,18 @@
   <persistence-unit name="myUnit" transaction-type="RESOURCE_LOCAL">
        <provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<properties>
-		  	<property name="hibernate.dialect" value="gov.va.vinci.v3nlp.dao.SQLiteDialect"/>
+            <!--
+
+                Now set in spring file so it can be loaded as a property.
+
+              <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+              <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+
+            -->
+            <property name="hibernate.show_sql" value="false" />
 	    </properties>
         <class>gov.va.vinci.v3nlp.model.BatchJobStatus</class>
+        <class>gov.va.vinci.v3nlp.expressionlib.Expression</class>
         <class>gov.va.vinci.v3nlp.registry.NlpAnnotation</class>
         <class>gov.va.vinci.v3nlp.registry.NlpAnnotationAttribute</class>
         <class>gov.va.vinci.v3nlp.registry.NlpComponentCategory</class>
@@ -14,3 +23,6 @@
         <class>gov.va.vinci.v3nlp.registry.NlpComponentRequires</class>
   </persistence-unit>
 </persistence>
+
+<!-- <property name="hibernate.dialect" value="gov.va.vinci.v3nlp.dao.SQLiteDialect"/> -->
+<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->

@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name="nlp_component_category")
+@Entity(name="v3nlp.nlp_component_category")
 public class NlpComponentCategory  implements Serializable
 {
     @Id

@@ -1,6 +1,7 @@
 package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.registry.RegistryService;
 import org.springframework.scheduling.annotation.Async;
@@ -24,7 +25,7 @@ public interface ServicePipeLineProcessor {
      */
     @Async
     @Transactional(readOnly = true)
-    void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus);
+    void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus, BatchJobStatus jobStatus);
 
     String getDirectoryToStoreResults();
 

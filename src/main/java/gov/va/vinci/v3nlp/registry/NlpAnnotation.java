@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity(name="nlp_annotation")
+@Entity(name="v3nlp.nlp_annotation")
 public class NlpAnnotation {
     @Id
     @Column(name="id")

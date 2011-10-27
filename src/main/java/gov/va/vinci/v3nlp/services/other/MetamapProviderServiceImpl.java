@@ -57,14 +57,14 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
         for (Annotation a : toProcess) {
             Document newDocument = null;
             try {
+                Date mappingStart = new Date();
                 newDocument = metamapService.getMapping(a.getContent(),
                         false, new ArrayList<String>(), semanticGroups);
+                logger.debug("\t\t--------> Metamap mapping took: " + (new Date().getTime() - mappingStart.getTime()) + "ms");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
-
             }
-
 
             /** Add results back to the document. **/
             for (AnnotationInterface newAnnotation : newDocument.getAnnotations().getAll()) {

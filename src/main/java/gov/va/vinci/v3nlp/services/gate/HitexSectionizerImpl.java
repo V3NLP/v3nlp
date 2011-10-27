@@ -3,15 +3,12 @@ package gov.va.vinci.v3nlp.services.gate;
 import gate.AnnotationSet;
 import gate.Corpus;
 import gate.Factory;
-import gate.ProcessingResource;
 import gate.creole.SerialAnalyserController;
 import gate.util.InvalidOffsetException;
 import gov.va.vinci.cm.Annotation;
-import gov.va.vinci.cm.AnnotationInterface;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.NlpUtilities;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.Sectionizer;
 import org.apache.commons.validator.GenericValidator;
@@ -57,6 +54,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
      *               </excludes>
      *               </headers>
      * @param d      The Document to processes.
+     * @param previousModuleProvided the list of NLP Components that previous modules provided.
      * @return Corpus annotated with section_header and section annotations denoting the section_headers
      *         and section content.
      */

@@ -2,11 +2,11 @@ package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.Utilities;
+import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.registry.RegistryService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,18 +14,27 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
 
-
-public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
+@Transactional
+public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
     private RegistryService registryService;
 
     private String directoryToStoreResults;
 
     private static Log logger = LogFactory.getLog(ServicePipeLineProcessorImpl.class);
+
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this. entityManager = entityManager;
+    }
+
 
     @Override
     public void init() {
@@ -38,8 +47,8 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
     @Override
     @Async
-    @Transactional(readOnly = true)
-    public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus) {
+    @Transactional(readOnly = false)
+    public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus, BatchJobStatus jobStatus) {
 	
         Corpus returnCorpus = corpus;
         Date startTime = new Date();
@@ -113,11 +122,15 @@ public class ServicePipeLineProcessorImpl implements ServicePipeLineProcessor {
 
             Utilities.serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
+
+            updatePipeLineStatus(jobStatus, "COMPLETE", pathOfResults + pipeLineId
+                    + ".results");
         } catch (Exception e) {
             logger.error("Exception:" + e);
             e.printStackTrace();
             Utilities.serializeObject(pathOfResults + pipeLineId + ".err",
                     e);
+            updatePipeLineStatus(jobStatus, "ERROR", pathOfResults + pipeLineId + ".err");
         } finally {
             new File(pathOfResults + pipeLineId + ".lck").delete();
         }

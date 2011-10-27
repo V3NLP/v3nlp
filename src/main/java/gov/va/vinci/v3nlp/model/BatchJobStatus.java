@@ -3,10 +3,11 @@ package gov.va.vinci.v3nlp.model;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name="batch_job_status")
+@Entity(name="v3nlp.batch_job_status")
 public class BatchJobStatus {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue
     @Column(name="id")
     private Integer id;
 
@@ -19,17 +20,20 @@ public class BatchJobStatus {
     @Column
     private String pipeLineId;
 
-    @Column
+    @Column(length=8000)
     private String description;
 
-    @Column
+    @Column(length=500)
     private String jobName;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String pipelineXml;
 
     @Column
     private String username;
+
+    @Column
+    private String resultPath;
 
     public Date getRunDate() {
         return runDate;
@@ -86,5 +90,13 @@ public class BatchJobStatus {
 
     public void setJobName(String jobName) {
         this.jobName = jobName;
+    }
+
+    public String getResultPath() {
+        return resultPath;
+    }
+
+    public void setResultPath(String resultPath) {
+        this.resultPath = resultPath;
     }
 }

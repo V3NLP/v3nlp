@@ -29,16 +29,16 @@ public class BaseNlpProcessingUnit implements NlpProcessingUnit{
 
     @Override
     public DocumentInterface process(String config, DocumentInterface _document, List<NlpComponent> previousModuleProvided) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public void initialize() {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void destroy() {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 }

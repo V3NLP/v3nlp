@@ -3,7 +3,7 @@ package gov.va.vinci.v3nlp.registry;
 
 import javax.persistence.*;
 
-@Entity(name="nlp_annotation_attribute")
+@Entity(name="v3nlp.nlp_annotation_attribute")
 public class NlpAnnotationAttribute {
     @Id
     @Column(name="id")

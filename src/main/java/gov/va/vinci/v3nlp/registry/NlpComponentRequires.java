@@ -4,7 +4,7 @@ package gov.va.vinci.v3nlp.registry;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity(name="nlp_component_requires")
+@Entity(name="v3nlp.nlp_component_requires")
 public class NlpComponentRequires implements Serializable {
 
     @Id

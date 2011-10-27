@@ -29,8 +29,7 @@ public class BaseGateService extends BaseNlpProcessingUnit {
     protected Corpus createGateCorpusFromCommonModel(
             DocumentInterface d)
             throws ResourceInstantiationException {
-        Corpus corpus;
-        corpus = Factory.newCorpus("V3NLP Corpus From Common Model");
+        Corpus corpus = Factory.newCorpus("V3NLP Corpus From Common Model");
 
         String key = (String) d.getDocumentName();
         if (key == null) {

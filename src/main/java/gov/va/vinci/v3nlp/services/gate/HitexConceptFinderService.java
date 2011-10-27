@@ -78,7 +78,6 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
                 crp.add(doc);
                 /** End create gate corpus. **/
 
-
                 controller.setCorpus(crp);
                 addRegEx(getRegExFilter(config), controller, regexConceptFinder);
 
@@ -96,9 +95,6 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
         }
         return originalDocument;
     }
-
-
-
 
     private String getRegExFilter(String config) {
         StringBuffer filter = new StringBuffer();

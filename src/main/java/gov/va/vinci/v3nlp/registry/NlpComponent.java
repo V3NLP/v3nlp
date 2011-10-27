@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-@Entity(name="nlp_component")
+@Entity(name="v3nlp.nlp_component")
 public class NlpComponent implements Serializable {
 
     @Id

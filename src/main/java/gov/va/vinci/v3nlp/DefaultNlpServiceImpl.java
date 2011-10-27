@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
  * Default NlpService implementation that V3NLP Keywords.
  *
  */
-//@Transactional
+@Transactional
 public class DefaultNlpServiceImpl implements NlpService {
 
     private String directoryToStoreResults;
@@ -116,7 +117,7 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-  //  @Transactional(readOnly = false)
+    @Transactional(readOnly = false)
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
 
@@ -138,7 +139,8 @@ public class DefaultNlpServiceImpl implements NlpService {
             String pipeLineId = new Date().getTime() + "-"
                     + pipeLine.hashCode();
             jobStatus.setPipeLineId(pipeLineId);
-         //   entityManager.persist(jobStatus);
+            entityManager.persist(jobStatus);
+            entityManager.flush();
             new File(pathOfResults + pipeLineId + ".lck").createNewFile();
 
 
@@ -152,9 +154,9 @@ public class DefaultNlpServiceImpl implements NlpService {
             }
 
             if ("Gate".equals(technology)) {
-                servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
+                servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus, jobStatus);
             } else if ("UIMA".equals(technology)) {
-                uimaServicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus);
+                uimaServicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus, jobStatus);
             }
 
             return pipeLineId;
@@ -167,6 +169,13 @@ public class DefaultNlpServiceImpl implements NlpService {
     @Override
     public List<BatchJobStatus> jobsForUserToken(String userToken) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
+
+        String username= Utilities.getUsername(userToken);
+        Query query = entityManager.createQuery("SELECT job FROM gov.va.vinci.v3nlp.model.BatchJobStatus job where username = ?1 order by runDate desc");
+        query.setParameter(1, username);
+        return (List<BatchJobStatus> ) query.getResultList();
+
+        /**
 
         File userPath = new File(pathOfResults);
         // User directory doesn't exit, no results.
@@ -199,6 +208,8 @@ public class DefaultNlpServiceImpl implements NlpService {
         }
 
         return results;
+
+         **/
     }
 
     /**
