@@ -8,7 +8,6 @@ import gov.va.vinci.cm.Feature;
 import gov.va.vinci.v3nlp.model.Span;
 import gov.va.vinci.v3nlp.negex.GenNegEx;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.core.io.Resource;

@@ -1,6 +1,5 @@
 package gov.va.vinci.v3nlp.controller;
 
-import gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +19,23 @@ public class ConnectionControllerTest {
         System.out.println("Got connection:" + con);
 
         Statement stmnt = con.createStatement();
-        ResultSet rs = stmnt.executeQuery("select 1 from 1;");
+        ResultSet rs = stmnt.executeQuery("SELECT GETDATE()");
 
         while (rs.next()) {
             System.out.println("In here!");
         }
         stmnt.close();
+
+        stmnt.execute("EXECUTE AS LOGIN='vhamaster\\vhaislcornir'");
+        rs = stmnt.executeQuery("SELECT GETDATE()");
+
+        while (rs.next()) {
+            System.out.println("In here 2!");
+        }
+        stmnt.close();
+        stmnt.execute("REVERT;");
+
+
         con.close();
         return "junkReturn";
     }

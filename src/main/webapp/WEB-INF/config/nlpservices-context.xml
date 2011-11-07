@@ -30,7 +30,7 @@
             <constructor-arg><ref bean="hitexPOSTagger"/></constructor-arg>
     </bean>
 
-    <bean name="gov.va.research.v3nlp.gate.pr.OParser" class="gov.va.vinci.v3nlp.services.gate.GenericGateService" scope="prototype">
+    <bean name="gov.va.research.v3nlp.gate.pr.OParser" class="gov.va.vinci.v3nlp.services.gate.OParserService" scope="prototype">
             <constructor-arg><ref bean="oParser"/></constructor-arg>
     </bean>
 
