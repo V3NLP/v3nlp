@@ -3,7 +3,6 @@ package gov.va.vinci.v3nlp.services.other;
 import gov.va.research.v3nlp.common.metamap.MetaMapServiceHttpInvoker;
 import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.BaseNlpProcessingUnit;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl;
 import org.apache.commons.logging.Log;
@@ -19,7 +18,7 @@ import java.util.Set;
  * Calls the Metamap Provider via HTTP Invoker.
  * Notes:
  * <ul>
- *     <li>Limited to mapping the previous modules pedigree if available.</li>
+ * <li>Limited to mapping the previous modules pedigree if available.</li>
  * </ul>
  */
 public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
@@ -33,42 +32,55 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
     /**
      * Processing method.
      *
-     * @param config The configuration is in XML, and in the format:
-     *               <?xml version="1.0" encoding="ISO-8859-1" ?>
-     *               <metamap-concepts>
-     *               <semantic-group>ANAT</semantic-group>
-     *               </metamap-concepts>
-     *               This module only sends the previous modules annotations content to metamap.
+     * @param config                 The configuration is in XML, and in the format:
+     *                               <?xml version="1.0" encoding="ISO-8859-1" ?>
+     *                               <metamap-concepts>
+     *                               <semantic-group>ANAT</semantic-group>
+     *                               </metamap-concepts>
+     *                               This module only sends the previous modules annotations content to metamap.
      * @param d
      * @param previousModuleProvided The list of annotations the previous module created. This modules only sends those
-     *      to metamap.
-     * @return  a document with metamap annotations.
+     *                               to metamap.
+     * @return a document with metamap annotations.
      */
     @Override
     public DocumentInterface process(String config, DocumentInterface d, List<NlpComponent> previousModuleProvided) {
         List<Annotation> toProcess = this.getProcessList(d, previousModuleProvided);
         List<String> semanticGroups = getSemanticGroups(config);
-        Date dt= new Date();
+        Date dt = new Date();
 
         /**
          * Process annotations that need processed.
          *
          **/
+
+        /** Create Metamap input **/
+        List<String> textToProcess = new ArrayList<String>();
         for (Annotation a : toProcess) {
-            Document newDocument = null;
-            try {
-                Date mappingStart = new Date();
-                newDocument = metamapService.getMapping(a.getContent(),
-                        false, new ArrayList<String>(), semanticGroups);
-                logger.debug("\t\t--------> Metamap mapping took: " + (new Date().getTime() - mappingStart.getTime()) + "ms");
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+            textToProcess.add(a.getContent());
+        }
+
+        /** Call Metamap **/
+        List<Document> newDocuments = null;
+        try {
+            Date mappingStart = new Date();
+            newDocuments = metamapService.getMappings(textToProcess,
+                    false, new ArrayList<String>(), semanticGroups);
+            logger.debug("\t\t--------> Metamap mapping took: " + (new Date().getTime() - mappingStart.getTime()) + "ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        /** Go through results **/
+        int counter = 0;
+        for (Annotation a : toProcess) {
+            Document newDocument = newDocuments.get(counter);
+            counter++;
 
             /** Add results back to the document. **/
             for (AnnotationInterface newAnnotation : newDocument.getAnnotations().getAll()) {
-                for (Feature f: ((Annotation)newAnnotation).getFeatures()) {
+                for (Feature f : ((Annotation) newAnnotation).getFeatures()) {
                     f.getMetaData().setPedigree("INTERFACE:metamap");
                 }
                 newAnnotation.setBeginOffset(newAnnotation.getBeginOffset() + a.getBeginOffset());
@@ -78,12 +90,12 @@ public class MetamapProviderServiceImpl extends BaseNlpProcessingUnit {
                 // See if we already have an annotation at this spot. If so, just add the
                 // new features to it, otherwise add new annotation;
                 boolean foundExisting = false;
-                for (AnnotationInterface ea: d.getAnnotations().getAll()) {
-                    Annotation existingAnnotation = (Annotation)ea;
+                for (AnnotationInterface ea : d.getAnnotations().getAll()) {
+                    Annotation existingAnnotation = (Annotation) ea;
                     if (existingAnnotation.getBeginOffset() == newAnnotation.getBeginOffset() &&
-                        existingAnnotation.getEndOffset() == newAnnotation.getEndOffset()) {
+                            existingAnnotation.getEndOffset() == newAnnotation.getEndOffset()) {
                         foundExisting = true;
-                        for (Feature newFeature: ((Annotation) newAnnotation).getFeatures()) {
+                        for (Feature newFeature : ((Annotation) newAnnotation).getFeatures()) {
                             existingAnnotation.getFeatures().add(newFeature);
                         }
 
