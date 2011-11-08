@@ -11,7 +11,6 @@
   <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
           p:jndiName="java:comp/env/jdbc/expressionlib" p:resourceRef="true"/>
 
-
    <bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="loadTimeWeaver">

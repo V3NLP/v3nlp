@@ -106,8 +106,13 @@ public class DefaultNlpServiceImpl implements NlpService {
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
             throws SQLException {
 
+
         for (DataServiceSource ds : dataServiceSourceList) {
-            List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds);
+            List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds,  Utilities.getUsername(pipeLine.getUserToken().trim()));
+
+            if (docs==null || docs.size() == 0) {
+                throw new RuntimeException("Data service returned no documents.");
+            }
 
             for (DocumentInterface di : docs) {
                 corpus.addDocument(di);

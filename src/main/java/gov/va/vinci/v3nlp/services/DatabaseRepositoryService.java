@@ -10,6 +10,6 @@ public interface DatabaseRepositoryService {
 
 	public abstract List<String> getRespostoryNames();
 
-	public abstract List<DocumentInterface> getDocuments(DataServiceSource m) throws SQLException;
+	public abstract List<DocumentInterface> getDocuments(DataServiceSource m, String loggedInUser) throws SQLException;
 
 }

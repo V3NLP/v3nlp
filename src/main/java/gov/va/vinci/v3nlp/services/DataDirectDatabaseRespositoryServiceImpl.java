@@ -52,7 +52,7 @@ public class DataDirectDatabaseRespositoryServiceImpl implements
 
 
 
-    public List<DocumentInterface> getDocuments(DataServiceSource ds)
+    public List<DocumentInterface> getDocuments(DataServiceSource ds, String loggedInUser)
             throws SQLException {
 
         // Validate the dataservicesource. Throws an illegalarguement exception if there is a problem.
