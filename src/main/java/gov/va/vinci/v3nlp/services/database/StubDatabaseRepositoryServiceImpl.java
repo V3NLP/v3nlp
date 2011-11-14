@@ -1,12 +1,13 @@
-package gov.va.vinci.v3nlp.services;
+package gov.va.vinci.v3nlp.services.database;
 
-import gov.va.research.v3nlp.repo.DBRepository;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.NlpUtilities;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import org.apache.commons.validator.GenericValidator;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,25 +19,28 @@ import java.util.List;
 public class StubDatabaseRepositoryServiceImpl implements
         DatabaseRepositoryService {
 
-    public List<DBRepository> repositories;
+    public List<V3nlpDBRepository> repositories = new ArrayList<V3nlpDBRepository>();
+
+    private EntityManager entityManager;
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     public StubDatabaseRepositoryServiceImpl() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    public List<DBRepository> getRepositories() {
-        return repositories;
+    public List<V3nlpDBRepository> getRepositories() {
+        return (List<V3nlpDBRepository>)entityManager.createQuery("select repo from gov.va.vinci.v3nlp.services.database.V3nlpDBRepository repo").getResultList();
     }
-
-    public void setRepositories(List<DBRepository> repositories) {
-        this.repositories = repositories;
-    }
-
 
     /*
       * (non-Javadoc)
@@ -46,44 +50,50 @@ public class StubDatabaseRepositoryServiceImpl implements
     public List<String> getRespostoryNames() {
         List<String> results = new ArrayList<String>();
 
-        for (DBRepository d : repositories) {
+        for (V3nlpDBRepository d : repositories) {
             results.add(d.getName());
         }
         return results;
     }
 
-
-    public List<DocumentInterface> getDocuments(DataServiceSource ds, String loggedInUser)
-            throws SQLException {
-
-        List<DocumentInterface> results = new ArrayList<DocumentInterface>();
-        String connectionUrl = "jdbc:sqlserver://vhacdwdbs10;database=" + ds.getDatabase() + ";integratedSecurity=false;user=VinciUser;password=VinciUser;";
-
-        Connection con = DriverManager.getConnection(connectionUrl);
-        Statement stmnt = con.createStatement();
-
-        /** Execute as changes effective user to currently logged in user. **/
-        String executeAs = "EXECUTE AS LOGIN = '" + loggedInUser.trim().replace("'", "''").toLowerCase() + "';";
-        stmnt.execute(executeAs);
-
-        String selectQuery = "select " + ds.getIdColumn().replace("'", "''") + ", " +
-                ds.getTextColumn().replace("'", "''")
-                + ", ROW_NUMBER() OVER (ORDER BY " + ds.getIdColumn().replace("'", "''") + ") as row " +
-                " from " + ds.getTable().replace("'", "''");
-
-
-        String limitQuery = "select * from (" + selectQuery + ") a where row <= " + ds.getNumberOfDocuments();
-        ResultSet rs = stmnt.executeQuery(limitQuery);
-        while (rs.next()) {
-            Document d= new Document();
-            d.setDocumentId("" + rs.getObject(1));
-            d.setDocumentName(d.getDocumentId());
-            d.setContent(rs.getString(2));
-            results.add(d);
+    protected Connection getConnection(V3nlpDBRepository ds, String loggedInUser) throws SQLException {
+        Connection con = null;
+        if ("com.microsoft.sqlserver.jdbc.SQLServerDriver".equals(ds.getDriverClassName())) {
+            String connectionUrl = "jdbc:sqlserver://vhacdwdbs10;integratedSecurity=false;user=VinciUser;password=VinciUser;" + "database=" + ds.getSchema();
+            con = DriverManager.getConnection(connectionUrl);
+            con.createStatement().execute("EXECUTE AS LOGIN = '" + loggedInUser.trim().replace("'", "''").toLowerCase() + "';");
+        } else if ("com.mysql.jdbc.Driver".equals(ds.getDriverClassName())) {
+            con = DriverManager.getConnection(ds.getUrl());
         }
 
-        /** Reverts back to initial connection user. **/
-        stmnt.execute("revert;");
+        return con;
+    }
+
+    public List<DocumentInterface> getDocuments(V3nlpDBRepository ds, String loggedInUser) {
+        List<DocumentInterface> results = new ArrayList<DocumentInterface>();
+        Connection con = null;
+        try {
+            con = getConnection(ds, loggedInUser);
+            Statement stmnt = con.createStatement();
+
+            ResultSet rs = stmnt.executeQuery(ds.getSelectSql());
+            while (rs.next()) {
+                Document d = new Document();
+                d.setDocumentId("" + rs.getObject(1));
+                d.setDocumentName(d.getDocumentId());
+                d.setContent(rs.getString(2));
+                results.add(d);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+
+            }
+        }
         return results;
     }
 

@@ -1,6 +1,6 @@
 package gov.va.vinci.v3nlp;
 
-import com.sun.org.apache.regexp.internal.RE;
+import gov.va.research.v3nlp.repo.DBRepository;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.service.SerializationService;
@@ -10,9 +10,9 @@ import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.registry.RegistryService;
-import gov.va.vinci.v3nlp.services.DatabaseRepositoryService;
+import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
-import org.springframework.transaction.annotation.Propagation;
+import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -20,7 +20,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,11 +102,11 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList)
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<V3nlpDBRepository> dataServiceSourceList)
             throws SQLException {
 
 
-        for (DataServiceSource ds : dataServiceSourceList) {
+        for (V3nlpDBRepository ds : dataServiceSourceList) {
             List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds,  Utilities.getUsername(pipeLine.getUserToken().trim()));
 
             if (docs==null || docs.size() == 0) {
@@ -180,41 +179,6 @@ public class DefaultNlpServiceImpl implements NlpService {
         query.setParameter(1, username);
         return (List<BatchJobStatus> ) query.getResultList();
 
-        /**
-
-        File userPath = new File(pathOfResults);
-        // User directory doesn't exit, no results.
-        if (!userPath.exists()) {
-           return new ArrayList<BatchJobStatus>();
-        }
-
-        if (!userPath.isDirectory()) {
-            throw new RuntimeException("User path is a file, not a directory.");
-        }
-
-        List<BatchJobStatus> results = new ArrayList<BatchJobStatus>();
-
-        // Iterate through files in the directory to get status.
-        for (String file: userPath.list()) {
-            Long lastModified = new File(pathOfResults + "/" + file).lastModified();
-            if (file.endsWith(".lck")) {
-                BatchJobStatus status = new BatchJobStatus();
-                status.setRunDate(new Date(lastModified));
-                status.setStatus("RUNNING");
-                status.setPipeLineId(file.substring(0, file.lastIndexOf(".")));
-                results.add(status);
-            } else if (file.endsWith(".results")) {
-                BatchJobStatus status = new BatchJobStatus();
-                status.setRunDate(new Date(lastModified));
-                status.setStatus("COMPLETE");
-                status.setPipeLineId(file.substring(0, file.lastIndexOf(".")));
-                results.add(status);
-            }
-        }
-
-        return results;
-
-         **/
     }
 
     /**
@@ -241,6 +205,10 @@ public class DefaultNlpServiceImpl implements NlpService {
         return cs;
     }
 
+    public List<V3nlpDBRepository> getRepositories() {
+        return this.databaseRepositoryService.getRepositories();
+    }
+    
     /************************************************************************************************************
      * Setters Methods Below.
      ***********************************************************************************************************/

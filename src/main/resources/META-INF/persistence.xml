@@ -21,6 +21,7 @@
         <class>gov.va.vinci.v3nlp.registry.NlpComponent</class>
         <class>gov.va.vinci.v3nlp.registry.NlpComponentProvides</class>
         <class>gov.va.vinci.v3nlp.registry.NlpComponentRequires</class>
+        <class>gov.va.vinci.v3nlp.services.database.V3nlpDBRepository</class>
   </persistence-unit>
 </persistence>
 

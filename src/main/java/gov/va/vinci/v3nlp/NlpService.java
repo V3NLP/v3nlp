@@ -1,10 +1,11 @@
 package gov.va.vinci.v3nlp;
 
+import gov.va.research.v3nlp.repo.DBRepository;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
-import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
+import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +31,7 @@ public interface NlpService {
      * @return the id of the pipeline.
      * @throws SQLException
      */
-    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<DataServiceSource> dataServiceSourceList) throws SQLException;
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<V3nlpDBRepository> dataServiceSourceList) throws SQLException;
 
     /**
      * Given a pipeLineId, determine if it is still processing, or if processing has completed.
@@ -78,4 +79,6 @@ public interface NlpService {
      * Return a list of jobs and their status for a given user token.
      */
     public abstract List<BatchJobStatus> jobsForUserToken(String userToken);
+
+    public abstract List<V3nlpDBRepository> getRepositories();
 }

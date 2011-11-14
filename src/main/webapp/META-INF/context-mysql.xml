@@ -2,7 +2,7 @@
 <Context path="/v3nlp-server">
     <Resource name="jdbc/expressionlib" auth="Container" type="javax.sql.DataSource"
         maxActive="100" maxIdle="30" maxWait="10000"  defaultAutoCommit="false"
-          username="v3nlp" password="11climb06" driverClassName="com.mysql.jdbc.Driver"
+          username="v3nlp" password="reverse" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://localhost:3306/v3nlp" >
     </Resource>
 

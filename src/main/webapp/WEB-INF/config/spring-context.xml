@@ -60,7 +60,7 @@
     <bean id="templateService" class="gov.va.vinci.v3nlp.services.TemplateServiceImpl"
           p:templateDirectory="${templateDirectory}"/>
 
-    <bean id="databaseRepositoryService" class="gov.va.vinci.v3nlp.services.StubDatabaseRepositoryServiceImpl"
+    <bean id="databaseRepositoryService" class="gov.va.vinci.v3nlp.services.database.StubDatabaseRepositoryServiceImpl"
           />
 
 </beans>
