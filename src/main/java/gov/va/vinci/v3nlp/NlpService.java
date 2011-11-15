@@ -81,4 +81,6 @@ public interface NlpService {
     public abstract List<BatchJobStatus> jobsForUserToken(String userToken);
 
     public abstract List<V3nlpDBRepository> getRepositories();
+
+    public abstract String testDataService(V3nlpDBRepository ds, String loggedInUser);
 }

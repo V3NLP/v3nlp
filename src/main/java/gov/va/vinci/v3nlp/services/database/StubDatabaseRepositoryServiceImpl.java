@@ -38,22 +38,35 @@ public class StubDatabaseRepositoryServiceImpl implements
     }
 
 
-    public List<V3nlpDBRepository> getRepositories() {
-        return (List<V3nlpDBRepository>)entityManager.createQuery("select repo from gov.va.vinci.v3nlp.services.database.V3nlpDBRepository repo").getResultList();
+    public String test(V3nlpDBRepository ds, String loggedInUser) {
+        List<DocumentInterface> results = new ArrayList<DocumentInterface>();
+        Connection con = null;
+
+        try {
+            con = getConnection(ds, loggedInUser);
+        } catch (SQLException e) {
+            return "Could not get connection to database.";
+        }
+
+        Statement stmnt = null;
+        try {
+            stmnt = con.createStatement();
+            stmnt.execute(ds.getCountSql());
+        } catch (SQLException e) {
+            return "Could not do select on data service. (" + e.getMessage() + ")";
+        }
+
+        try {
+            con.close();
+        } catch (Exception e) {
+
+        }
+
+        return "";
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see gov.va.vinci.v3nlp.DatabaseRepositoryService#getRespostoryNames()
-      */
-    public List<String> getRespostoryNames() {
-        List<String> results = new ArrayList<String>();
-
-        for (V3nlpDBRepository d : repositories) {
-            results.add(d.getName());
-        }
-        return results;
+    public List<V3nlpDBRepository> getRepositories() {
+        return (List<V3nlpDBRepository>) entityManager.createQuery("select repo from gov.va.vinci.v3nlp.services.database.V3nlpDBRepository repo").getResultList();
     }
 
     protected Connection getConnection(V3nlpDBRepository ds, String loggedInUser) throws SQLException {

@@ -181,6 +181,10 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     }
 
+    public String testDataService(V3nlpDBRepository ds, String loggedInUser) {
+        return databaseRepositoryService.test(ds, Utilities.getUsername(loggedInUser.trim()));
+    }
+
     /**
      * Given a pipeline id and user token, load the result and return it as a serialized string.
      * @param pipeLineId

@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface DatabaseRepositoryService {
 
-	public abstract List<String> getRespostoryNames();
-
 	public abstract List<DocumentInterface> getDocuments(V3nlpDBRepository m, String loggedInUser) throws SQLException;
 
     public abstract List<V3nlpDBRepository> getRepositories();
+    
+    public abstract String test(V3nlpDBRepository ds, String loggedInUser);
 }
