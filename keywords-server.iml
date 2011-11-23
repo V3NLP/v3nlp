@@ -25,6 +25,20 @@
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset1" name="My Fileset" removed="false">
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/config/jpa-context.xml</file>
+          <file>file://$MODULE_DIR$/src/test/resources/gate-context.xml</file>
+          <file>file://$MODULE_DIR$/src/test/resources/spring-beans.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/flex-servlet.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/springapp-servlet.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/config/gate-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/config/nlpservices-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/config/spring-context.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -42,7 +56,7 @@
     <orderEntry type="library" name="Maven: gov.va.research:v3nlp-common:2011.09.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun:tools:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: gov.va.research:v3nlp-common:2011.09.2-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: gov.va.research:common-model:2011.09.0" level="project" />
+    <orderEntry type="library" name="Maven: gov.va.research:common-model:2011.09.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.thoughtworks.xstream:xstream:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: xpp3:xpp3_min:1.1.4c" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />

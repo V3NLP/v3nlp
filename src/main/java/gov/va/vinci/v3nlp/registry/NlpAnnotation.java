@@ -55,4 +55,13 @@ public class NlpAnnotation {
     public void setVersion(long version) {
         this.version = version;
     }
+
+
+    public List<NlpAnnotationAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<NlpAnnotationAttribute> attributes) {
+        this.attributes = attributes;
+    }
 }

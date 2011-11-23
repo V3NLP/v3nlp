@@ -1,6 +1,5 @@
 package gov.va.vinci.v3nlp;
 
-import gov.va.research.v3nlp.repo.DBRepository;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.cm.service.SerializationService;
@@ -8,10 +7,9 @@ import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
-import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import gov.va.vinci.v3nlp.registry.RegistryService;
-import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
+import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -68,16 +68,4 @@ public class DataServiceSource extends BaseNlpModule {
         this.textColumn = textColumn;
     }
 
-    @Override
-    public String toString() {
-        return "DataServiceSource{" +
-                "numberOfDocuments=" + numberOfDocuments +
-                ", dataServiceUsername='" + dataServiceUsername + '\'' +
-                ", databaseServer='" + databaseServer + '\'' +
-                ", database='" + database + '\'' +
-                ", table='" + table + '\'' +
-                ", idColumn='" + idColumn + '\'' +
-                ", textColumn='" + textColumn + '\'' +
-                '}';
-    }
 }

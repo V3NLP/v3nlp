@@ -1,0 +1,39 @@
+<V3NLP-PipeLine>
+  <numberOfProcesses>0</numberOfProcesses>
+  <description>3 - Find Ejection Fractions with in the 70's.</description>
+  <createdDate>Wed Oct 5 08:10:56 GMT-0600 2011</createdDate>
+  <services>
+    <FetchPanel oW="489" oH="242" oX="25" oY="25" x="25" y="25" width="489" height="242" name="FetchPanel814" flagForFollowUp="true" panelNumber="1">
+      <fetchModule dataDirectory="/Users/vhaislcornir/Desktop/v3nlp-interface/new-test-data" panelName="Directory 1"/>
+      <module id="NaN" componentName="Fetch Panel" active="false" version="NaN">
+        <description>Used for loading data to process.</description>
+        <requires/>
+        <provides/>
+      </module>
+    </FetchPanel>
+    <HitexConceptFinderService oW="489" oH="216" oX="25" oY="292" x="25" y="292" width="489" height="216" name="HitexConceptFinderService982" flagForFollowUp="false" serviceUid="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService">
+      <expressions>
+        <Concept expression="Ejection FRACTION.*?(7[0-9])" expressionName="EjectionFraction" keepFeatureInResult="true"/>
+        <Concept expression="\sEF\s.*?(7[0-9])" expressionName="EjectionFraction" keepFeatureInResult="true"/>
+        <Concept expression="\se\.f\.\s.*?(7[0-9])" expressionName="EjectionFraction" code=" " keepFeatureInResult="true"/>
+      </expressions>
+      <module id="6" uid="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" componentName="Concept (Regular Expression) Finder" implementationClass="gov.va.vinci.v3nlp.services.gate.HitexConceptFinderService" technology="Gate" active="true" version="1" pedigree="GATE|hitex.gate.regex.ConceptFinder">
+        <description>Adds the concepts matching the Regular Expression to the document.</description>
+        <category id="6" shortName="regexpression" categoryName="Reg Expression" iconUrl="http://localhost:8080/v3nlp-server/img/application-icons/magnifier.png" categoryDescription="Regular Expression modules." sortOrder="6"/>
+        <requires/>
+        <provides>
+          <NlpComponentProvides id="8">
+            <annotation id="8" name="concept" description="concept"/>
+          </NlpComponentProvides>
+        </provides>
+      </module>
+    </HitexConceptFinderService>
+    <ReviewResultsPanel oW="489" oH="156" oX="25" oY="533" x="25" y="533" width="489" height="156" name="ReviewResultsPanel1114" flagForFollowUp="false">
+      <module id="NaN" componentName="Review Results" active="false" version="NaN">
+        <description>Used for reviewing results.</description>
+        <requires/>
+        <provides/>
+      </module>
+    </ReviewResultsPanel>
+  </services>
+</V3NLP-PipeLine>

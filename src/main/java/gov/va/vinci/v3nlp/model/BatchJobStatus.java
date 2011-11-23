@@ -1,6 +1,9 @@
 package gov.va.vinci.v3nlp.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Entity(name="v3nlp.batch_job_status")
@@ -34,6 +37,14 @@ public class BatchJobStatus {
 
     @Column
     private String resultPath;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Date getRunDate() {
         return runDate;
@@ -99,4 +110,6 @@ public class BatchJobStatus {
     public void setResultPath(String resultPath) {
         this.resultPath = resultPath;
     }
+
+
 }

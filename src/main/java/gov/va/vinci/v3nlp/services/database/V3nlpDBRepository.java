@@ -147,8 +147,8 @@ public class V3nlpDBRepository {
 
         return null;
     }
-    
-    public String getCountSql() {
-        return "select  min(" + uidColumn.replace("'", "''") + "), min(" + textColumn.replace("'", "''") + "), count(*) from " + table.replace("'", "''");
+
+    public String getCheckSql() {
+        return "select " + uidColumn.replace("'", "''") + ", " + textColumn.replace("'", "''") + " from " + table.replace("'", "''") + " where " + uidColumn.replace("'", "''")  + " is null";
     }
 }

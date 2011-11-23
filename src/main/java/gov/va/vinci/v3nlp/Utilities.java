@@ -10,6 +10,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
+/**
+ * Non-nlp utilities.
+ */
 public class Utilities {
     public static String getUsernameAsDirectory(String userToken) {
         if (GenericValidator.isBlankOrNull(userToken)) {

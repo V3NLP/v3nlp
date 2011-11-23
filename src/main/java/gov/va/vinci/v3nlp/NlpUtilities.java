@@ -11,8 +11,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * NLP Related utilities used within the system.
+ */
 public class NlpUtilities {
 
+    /**
+     * Converts a gate annotation to a common model annotation.
+     * @param gateAnnotation
+     * @param content
+     * @param offset
+     * @param pedigree
+     * @return
+     */
     public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
 			String content, Integer offset, String pedigree) {
         Annotation resultAnnotation = new Annotation(gateAnnotation.getId());
@@ -59,12 +70,25 @@ public class NlpUtilities {
 
     }
 
+    /**
+     * Converts a gate annotations to a common model annotation.
+     * @param gateAnnotation
+     * @param content
+     * @param pedigree
+     * @return
+     */
 	@SuppressWarnings("unchecked")
 	public static Annotation convertAnnotation(gate.Annotation gateAnnotation,
 			String content, String pedigree) {
         return(convertAnnotation(gateAnnotation, content, 0, pedigree));
 	}
 
+    /**
+     * Validate if a string contains only characters and numbers.
+     * @param s  String to test.
+     * @return  true if the string is only characters and numbers, false if any other characters
+     *  are present.
+     */
     public static boolean isValidNameNumbersAndCharacters(String s) {
         String regExp="^[a-zA-Z_0-9]+$";
 

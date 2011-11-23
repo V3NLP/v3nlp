@@ -58,4 +58,13 @@ public class NlpComponentProvides implements Serializable {
     public void setVersion(long version) {
         this.version = version;
     }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

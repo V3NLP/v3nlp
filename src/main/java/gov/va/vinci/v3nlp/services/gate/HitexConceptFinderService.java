@@ -7,7 +7,6 @@ import gov.va.vinci.cm.Annotation;
 import gov.va.vinci.cm.Document;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import gov.va.vinci.v3nlp.services.NlpProcessingUnit;
 import hitex.gate.regex.ConceptFinder;
 import org.apache.commons.validator.GenericValidator;

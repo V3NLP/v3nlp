@@ -51,7 +51,7 @@ public class StubDatabaseRepositoryServiceImpl implements
         Statement stmnt = null;
         try {
             stmnt = con.createStatement();
-            stmnt.execute(ds.getCountSql());
+            stmnt.execute(ds.getCheckSql());
         } catch (SQLException e) {
             return "Could not do select on data service. (" + e.getMessage() + ")";
         }

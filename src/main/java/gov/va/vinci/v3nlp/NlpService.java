@@ -1,6 +1,5 @@
 package gov.va.vinci.v3nlp;
 
-import gov.va.research.v3nlp.repo.DBRepository;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
@@ -10,6 +9,14 @@ import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Top level NLP Service that jobs are submitted to, and that
+ * returns results.
+ *
+ * This service also have several dataservice related methods
+ * exposed so clients only need to interact with one service for
+ * job related functions.
+ */
 public interface NlpService {
 
     /**
@@ -80,7 +87,22 @@ public interface NlpService {
      */
     public abstract List<BatchJobStatus> jobsForUserToken(String userToken);
 
+    /**
+     * Returns all V3nlpDBRepository's that this service has
+     * configured.
+     *
+     * @return a list of db repositories
+     */
     public abstract List<V3nlpDBRepository> getRepositories();
 
+    /**
+     * Given a dataservice and logged in user name, test the
+     * service.
+     *
+     * @param ds Dataservice to test.
+     * @param loggedInUser User logged in.
+     * @return  An empty string if successful, or the text of the
+     *  error message if unsuccessful.
+     */
     public abstract String testDataService(V3nlpDBRepository ds, String loggedInUser);
 }

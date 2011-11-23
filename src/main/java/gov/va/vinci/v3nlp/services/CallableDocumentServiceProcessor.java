@@ -5,7 +5,6 @@ import gov.va.vinci.v3nlp.StaticApplicationContext;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.NlpComponentProvides;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

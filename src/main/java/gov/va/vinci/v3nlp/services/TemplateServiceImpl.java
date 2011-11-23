@@ -41,8 +41,16 @@ public class TemplateServiceImpl implements TemplateService {
         }
         return resultList;
     }
-    
 
+
+    /**
+     * Defines where to look for templates on the file system.
+     * <br/><br/>
+     * <strong>Note: In this implementation, the directory is recursively traversed
+     * to get all templates in sub-directories, using the sub-directory name as the group
+     * name. Currently it only goes one level deep. Templates must have the extension .v3nlp</strong>
+     * @param templateDirectory  the directory to look for templates in.
+     */
     @Required
     public void setTemplateDirectory(String templateDirectory) {
         this.templateDirectory = new File(templateDirectory);
@@ -61,6 +69,7 @@ public class TemplateServiceImpl implements TemplateService {
     	    }
     	    in.close();
     	} catch (IOException e) {
+            throw new RuntimeException(e);
     	}
     	return toReturn.toString();
     }

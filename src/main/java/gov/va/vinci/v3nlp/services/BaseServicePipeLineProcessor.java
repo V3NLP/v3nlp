@@ -1,7 +1,6 @@
 package gov.va.vinci.v3nlp.services;
 
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;

@@ -1,0 +1,68 @@
+<V3NLP-PipeLine>
+  <createdDate>Wed Oct 5 11:30:40 GMT-0600 2011</createdDate>
+  <services>
+    <FetchPanel oW="489" oH="242" oX="25" oY="25" x="25" y="25" width="489" height="242" name="FetchPanel914" flagForFollowUp="false" panelNumber="1">
+      <fetchModule dataFileName="/Users/vhaislcornir/Desktop/v3nlp-interface/new-test-data/Exercise8_01.txt" panelName="File 1"/>
+      <module id="NaN" componentName="Fetch Panel" active="false" version="NaN">
+        <description>Used for loading data to process.</description>
+        <requires/>
+        <provides/>
+      </module>
+    </FetchPanel>
+    <MetamapProviderServiceImpl oW="489" oH="216" oX="25" oY="292" x="25" y="292" width="489" height="216" name="MetamapProviderServiceImpl1102" flagForFollowUp="false" serviceUid="gov.va.vinci.v3nlp.services.other.MetamapProviderServiceImpl" keepFeatureInResult="true">
+      <metamapGroups>
+        <LabelValue label="Activities &amp; Behaviors" value="ACTI"/>
+        <LabelValue label="Anatomy" value="ANAT"/>
+        <LabelValue label="Chemicals &amp; Drugs" value="CHEM"/>
+        <LabelValue label="Concepts &amp; Ideas" value="CONC"/>
+        <LabelValue label="Devices" value="DEVI"/>
+        <LabelValue label="Disorders" value="DISO"/>
+        <LabelValue label="Genes &amp; Molecular Sequences" value="GENE"/>
+        <LabelValue label="Geographic Areas" value="GEOG"/>
+        <LabelValue label="Living Beings" value="LIVB"/>
+        <LabelValue label="Objects" value="OBJC"/>
+        <LabelValue label="Occupations" value="OCCU"/>
+        <LabelValue label="Organizations" value="ORGA"/>
+        <LabelValue label="Phenomena" value="PHEN"/>
+        <LabelValue label="Physiology" value="PHYS"/>
+        <LabelValue label="Procedures" value="PROC"/>
+      </metamapGroups>
+      <userEnteredValues>&lt;metamap-concepts&gt;
+	&lt;semantic-group&gt;PROC&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;PHYS&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;PHEN&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;ORGA&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;OCCU&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;OBJC&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;LIVB&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;GEOG&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;GENE&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;DISO&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;DEVI&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;CONC&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;CHEM&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;ANAT&lt;/semantic-group&gt;
+	&lt;semantic-group&gt;ACTI&lt;/semantic-group&gt;
+&lt;/metamap-concepts&gt;</userEnteredValues>
+      <module id="8" uid="gov.va.vinci.v3nlp.services.other.MetamapProviderServiceImpl" componentName="Metamap" implementationClass="gov.va.vinci.v3nlp.services.other.MetamapProviderServiceImpl" technology="Gate" active="true" version="1" pedigree="INTERFACE:metamap">
+        <description>Maps text to UMLS Metathesaurus.</description>
+        <category id="8" shortName="metamap" categoryName="Metamap" iconUrl="http://localhost:8080/v3nlp-server/img/application-icons/paint-brush-color.png" categoryDescription="Metamap concept extraction related modules." sortOrder="8"/>
+        <requires/>
+        <provides>
+          <NlpComponentProvides id="10">
+            <annotation id="10" name="UMLS Concept" description="UMLSConcept"/>
+          </NlpComponentProvides>
+        </provides>
+      </module>
+    </MetamapProviderServiceImpl>
+    <ReviewResultsPanel oW="489" oH="156" oX="25" oY="533" x="25" y="533" width="489" height="156" name="ReviewResultsPanel1196" flagForFollowUp="false">
+      <module id="NaN" componentName="Review Results" active="false" version="NaN">
+        <description>Used for reviewing results.</description>
+        <requires/>
+        <provides/>
+      </module>
+    </ReviewResultsPanel>
+  </services>
+  <description>1 - Simple metamap, all categories.</description>
+  <numberOfProcesses>0</numberOfProcesses>
+</V3NLP-PipeLine>
