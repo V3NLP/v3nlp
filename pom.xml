@@ -250,6 +250,23 @@
                         <target>1.6</target>
                     </configuration>
                 </plugin>
+
+
+
+
+		<!-- License File Plugin -->
+		<plugin>
+            		<groupId>com.mycila.maven-license-plugin</groupId>
+            		<artifactId>maven-license-plugin</artifactId>
+            		<configuration>
+                		<header>src/etc/header.txt</header>
+				<includes>
+		                    <include>src/**/*.java</include>
+               			    <include>**/test/**/*.java</include>
+                		</includes>
+            		</configuration>
+        	</plugin>
+
             </plugins>
         </pluginManagement>
         <finalName>v3nlp-server</finalName>
