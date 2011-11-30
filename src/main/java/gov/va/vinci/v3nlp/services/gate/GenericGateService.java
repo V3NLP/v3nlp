@@ -1,7 +1,14 @@
+/**
+ * Copyright (C) 2011-
+ *
+ * All rights reserved.
+ */
 package gov.va.vinci.v3nlp.services.gate;
 
 import gate.Factory;
+import gate.Gate;
 import gate.ProcessingResource;
+import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
@@ -24,9 +31,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 		gov.va.vinci.cm.Corpus results = new gov.va.vinci.cm.Corpus();
 
 		try {
-			controller = (SerialAnalyserController) Factory.createResource(
-                    "gate.creole.SerialAnalyserController", Factory
-                    .newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
+			controller = getSerialAnalyserController();
 			controller.reInit();
 
 			// Add Resource
@@ -45,6 +50,12 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 		} finally {
 			cleanupPipeLine(controller, corpus);
 		}
+    }
+
+    protected SerialAnalyserController getSerialAnalyserController() throws ResourceInstantiationException {
+           return (SerialAnalyserController) Factory.createResource(
+                               "gate.creole.SerialAnalyserController", Factory
+                               .newFeatureMap(), Factory.newFeatureMap(), "V3NLP");
     }
 
     @Override
