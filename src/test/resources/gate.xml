@@ -2,20 +2,14 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gate="http://gate.ac.uk/ns/spring"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:flex="http://www.springframework.org/schema/flex"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        		http://gate.ac.uk/ns/spring  
-       		http://gate.ac.uk/ns/spring.xsd
-       		http://www.springframework.org/schema/context 
-       		http://www.springframework.org/schema/context/spring-context-2.5.xsd
-       		http://www.springframework.org/schema/flex 
-            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+       		http://gate.ac.uk/ns/spring.xsd">
 
-	<gate:init gate-home="file:src/main/webapp/WEB-INF/" site-config-file="file:src/main/webapp/WEB-INF/config/gate.xml">
+	<gate:init gate-home="WEB-INF" site-config-file="WEB-INF/config/gate.xml" >
 		<gate:preload-plugins>
-			<value>file:src/test/nlp-resources/</value>
+			<value>WEB-INF/resources/</value>
 		</gate:preload-plugins>
 	</gate:init>
 
@@ -71,6 +65,8 @@
 			<entry key="sectionCriteriaList">
 				<list>
 					<value>ANY</value>
+					<!-- <value>category = PRI</value> -->
+					<!-- <value>category = DIAG</value> -->
 				</list>
 			</entry>
 
@@ -113,18 +109,18 @@
 		</gate:parameters>
 	</gate:resource>
 
-	<gate:resource id="defaultTextTokenizer" resource-class="hitex.gate.Tokenizer">
+	<gate:resource id="defaultTextTokenizer" resource-class="hitex.gate.Tokenizer" scope="prototype">
 		<gate:parameters>
 			<entry key="rulesURL">
 				<value type="org.springframework.core.io.Resource">
-					file:src/main/webapp/WEB-INF/resources/tokenizer/rules.txt
+					WEB-INF/resources/tokenizer/rules.txt
 				</value>
 			</entry>
 		</gate:parameters>
 	</gate:resource>
 
 	<gate:resource id="defaultSentenceSplitter"
-		resource-class="hitex.gate.SentenceSplitter">
+		resource-class="hitex.gate.SentenceSplitter" scope="prototype">
 	</gate:resource>
 
 	<gate:resource id="defaultRegexConceptFinder" scope="prototype"
@@ -135,42 +131,42 @@
 			</entry>
 			<entry key="filterURL">
 				<value type="org.springframework.core.io.Resource">
-					file:src/main/webapp/WEB-INF/resources/regex/section_filter.txt
+					WEB-INF/resources/regex/section_filter.txt
 				</value>
 			</entry>
 			<entry key="rulesURL">
 				<value type="org.springframework.core.io.Resource">
-					file:src/main/webapp/WEB-INF/resources/regex/rules.xml
+					WEB-INF/resources/regex/rules.xml
 				</value>
 			</entry>
 		</gate:parameters>
 	</gate:resource>
 
 	<gate:resource id="sentenceSplitter" resource-class="hitex.gate.SentenceSplitter"
-		resource-name="sentenceSplitter">
+		resource-name="sentenceSplitter" scope="prototype">
 	</gate:resource>
 
 
 	<gate:resource id="oParser" resource-class="gov.va.research.v3nlp.gate.pr.OParser"
-		resource-name="oParser">
+		resource-name="oParser" scope="prototype">
 		<gate:parameters>
 			<entry key="model">
 				<value type="org.springframework.core.io.Resource">
-					file:src/main/webapp/WEB-INF/resources/chunker_opennlp/EnglishChunk.bin.gz
+					WEB-INF/resources/chunker_opennlp/EnglishChunk.bin.gz
 				</value>
 			</entry>
 		</gate:parameters>
 	</gate:resource>
 
 	<gate:resource id="hitexPOSTagger" resource-class="gov.va.research.v3nlp.gate.pr.OpenNLPPOSTaggerAdapter"
-		resource-name="examplePOSTagger">
+		resource-name="examplePOSTagger" scope="prototype">
 		<gate:parameters>
 			<entry key="model">
-				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag_ctakes/models/postagger.model.bin.gz
 				</value>
 			</entry>
 			<entry key="dictionary">
-				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/postag_ctakes/models/tag.dictionary.txt
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/postag_ctakes/models/tag.dictionary.txt
 				</value>
 			</entry>
 		</gate:parameters>
@@ -180,7 +176,7 @@
 		resource-class="hitex.gate.Sectionizer" resource-name="exampleSectionizer">
 		<gate:parameters>
 			<entry key="headersURL">
-				<value type="org.springframework.core.io.Resource">file:src/main/webapp/WEB-INF/resources/sectionizer/dis_headers.xml
+				<value type="org.springframework.core.io.Resource">WEB-INF/resources/sectionizer/dis_headers.xml
 				</value>
 			</entry>
 		</gate:parameters>
