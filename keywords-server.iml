@@ -29,7 +29,7 @@
       <configuration>
         <fileset id="fileset1" name="My Fileset" removed="false">
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/config/jpa-context.xml</file>
-          <file>file://$MODULE_DIR$/src/test/resources/gate-context.xml</file>
+          <file>file://$MODULE_DIR$/src/test/resources/gate.xml</file>
           <file>file://$MODULE_DIR$/src/test/resources/spring-beans.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/flex-servlet.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/springapp-servlet.xml</file>
@@ -127,7 +127,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: mysql:mysql-connector-java:5.1.13" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.microsoft:sqljdbc4:3.0" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache-core:2.3.1" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.11" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.5.11" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.cxf:cxf-rt-transports-http-jetty:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:7.2.0.v20101020" level="project" />

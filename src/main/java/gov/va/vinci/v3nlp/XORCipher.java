@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2011-
+ *
+ * All rights reserved.
+ */
 package gov.va.vinci.v3nlp;
 
 import org.apache.commons.codec.binary.Base64;
