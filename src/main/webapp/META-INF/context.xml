@@ -2,7 +2,13 @@
 <Context path="/v3nlp-server">
     <Resource name="jdbc/expressionlib" auth="Container" type="javax.sql.DataSource"
         maxActive="100" maxIdle="30" maxWait="10000"  defaultAutoCommit="false"
-          username="v3nlp" password="reverse" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://localhost:3306/v3nlp" >
+        username="v3nlp" password="v3nlp" driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        url="jdbc:sqlserver://vhacdwdbs10;database=v3nlp;integratedSecurity=true" >
+    </Resource>
+
+    <Resource name="jdbc/vhacdwdbs10" auth="Container" type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"  defaultAutoCommit="false"
+        username="VinciUser" password="VinciUser" driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        url="jdbc:sqlserver://vhacdwdbs10;database=v3nlp;integratedSecurity=false" >
     </Resource>
 </Context>

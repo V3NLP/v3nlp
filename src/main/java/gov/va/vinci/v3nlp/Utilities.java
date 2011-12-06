@@ -23,7 +23,7 @@ public class Utilities {
         if (GenericValidator.isBlankOrNull(userToken)) {
             return "";
         } else {
-            return XORCipher.decode(userToken).replace("\\", "-") + "/";
+            return XORCipher.decode(userToken).replace("\\", "-").trim() + "/";
         }
     }
 
@@ -31,7 +31,7 @@ public class Utilities {
         if (GenericValidator.isBlankOrNull(userToken)) {
             return "";
         } else {
-            return XORCipher.decode(userToken);
+            return XORCipher.decode(userToken).trim();
         }
     }
 
