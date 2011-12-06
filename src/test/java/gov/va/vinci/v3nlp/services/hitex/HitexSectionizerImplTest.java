@@ -132,14 +132,14 @@ public class HitexSectionizerImplTest {
     @Test
     public void sectionizerConfigCreatorTest1() throws Exception {
         String result = Utilities.transformDoc(HitexSectionizerImpl.sectionizerConfigHeaders(SECTIONIZER_CONFIG_CREATE_TEST1_INPUT));
-
+        result=result.replaceAll("\r\n", "\n");
         assert (result.equals(SECTIONIZER_CONFIG_CREATE_TEST1_OUTPUT));
     }
 
     @Test
     public void sectionizerConfigCreatorTest2() throws Exception {
         String result = Utilities.transformDoc(HitexSectionizerImpl.sectionizerConfigHeaders(SECTIONIZER_CONFIG_CREATE_TEST2_INPUT));
-
+        result=result.replaceAll("\r\n", "\n");
         assert (result.equals(SECTIONIZER_CONFIG_CREATE_TEST2_OUTPUT));
     }
 
