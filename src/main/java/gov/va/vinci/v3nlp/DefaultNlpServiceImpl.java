@@ -127,7 +127,6 @@ public class DefaultNlpServiceImpl implements NlpService {
     @Transactional(readOnly = false)
     public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
-        System.out.println("Path:" + pathOfResults);
         BatchJobStatus jobStatus = new BatchJobStatus();
         jobStatus.setJobName(pipeLine.getJobName());
         jobStatus.setDescription(pipeLine.getJobDescription());

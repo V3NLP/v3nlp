@@ -77,7 +77,7 @@ public class StubDatabaseRepositoryServiceImpl implements
     protected Connection getConnection(V3nlpDBRepository ds, String loggedInUser) throws SQLException {
         Connection con = null;
         if ("com.microsoft.sqlserver.jdbc.SQLServerDriver".equals(ds.getDriverClassName())) {
-            String connectionUrl = "jdbc:sqlserver://vhacdwdbs10;integratedSecurity=false;user=VinciUser;password=VinciUser;" + "database=" + ds.getSchema();
+            String connectionUrl = ds.getUrl() + ds.getSchema();
             con = DriverManager.getConnection(connectionUrl);
             con.createStatement().execute("EXECUTE AS LOGIN = '" + loggedInUser.trim().replace("'", "''").toLowerCase() + "';");
         } else if ("com.mysql.jdbc.Driver".equals(ds.getDriverClassName())) {
@@ -92,9 +92,9 @@ public class StubDatabaseRepositoryServiceImpl implements
         Connection con = null;
         try {
             con = getConnection(ds, loggedInUser);
-            Statement stmnt = con.createStatement();
+            Statement statement = con.createStatement();
 
-            ResultSet rs = stmnt.executeQuery(ds.getSelectSql());
+            ResultSet rs = statement.executeQuery(ds.getSelectSql());
             while (rs.next()) {
                 Document d = new Document();
                 d.setDocumentId("" + rs.getObject(1));
