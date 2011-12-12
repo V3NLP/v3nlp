@@ -6,6 +6,7 @@
 package gov.va.vinci.v3nlp.controller;
 
 import com.ddtek.jdbc.extensions.ExtConnection;
+import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.RegistryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +50,20 @@ public class ServiceRegistryController {
         mav.setViewName("registry/annotations");
         mav.addObject("model", registryService.getNlpAnnotationList());
         return mav;
+    }
+
+    @RequestMapping("/registry/addcomponent")
+    public ModelAndView addComponent() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("registry/addcomponent");
+        mav.addObject("model", new NlpComponent());
+        return mav;
+    }
+
+    @RequestMapping("/registry/doaddcomponent")
+    public ModelAndView doAddComponent(NlpComponent comp) {
+        System.out.println("here!");
+        return null;
     }
 
 

@@ -23,12 +23,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Default NlpService implementation that V3NLP Keywords.
- *
  */
 @Transactional
 public class DefaultNlpServiceImpl implements NlpService {
@@ -49,7 +49,7 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
-        this. entityManager = entityManager;
+        this.entityManager = entityManager;
     }
 
     public void setDirectoryToStoreResults(String directoryToStoreResults) {
@@ -105,19 +105,21 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
     @Override
-    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<V3nlpDBRepository> dataServiceSourceList)
+    public String submitPipeLine(ServicePipeLine pipeLine, Corpus corpus, List<V3nlpDBRepository> loadDataRepositories)
             throws SQLException {
 
+        // If we have data respositories, load from them.
+        if (loadDataRepositories != null) {
+            for (V3nlpDBRepository ds : loadDataRepositories) {
+                List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds, Utilities.getUsername(pipeLine.getUserToken().trim()));
 
-        for (V3nlpDBRepository ds : dataServiceSourceList) {
-            List<DocumentInterface> docs = this.databaseRepositoryService.getDocuments(ds,  Utilities.getUsername(pipeLine.getUserToken().trim()));
+                if (docs == null || docs.size() == 0) {
+                    throw new RuntimeException("Data service returned no documents.");
+                }
 
-            if (docs==null || docs.size() == 0) {
-                throw new RuntimeException("Data service returned no documents.");
-            }
-
-            for (DocumentInterface di : docs) {
-                corpus.addDocument(di);
+                for (DocumentInterface di : docs) {
+                    corpus.addDocument(di);
+                }
             }
         }
         return this.submitPipeLine(pipeLine, corpus);
@@ -136,9 +138,9 @@ public class DefaultNlpServiceImpl implements NlpService {
         jobStatus.setPipelineXml(pipeLine.getPipelineXml());
 
 
-         // Make sure output path exists, or create it.
+        // Make sure output path exists, or create it.
         if (!new File(pathOfResults).exists()) {
-           new File(pathOfResults).mkdir();
+            new File(pathOfResults).mkdir();
         }
 
         try {
@@ -152,14 +154,32 @@ public class DefaultNlpServiceImpl implements NlpService {
 
             // Determine the technology of this pipeline.
             String technology = null;
-            for (ServicePipeLineComponent comp: pipeLine.getServices()) {
-                 if (comp.getServiceUid() != null) {
-                     technology = registryService.getNlpComponent(comp.getServiceUid()).getTechnology();
-                     break;
-                 }
+            for (ServicePipeLineComponent comp : pipeLine.getServices()) {
+                if (comp.getServiceUid() != null) {
+                    technology = registryService.getNlpComponent(comp.getServiceUid()).getTechnology();
+                    break;
+                }
             }
 
             if ("Gate".equals(technology)) {
+                /**
+                 *
+                 * For testings
+
+                    V3nlpDBRepository repo = new V3nlpDBRepository();
+                    repo.setDriverClassName("com.mysql.jdbc.Driver");
+                    repo.setUrl("jdbc:mysql://localhost:3306/ryan-test?user=v3nlp&password=reverse");
+                    repo.setSchema("ryan-test");
+                    repo.setTable("example_data");
+                    repo.setTextColumn("report_test");
+                    repo.setUidColumn("id");
+
+                    List<V3nlpDBRepository> saveTo = new ArrayList<V3nlpDBRepository>();
+                    saveTo.add(repo);
+                    pipeLine.setSaveToRepositories(saveTo);
+
+                 **/
+
                 servicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus, jobStatus);
             } else if ("UIMA".equals(technology)) {
                 uimaServicePipeLineProcessor.processPipeLine(pipeLineId, pipeLine, corpus, jobStatus);
@@ -177,10 +197,10 @@ public class DefaultNlpServiceImpl implements NlpService {
     public List<BatchJobStatus> jobsForUserToken(String userToken) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(userToken);
 
-        String username= Utilities.getUsername(userToken);
+        String username = Utilities.getUsername(userToken);
         Query query = entityManager.createQuery("SELECT job FROM gov.va.vinci.v3nlp.model.BatchJobStatus job where username = ?1 order by runDate desc");
         query.setParameter(1, username);
-        return (List<BatchJobStatus> ) query.getResultList();
+        return (List<BatchJobStatus>) query.getResultList();
 
     }
 
@@ -190,11 +210,12 @@ public class DefaultNlpServiceImpl implements NlpService {
 
     /**
      * Given a pipeline id and user token, load the result and return it as a serialized string.
+     *
      * @param pipeLineId
      * @param userToken
      * @return the corpus in serialized form.
      */
-    public String getSerializedResults(String pipeLineId, String userToken){
+    public String getSerializedResults(String pipeLineId, String userToken) {
         CorpusSummary summary = this.getPipeLineResults(pipeLineId, userToken);
         return this.serializeCorpus(summary.getCorpus());
     }
@@ -215,10 +236,12 @@ public class DefaultNlpServiceImpl implements NlpService {
     public List<V3nlpDBRepository> getRepositories() {
         return this.databaseRepositoryService.getRepositories();
     }
-    
-    /************************************************************************************************************
+
+    /**
+     * *********************************************************************************************************
      * Setters Methods Below.
-     ***********************************************************************************************************/
+     * *********************************************************************************************************
+     */
     public void setServicePipeLineProcessor(ServicePipeLineProcessor servicePipeLineProcessor) {
         this.servicePipeLineProcessor = servicePipeLineProcessor;
     }
@@ -236,9 +259,11 @@ public class DefaultNlpServiceImpl implements NlpService {
     }
 
 
-    /************************************************************************************************************
+    /**
+     * *********************************************************************************************************
      * Private Methods Below.
-     ***********************************************************************************************************/
+     * *********************************************************************************************************
+     */
 
     private Object deSerialize(String path) {
         try {

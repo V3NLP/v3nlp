@@ -73,7 +73,7 @@
         </filter-class>
         <init-param>
             <param-name>entityManagerFactoryBeanName</param-name>
-            <param-value>myEmf</param-value>
+            <param-value>v3nlpEntityManager</param-value>
         </init-param>
     </filter>
 

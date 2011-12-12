@@ -6,14 +6,17 @@
 package gov.va.vinci.v3nlp.services;
 
 
-import gov.va.vinci.cm.Annotation;
-import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.cm.*;
+import gov.va.vinci.v3nlp.model.ServicePipeLine;
+import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
+import gov.va.vinci.v3nlp.registry.RegistryService;
+import org.apache.commons.validator.GenericValidator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseNlpProcessingUnit implements NlpProcessingUnit{
+public class BaseNlpProcessingUnit implements NlpProcessingUnit {
 
     protected List<Annotation> getProcessList(DocumentInterface originalDocument, List<NlpComponent> previousModuleProvided) {
         List<Annotation> toProcess = new ArrayList<Annotation>();
@@ -31,6 +34,7 @@ public class BaseNlpProcessingUnit implements NlpProcessingUnit{
         return toProcess;
     }
 
+
     @Override
     public DocumentInterface process(String config, DocumentInterface _document, List<NlpComponent> previousModuleProvided) {
         return null;
@@ -45,4 +49,7 @@ public class BaseNlpProcessingUnit implements NlpProcessingUnit{
     public void destroy() {
 
     }
+
+
+
 }

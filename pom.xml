@@ -19,7 +19,7 @@
         <dictionary-version>2011.12.0</dictionary-version>
         <flap-version>2011.09.0</flap-version>
         <v3nlp-common-version>2011.12.0</v3nlp-common-version>
-        <vinciNLPFramework-version>2011.12.0</vinciNLPFramework-version>
+        <vinciNLPFramework-version>2011.12.2-SNAPSHOT</vinciNLPFramework-version>
 
         <!-- Other -->
         <powermock.version>1.3.6</powermock.version>

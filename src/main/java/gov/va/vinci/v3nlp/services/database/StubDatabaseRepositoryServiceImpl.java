@@ -5,17 +5,21 @@
  */
 package gov.va.vinci.v3nlp.services.database;
 
-import gov.va.vinci.cm.Document;
-import gov.va.vinci.cm.DocumentInterface;
+import gov.va.vinci.cm.*;
 import gov.va.vinci.v3nlp.NlpUtilities;
 import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import org.apache.commons.validator.GenericValidator;
+import org.apache.uima.cas.text.AnnotationIndex;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Mock-up for a database repository service for testing if the concept will work.
@@ -113,6 +117,55 @@ public class StubDatabaseRepositoryServiceImpl implements
             }
         }
         return results;
+    }
+
+    public boolean writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser) {
+        Connection connection = null;
+        try {
+            connection = this.getConnection(ds, loggedInUser);
+
+            SingleConnectionDataSource dataSource = new SingleConnectionDataSource(connection, true);
+            dataSource.setAutoCommit(false);
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+
+            // FIX THIS! - MYSQL Specific currently.
+            jdbcTemplate.execute("START TRANSACTION");
+            for (DocumentInterface d: c.getDocuments()) {
+                // Step 1 - Write the Analyte Reference
+                jdbcTemplate.update("insert into analyte_reference (id, reference_location) values (?, ?)", new Object[] {d.getDocumentId(), d.getDocumentName() });
+
+                // Step 2 - Annotations, Spans, and Annotation/Analyte References
+                for (AnnotationInterface a: d.getAnnotations().getAll()) {
+                    jdbcTemplate.update("insert into annotation (id, name) values (?, ?)", new Object[] {a.getAnnotationId(), a.getOffsetKey() });
+                    String aarUID = UUID.randomUUID().toString();
+                    jdbcTemplate.update("insert into annotation_analyte_reference (id, annotation_id, analyte_reference_id) values (?, ?, ?)", new Object[] {aarUID, a.getAnnotationId(), d.getDocumentId() });
+                    jdbcTemplate.update("insert into span (id, annotation_analyte_ref_id, start_offset, end_offset) values (?, ?, ?, ?)", new Object[] {UUID.randomUUID().toString(), aarUID, a.getBeginOffset(), a.getEndOffset() });
+
+                    // Step 3 - Features
+                    for (Feature f: a.getFeatures()) {
+
+                    }
+          
+               }
+
+
+
+            }
+
+            jdbcTemplate.execute("COMMIT");
+
+        } catch (SQLException e) {
+            System.out.println("Exception:" + e);
+            return false;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+
+            }
+        }
+        return true;
     }
 
     private void validateDataServiceSource(DataServiceSource ds) {

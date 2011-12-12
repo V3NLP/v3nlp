@@ -13,6 +13,8 @@ import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.registry.RegistryService;
+import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
+import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
@@ -28,12 +30,11 @@ import java.util.concurrent.*;
 @Transactional
 public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
-    private RegistryService registryService;
-
     private String directoryToStoreResults;
 
     private static Log logger = LogFactory.getLog(ServicePipeLineProcessorImpl.class);
 
+    private DatabaseRepositoryService databaseRepositoryService;
 
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
@@ -54,7 +55,7 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
     @Async
     @Transactional(readOnly = false)
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus, BatchJobStatus jobStatus) {
-	
+
         Corpus returnCorpus = corpus;
         Date startTime = new Date();
         logger.info("Begin pipeline processing [" + pipeLine.getPipeLineName() + "] Pipeline Processes: " + pipeLine.getNumberOfProcesses() + " for user: '" + pipeLine.getUserToken().trim() + "'");
@@ -125,6 +126,14 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
 
+            // If writing to a database(s), loop through them and call the write method.
+        /**    if (pipeLine.getSaveToRepositories() != null) {
+                for (V3nlpDBRepository repo: pipeLine.getSaveToRepositories()) {
+                    this.databaseRepositoryService.writeCorpus(returnCorpus, repo, Utilities.getUsername(pipeLine.getUserToken().trim()));
+                }
+            }
+            // FIX THIS! Make it an else.    **/
+
             Utilities.serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
 
@@ -143,54 +152,7 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
         return;
     }
 
-    /**
-     * Given the services in the pipeline, remove all unneeded annotations where the
-     * service component "keepAnnotationInFinalResult" is false.
-     *
-     * @param pipeLine
-     * @param returnCorpus
-     * @return
-     */
-    private Corpus removeUnneededAnnotations(ServicePipeLine pipeLine, Corpus returnCorpus) {
-        List<String> toRemove = new ArrayList<String>();
 
-        /** Get a list of annotation types to remove. **/
-        for (ServicePipeLineComponent comp : pipeLine.getServices()) {
-            if (GenericValidator.isBlankOrNull(comp.getServiceUid())) {
-                continue;
-            }
-            if (!comp.isKeepAnnotationsInFinalResult()) {
-                NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
-                toRemove.add(loadedComp.getPedigree());
-            }
-        }
-
-        /** Go through all the documents and remove those that are not needed. **/
-        for (DocumentInterface d : returnCorpus.getDocuments()) {
-            List<AnnotationInterface> anns = d.getAnnotations().getAll();
-            boolean keep = false;
-            for (int i = anns.size() - 1; i >= 0; i--) {
-                keep = false;
-                Annotation a = (Annotation) anns.get(i);
-                List<Feature> toBeRemoved = new ArrayList<Feature>();
-                if (a.getFeatures() != null) {
-                    for (Feature f : a.getFeatures()) {
-                        String fName = f.getMetaData().getPedigree();
-
-                        if (fName != null && toRemove.contains(fName)) {
-                                toBeRemoved.add(f);
-                        }
-                    }
-                    a.getFeatures().removeAll(toBeRemoved);
-                    if (a.getFeatures().size() == 0) {
-                        anns.remove(a);
-                    }
-
-                }
-            }
-        }
-        return returnCorpus;
-    }
 
     @Override
     public String getDirectoryToStoreResults() {
@@ -202,12 +164,9 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
         this.directoryToStoreResults = directoryToStoreResults;
     }
 
-
-    @Override
-    public void setRegistryService(RegistryService registryService) {
-        this.registryService = registryService;
+    public void setDatabaseRepositoryService(DatabaseRepositoryService databaseRepositoryService) {
+        this.databaseRepositoryService = databaseRepositoryService;
     }
-
 
     protected static NlpProcessingUnit getService(ThreadPoolExecutor tpe, String bean) {
         return null;

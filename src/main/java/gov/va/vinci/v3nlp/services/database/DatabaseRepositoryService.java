@@ -5,6 +5,7 @@
  */
 package gov.va.vinci.v3nlp.services.database;
 
+import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
 
 import java.sql.SQLException;
@@ -17,4 +18,6 @@ public interface DatabaseRepositoryService {
     public abstract List<V3nlpDBRepository> getRepositories();
     
     public abstract String test(V3nlpDBRepository ds, String loggedInUser);
+    
+    public abstract boolean writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser);
 }

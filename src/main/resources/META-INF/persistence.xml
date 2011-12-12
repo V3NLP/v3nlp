@@ -1,6 +1,6 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
 
-  <persistence-unit name="myUnit" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="v3nlpPersistenceUnit" transaction-type="RESOURCE_LOCAL">
        <provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<properties>
             <property name="hibernate.show_sql" value="false" />

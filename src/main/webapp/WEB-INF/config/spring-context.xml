@@ -27,7 +27,7 @@
 
     <bean id="expressionService"
           class="gov.va.vinci.v3nlp.expressionlib.ExpressionServiceImpl"
-          p:dataSource-ref="dataSource"/>
+          p:dataSource-ref="v3nlpDataSource"/>
 
 
     <bean name="nlpService" class="gov.va.vinci.v3nlp.DefaultNlpServiceImpl" init-method="init"
@@ -43,10 +43,12 @@
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:registryService-ref="registryService"
           p:flapPropertiesFile="${flapPropertiesFile}"
+          p:databaseRepositoryService-ref="databaseRepositoryService"
           p:corpusSuperReaderDescriptorPath="${corpusSuperReaderDescriptorPath}">
     </bean>
 
     <bean id="servicePipeLineProcessor" class="gov.va.vinci.v3nlp.services.ServicePipeLineProcessorImpl"
+          p:databaseRepositoryService-ref="databaseRepositoryService"
           p:directoryToStoreResults="${directoryToStoreResults}"
           p:registryService-ref="registryService"/>
     <!-- End Pipeline processors -->
