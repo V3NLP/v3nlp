@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>gov.va.vinci</groupId>
@@ -11,7 +10,7 @@
     <artifactId>keywords-server</artifactId>
     <packaging>war</packaging>
     <name>V3NLP Keywords Server</name>
-    <version>2011.09.3-SNAPSHOT</version>
+    <version>2011.12.0</version>
 
     <properties>
         <!-- Internal Dep Versions -->
