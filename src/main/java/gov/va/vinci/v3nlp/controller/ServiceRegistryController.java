@@ -62,7 +62,6 @@ public class ServiceRegistryController {
 
     @RequestMapping("/registry/doaddcomponent")
     public ModelAndView doAddComponent(NlpComponent comp) {
-        System.out.println("here!");
         return null;
     }
 

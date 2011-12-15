@@ -16,6 +16,8 @@ import gov.va.vinci.v3nlp.registry.RegistryService;
 import gov.va.vinci.v3nlp.services.ServicePipeLineProcessor;
 import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -23,7 +25,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @Transactional
 public class DefaultNlpServiceImpl implements NlpService {
+    private static Log logger = LogFactory.getLog(DefaultNlpServiceImpl.class);
 
     private String directoryToStoreResults;
 
@@ -166,17 +168,17 @@ public class DefaultNlpServiceImpl implements NlpService {
                  *
                  * For testings
 
-                    V3nlpDBRepository repo = new V3nlpDBRepository();
-                    repo.setDriverClassName("com.mysql.jdbc.Driver");
-                    repo.setUrl("jdbc:mysql://localhost:3306/ryan-test?user=v3nlp&password=reverse");
-                    repo.setSchema("ryan-test");
-                    repo.setTable("example_data");
-                    repo.setTextColumn("report_test");
-                    repo.setUidColumn("id");
+                 V3nlpDBRepository repo = new V3nlpDBRepository();
+                 repo.setDriverClassName("com.mysql.jdbc.Driver");
+                 repo.setUrl("jdbc:mysql://localhost:3306/ryan-test?user=v3nlp&password=reverse");
+                 repo.setSchema("ryan-test");
+                 repo.setTable("example_data");
+                 repo.setTextColumn("report_test");
+                 repo.setUidColumn("id");
 
-                    List<V3nlpDBRepository> saveTo = new ArrayList<V3nlpDBRepository>();
-                    saveTo.add(repo);
-                    pipeLine.setSaveToRepositories(saveTo);
+                 List<V3nlpDBRepository> saveTo = new ArrayList<V3nlpDBRepository>();
+                 saveTo.add(repo);
+                 pipeLine.setSaveToRepositories(saveTo);
 
                  **/
 
@@ -188,7 +190,7 @@ public class DefaultNlpServiceImpl implements NlpService {
             return pipeLineId;
 
         } catch (Exception e) {
-            System.out.println("Exception:" + e);
+            logger.error(e);
             throw new RuntimeException(e);
         }
     }
@@ -208,6 +210,11 @@ public class DefaultNlpServiceImpl implements NlpService {
         return databaseRepositoryService.test(ds, Utilities.getUsername(loggedInUser.trim()));
     }
 
+
+    public String testSaveDataService(V3nlpDBRepository ds, String loggedInUser) {
+        return databaseRepositoryService.testForSave(ds, Utilities.getUsername(loggedInUser.trim()));
+    }
+
     /**
      * Given a pipeline id and user token, load the result and return it as a serialized string.
      *
@@ -224,8 +231,16 @@ public class DefaultNlpServiceImpl implements NlpService {
         return serializationService.serialize(c);
     }
 
+    public String serializeCorpusSummary(CorpusSummary c) {
+        return serializationService.serialize(c);
+    }
+
     public Corpus deSerializeCorpus(String content) {
         return serializationService.deserialize(content, Corpus.class);
+    }
+
+    public CorpusSummary deSerializeCorpusSummary(String content) {
+        return serializationService.deserialize(content, CorpusSummary.class);
     }
 
     public CorpusSummary deSerializeCorpusToCorpusSummary(String content) {

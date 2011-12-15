@@ -26,19 +26,17 @@ public class CorpusSummary implements Serializable {
 
     private List<DocumentFeatureNameCount> documentFeatureNameCounts = new ArrayList<DocumentFeatureNameCount>();
 
+    private List<Feature> changedAnnotations = new ArrayList<Feature>();
+
 
     /**
      * Full arg constructor for corpus args, needed to copy a corpus in.
      *
-     * @param documents
-     * @param directoryName
-     * @param documentNames
-     * @param formatInfoFile
-     * @param corpusName
-     * @param formatInfos
+     * @param c The corpus to create this corpus summary from.
      */
     public CorpusSummary(Corpus c) {
         this.setCorpus(c);
+        updateSummary();
     }
 
     public CorpusSummary() {
@@ -46,7 +44,6 @@ public class CorpusSummary implements Serializable {
 
     public void setCorpus(Corpus c) {
         this.corpus = c;
-        updateSummary();
     }
 
     public void updateSummary() {
@@ -58,6 +55,12 @@ public class CorpusSummary implements Serializable {
             for (AnnotationInterface a : doc.getAnnotations().getAll()) {
                 if (a instanceof Annotation) {
                     for (Feature f : ((Annotation) a).getFeatures()) {
+                        // See if this is a manual annotation.
+                        if (f.getMetaData()!= null && f.getMetaData().getPedigree() != null &&
+                            f.getMetaData().getPedigree().startsWith("Manual:")) {
+                            this.getChangedAnnotations().add(f);
+                        }
+
                         if (f.getFeatureName() == null) {
                             continue;
                         }
@@ -102,6 +105,14 @@ public class CorpusSummary implements Serializable {
 
     public Corpus getCorpus() {
         return corpus;
+    }
+
+    public List<Feature> getChangedAnnotations() {
+        return changedAnnotations;
+    }
+
+    public void setChangedAnnotations(List<Feature> changedAnnotations) {
+        this.changedAnnotations = changedAnnotations;
     }
 }
 

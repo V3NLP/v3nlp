@@ -84,7 +84,6 @@ public class SimpleSetterGetterTest extends TestCase {
 
         comp.setServiceUid("1234");
         comp.setConfiguration("MyConfig");
-        System.out.println(comp.toString());
         assert(comp.toString().equals("ServiceUid: 1234 -- Config: MyConfig"));
     }
 

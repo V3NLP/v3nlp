@@ -5,6 +5,9 @@
  */
 package gov.va.vinci.v3nlp.negex;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.List;
 
 // Utility class to sort the negation rules by length in descending order.
@@ -18,26 +21,28 @@ import java.util.List;
 
 public class Sorter {
 
-	public List<String> sortRules(List<String> unsortedRules) {
+    private static Log logger = LogFactory.getLog(GenNegEx.class);
 
-		try {
-			// Sort the negation rules by length to make sure
-			// that longest rules match first.
+    public List<String> sortRules(List<String> unsortedRules) {
 
-			for (int i = 0; i < unsortedRules.size() - 1; i++) {
-				for (int j = i + 1; j < unsortedRules.size(); j++) {
-					String a = (String) unsortedRules.get(i);
-					String b = (String) unsortedRules.get(j);
-					if (a.trim().length() < b.trim().length()) {
-						// Sorting into descending order by lebgth of string.
-						unsortedRules.set(i, b);
-						unsortedRules.set(j, a);
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return unsortedRules;
-	}
+        try {
+            // Sort the negation rules by length to make sure
+            // that longest rules match first.
+
+            for (int i = 0; i < unsortedRules.size() - 1; i++) {
+                for (int j = i + 1; j < unsortedRules.size(); j++) {
+                    String a = (String) unsortedRules.get(i);
+                    String b = (String) unsortedRules.get(j);
+                    if (a.trim().length() < b.trim().length()) {
+                        // Sorting into descending order by lebgth of string.
+                        unsortedRules.set(i, b);
+                        unsortedRules.set(j, a);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return unsortedRules;
+    }
 }

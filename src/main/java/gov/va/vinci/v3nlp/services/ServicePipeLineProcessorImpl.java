@@ -5,14 +5,14 @@
  */
 package gov.va.vinci.v3nlp.services;
 
-import gov.va.vinci.cm.*;
+import gov.va.vinci.cm.Corpus;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.RegistryService;
 import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import org.apache.commons.logging.Log;
@@ -30,6 +30,8 @@ import java.util.concurrent.*;
 @Transactional
 public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
+    
+    
     private String directoryToStoreResults;
 
     private static Log logger = LogFactory.getLog(ServicePipeLineProcessorImpl.class);
@@ -38,7 +40,7 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
-        this. entityManager = entityManager;
+        this.entityManager = entityManager;
     }
 
 
@@ -63,8 +65,7 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
         Map serviceMap = new HashMap<String, NlpComponent>();
 
-        for (ServicePipeLineComponent c: pipeLine.getServices())
-        {
+        for (ServicePipeLineComponent c : pipeLine.getServices()) {
             if (!GenericValidator.isBlankOrNull(c.getServiceUid())) {
                 serviceMap.put(c.getServiceUid(), registryService.getNlpComponent(c.getServiceUid()));
             }
@@ -127,18 +128,19 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
             returnCorpus = removeUnneededAnnotations(pipeLine, returnCorpus);
 
             // If writing to a database(s), loop through them and call the write method.
-        /**    if (pipeLine.getSaveToRepositories() != null) {
-                for (V3nlpDBRepository repo: pipeLine.getSaveToRepositories()) {
+            if (pipeLine.getSaveToRepositories() != null) {
+                for (V3nlpDBRepository repo : pipeLine.getSaveToRepositories()) {
+                    logger.info("Saving to repo: " + repo.getUrl() + " Schema: " + repo.getSchema());
                     this.databaseRepositoryService.writeCorpus(returnCorpus, repo, Utilities.getUsername(pipeLine.getUserToken().trim()));
                 }
             }
-            // FIX THIS! Make it an else.    **/
 
             Utilities.serializeObject(pathOfResults + pipeLineId
                     + ".results", new CorpusSummary(returnCorpus));
-
             updatePipeLineStatus(jobStatus, "COMPLETE", pathOfResults + pipeLineId
                     + ".results");
+
+
         } catch (Exception e) {
             logger.error("Exception:" + e);
             e.printStackTrace();
@@ -151,7 +153,6 @@ public class ServicePipeLineProcessorImpl extends BaseServicePipeLineProcessor {
 
         return;
     }
-
 
 
     @Override

@@ -5,15 +5,15 @@
  */
     package gov.va.vinci.v3nlp.registry;
 
-    import gov.va.vinci.v3nlp.model.ServicePipeLine;
-    import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
-    import org.springframework.transaction.annotation.Transactional;
+import gov.va.vinci.v3nlp.model.ServicePipeLine;
+import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
+import org.springframework.transaction.annotation.Transactional;
 
-    import javax.persistence.EntityManager;
-    import javax.persistence.PersistenceContext;
-    import javax.persistence.Query;
-    import java.util.ArrayList;
-    import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 
     public class RegistryServiceJPAImpl implements RegistryService {

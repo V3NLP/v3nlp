@@ -64,7 +64,6 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
             }
             if (!comp.isKeepAnnotationsInFinalResult()) {
                 NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
-                System.out.println("Need to remove: " + loadedComp.getPedigree());
                 toRemove.add(loadedComp.getPedigree());
             }
         }
@@ -81,7 +80,6 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
                     for (Feature f : a.getFeatures()) {
 
                         String fName = f.getMetaData().getPedigree();
-                        System.out.println("Pedigree:" + f.getMetaData().getPedigree());
 
                         if (fName != null) {  // Has a pedigree, see if it needs removed.
                             String[] pedigrees = fName.split(Pattern.quote("|"));

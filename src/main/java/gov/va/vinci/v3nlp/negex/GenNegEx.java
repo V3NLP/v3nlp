@@ -5,6 +5,9 @@
  */
 package gov.va.vinci.v3nlp.negex;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +47,8 @@ limitations under the License.
 */
 
 public class GenNegEx {
+
+    private static Log logger = LogFactory.getLog(GenNegEx.class);
 
     String[] TO_ESCAPE = {"+", "*", ".", "(", ")", "}", "{", "?"};
 
@@ -92,7 +97,7 @@ public class GenNegEx {
         } catch (Exception e) {
             // IF There was an exception, escape the phrase for special regex characters. It is more
             // efficient to only escape if an error, as most phrases will work fine.
-            System.out.println("In Special processing... (" + phrase.trim() + ")");
+            logger.info("In Special processing... (" + phrase.trim() + ")");
             pph = Pattern.compile(escapeRegexCharacters(phrase.trim()), Pattern.CASE_INSENSITIVE);
         }
          Matcher mph = pph.matcher(sentence);

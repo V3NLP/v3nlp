@@ -6,7 +6,6 @@
 package gov.va.vinci.v3nlp.services.gate;
 
 import gate.Factory;
-import gate.Gate;
 import gate.ProcessingResource;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;

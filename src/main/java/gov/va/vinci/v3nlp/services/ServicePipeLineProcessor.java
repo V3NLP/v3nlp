@@ -9,11 +9,8 @@ import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.registry.RegistryService;
-import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 public interface ServicePipeLineProcessor {
     void init();

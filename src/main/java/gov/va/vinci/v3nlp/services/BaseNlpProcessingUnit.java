@@ -6,12 +6,9 @@
 package gov.va.vinci.v3nlp.services;
 
 
-import gov.va.vinci.cm.*;
-import gov.va.vinci.v3nlp.model.ServicePipeLine;
-import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
+import gov.va.vinci.cm.Annotation;
+import gov.va.vinci.cm.DocumentInterface;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.RegistryService;
-import org.apache.commons.validator.GenericValidator;
 
 import java.util.ArrayList;
 import java.util.List;

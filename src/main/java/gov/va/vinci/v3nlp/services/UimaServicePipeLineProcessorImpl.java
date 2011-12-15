@@ -6,7 +6,7 @@
 package gov.va.vinci.v3nlp.services;
 
 
-import gov.va.vinci.cm.*;
+import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.examples.uima.cr.SuperReader;
 import gov.va.vinci.flap.Client;
 import gov.va.vinci.flap.Server;
@@ -16,18 +16,14 @@ import gov.va.vinci.v3nlp.model.CorpusSummary;
 import gov.va.vinci.v3nlp.model.ServicePipeLine;
 import gov.va.vinci.v3nlp.model.ServicePipeLineComponent;
 import gov.va.vinci.v3nlp.registry.NlpComponent;
-import gov.va.vinci.v3nlp.registry.RegistryService;
 import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
-import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 import gov.va.vinci.v3nlp.services.uima.CorpusSubReader;
 import gov.va.vinci.v3nlp.services.uima.CorpusUimaAsCallbackListener;
-import org.apache.commons.validator.GenericValidator;
 import org.apache.uima.collection.CollectionReader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 @Transactional

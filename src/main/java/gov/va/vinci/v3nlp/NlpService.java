@@ -110,4 +110,21 @@ public interface NlpService {
      *  error message if unsuccessful.
      */
     public abstract String testDataService(V3nlpDBRepository ds, String loggedInUser);
+
+    /**
+     * Given a dataservice and logged in user name, test the
+     * service. This needs to insure the proper schema is available
+     * to save results into.
+     *
+     * @param ds Dataservice to test.
+     * @param loggedInUser User logged in.
+     * @return  An empty string if successful, or the text of the
+     *  error message if unsuccessful.
+     */
+    public abstract String testSaveDataService(V3nlpDBRepository ds, String loggedInUser);
+
+
+    public CorpusSummary deSerializeCorpusSummary(String content);
+
+    public String serializeCorpusSummary(CorpusSummary c);
 }
