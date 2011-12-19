@@ -11,19 +11,22 @@ import gov.va.vinci.v3nlp.model.datasources.DataServiceSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
+import org.eclipse.jetty.jndi.java.javaNameParser;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Mock-up for a database repository service for testing if the concept will work.
- * TODO: If this approach is taken, this code needs cleaned up.
+ *
+ * This should be cleaned up a bit after schema is firmed up. (SQL Statements moved
+ * to property files, broader database platform support, etc...
+ *
  */
 public class StubDatabaseRepositoryServiceImpl implements
         DatabaseRepositoryService {
@@ -48,7 +51,33 @@ public class StubDatabaseRepositoryServiceImpl implements
     }
 
     public String testForSave(V3nlpDBRepository ds, String loggedInUser) {
-        return "Need to implement.";
+        Connection connection = null;
+        SingleConnectionDataSource dataSource;
+
+        try {
+            try {
+                connection = this.getConnection(ds, loggedInUser);
+                dataSource = new SingleConnectionDataSource(connection, true);
+                dataSource.setAutoCommit(false);
+            } catch (Exception e) {
+                return "Could not make connection to the database. (" + e.getMessage() + ")";
+            }
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+            // Do selects to make sure the schema is ready to insert into.
+            jdbcTemplate.execute("select id, reference_location, version from analyte_reference");
+            jdbcTemplate.execute("select id, name, version from annotation");
+            jdbcTemplate.execute("select id, annotation_id, analyte_reference_id, version from annotation_analyte_reference");
+            jdbcTemplate.execute("select id, annotation_analyte_ref_id, start_offset, end_offset, version from span");
+            jdbcTemplate.execute("select id, annotation_id, name, parent_id, pedigree, version from feature");
+            jdbcTemplate.execute("select id, name, text_value, feature_id, version from feature_element_text");
+            jdbcTemplate.execute("select id, name, numeric_value, feature_id, version from feature_element_numeric");
+            jdbcTemplate.execute("select id, name, blob_value, feature_id, version from feature_element_blob");
+        } catch (Exception e) {
+            return "Validation failed. Schema is not correct. (" + e.getMessage() + ")";
+        }
+
+        return "";
     }
 
 
@@ -90,7 +119,8 @@ public class StubDatabaseRepositoryServiceImpl implements
             con = DriverManager.getConnection(connectionUrl);
             con.createStatement().execute("EXECUTE AS LOGIN = '" + loggedInUser.trim().replace("'", "''").toLowerCase() + "';");
         } else if ("com.mysql.jdbc.Driver".equals(ds.getDriverClassName())) {
-            con = DriverManager.getConnection(ds.getUrl());
+            String connectURL = ds.getUrl().replace("${schema}", ds.getSchema());
+            con = DriverManager.getConnection(connectURL);
         }
 
         return con;
@@ -124,7 +154,7 @@ public class StubDatabaseRepositoryServiceImpl implements
         return results;
     }
 
-    public boolean writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser) {
+    public void writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser) {
         Connection connection = null;
         try {
             connection = this.getConnection(ds, loggedInUser);
@@ -138,30 +168,52 @@ public class StubDatabaseRepositoryServiceImpl implements
             jdbcTemplate.execute("START TRANSACTION");
             for (DocumentInterface d : c.getDocuments()) {
                 // Step 1 - Write the Analyte Reference
-                jdbcTemplate.update("insert into analyte_reference (id, reference_location) values (?, ?)", new Object[]{d.getDocumentId(), d.getDocumentName()});
+                // FIX THIS - Creating UUID's for objects here, should be done before now, but common model currently
+                // uses numbers for id's instead of strings.
+                String documentUUID = UUID.randomUUID().toString();
+                jdbcTemplate.update("insert into analyte_reference (id, reference_location, version) values (?, ?, ?)", new Object[]{documentUUID, d.getDocumentName(), new java.util.Date()});
 
                 // Step 2 - Annotations, Spans, and Annotation/Analyte References
                 for (AnnotationInterface a : d.getAnnotations().getAll()) {
-                    jdbcTemplate.update("insert into annotation (id, name) values (?, ?)", new Object[]{a.getAnnotationId(), a.getOffsetKey()});
+                    String annotationUUID = UUID.randomUUID().toString();
+                    jdbcTemplate.update("insert into annotation (id, name, version) values (?, ?, ?)", new Object[]{annotationUUID, a.getOffsetKey(), new java.util.Date()});
                     String aarUID = UUID.randomUUID().toString();
-                    jdbcTemplate.update("insert into annotation_analyte_reference (id, annotation_id, analyte_reference_id) values (?, ?, ?)", new Object[]{aarUID, a.getAnnotationId(), d.getDocumentId()});
-                    jdbcTemplate.update("insert into span (id, annotation_analyte_ref_id, start_offset, end_offset) values (?, ?, ?, ?)", new Object[]{UUID.randomUUID().toString(), aarUID, a.getBeginOffset(), a.getEndOffset()});
+                    jdbcTemplate.update("insert into annotation_analyte_reference (id, annotation_id, analyte_reference_id, version) values (?, ?, ?, ?)", new Object[]{aarUID, annotationUUID, documentUUID, new java.util.Date()});
+                    jdbcTemplate.update("insert into span (id, annotation_analyte_ref_id, start_offset, end_offset, version) values (?, ?, ?, ?, ?)", new Object[]{UUID.randomUUID().toString(), aarUID, a.getBeginOffset(), a.getEndOffset(), new java.util.Date()});
 
                     // Step 3 - Features
                     for (Feature f : a.getFeatures()) {
+                        String featureUUID = UUID.randomUUID().toString();
+                        String insertFeatureSQL = "insert into feature(id, annotation_id, name, parent_id, pedigree, version) values (?, ?, ?, ?, ?, ?)";
+                        jdbcTemplate.update(insertFeatureSQL, new Object[]{featureUUID, annotationUUID, f.getFeatureName(), null, f.getMetaData().getPedigree(), new java.util.Date()});
 
+                        // Step 4 - Feature Elements.
+                        for (FeatureElement fe : f.getFeatureElements()) {
+                            if (fe.getName() == null && fe.getValue() == null) {
+                                continue;
+                            }
+
+                            if (fe.getValue() instanceof String) {
+                                jdbcTemplate.update("insert into feature_element_text (id, name, text_value, feature_id, version) values (?, ?, ?, ?, ?)",
+                                        new Object[]{UUID.randomUUID().toString(), fe.getName(), fe.getValue(), featureUUID, new java.util.Date()});
+                            } else if (fe.getValue() instanceof Number) {
+                                jdbcTemplate.update("insert into feature_element_numeric (id, name, numeric_value, feature_id, version) values (?, ?, ?, ?, ?)",
+                                        new Object[]{UUID.randomUUID().toString(), fe.getName(), fe.getValue(), featureUUID, new java.util.Date()});
+                            } else {
+                                jdbcTemplate.update("insert into feature_element_blob (id, name, blob_value, feature_id, version) values (?, ?, ?, ?, ?)",
+                                        new Object[]{UUID.randomUUID().toString(), fe.getName(), fe.getValue(), featureUUID, new java.util.Date()});
+                            }
+                        }
                     }
 
                 }
-
-
             }
 
             jdbcTemplate.execute("COMMIT");
 
         } catch (SQLException e) {
             logger.error(e);
-            return false;
+            throw new RuntimeException(e);
         } finally {
             try {
                 connection.close();
@@ -169,7 +221,6 @@ public class StubDatabaseRepositoryServiceImpl implements
 
             }
         }
-        return true;
     }
 
     private void validateDataServiceSource(DataServiceSource ds) {

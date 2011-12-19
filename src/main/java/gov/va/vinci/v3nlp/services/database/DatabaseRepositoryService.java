@@ -41,5 +41,5 @@ public interface DatabaseRepositoryService {
     public abstract String testForSave(V3nlpDBRepository ds, String loggedInUser);
     
     
-    public abstract boolean writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser);
+    public abstract void writeCorpus(Corpus c, V3nlpDBRepository ds, String loggedInUser);
 }
