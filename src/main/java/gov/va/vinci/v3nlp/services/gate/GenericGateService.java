@@ -42,7 +42,7 @@ public class GenericGateService extends BaseGateService implements NlpProcessing
 
 			// run the application
 			controller.execute();
-			return(processGateResults(corpus, (gov.va.vinci.cm.Document)document, 0, "GATE|" + resource.getClass().getCanonicalName()));
+			return(processGateResults(corpus, (gov.va.vinci.cm.Document)document, 0, "GATE:" + resource.getClass().getCanonicalName()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

@@ -89,7 +89,7 @@ public class HitexConceptFinderService extends BaseGateService implements NlpPro
                 controller.execute();
 
                 // Add results to the document;
-                processGateResults(crp, (Document) originalDocument, a.getBeginOffset(), "GATE|" +resource.getClass().getCanonicalName());
+                processGateResults(crp, (Document) originalDocument, a.getBeginOffset(), "GATE:" +resource.getClass().getCanonicalName());
             }
         } catch (Exception e) {
             e.printStackTrace();

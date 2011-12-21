@@ -81,11 +81,11 @@ public class NegationServiceImpl implements NlpProcessingUnit {
 
         // Step 1 : Build sentence map and list of concepts to process.
         for (AnnotationInterface ann : d.getAnnotations().getAll()) {
-            if (((Annotation)ann).hasFeatureOfPedigree("GATE|hitex.gate.SentenceSplitter")) {
+            if (((Annotation)ann).hasFeatureOfPedigree("GATE:hitex.gate.SentenceSplitter")) {
                  sentences.put(ann.getBeginOffset() + "-" + ann.getEndOffset(), ann);
             }
 
-           if (((Annotation)ann).hasFeatureOfPedigree("GATE|hitex.gate.regex.ConceptFinder") || ((Annotation)ann).hasFeatureOfPedigree("INTERFACE:metamap")) {
+           if (((Annotation)ann).hasFeatureOfPedigree("GATE:hitex.gate.regex.ConceptFinder") || ((Annotation)ann).hasFeatureOfPedigree("INTERFACE:metamap")) {
                 conceptsToProcess.add(ann);
             }
         }
@@ -102,7 +102,7 @@ public class NegationServiceImpl implements NlpProcessingUnit {
                 if (result.trim().endsWith("negated")) {
                     Feature f = new Feature("type", "Negated");
                     f.getMetaData().setCreatedDate(new Date());
-                    f.getMetaData().setPedigree("INTERFACE|" + this.getClass().getCanonicalName());
+                    f.getMetaData().setPedigree("INTERFACE:" + this.getClass().getCanonicalName());
                     f.setFeatureName("Negation");
                     ((Annotation) ann).getFeatures().add(f);
                 }

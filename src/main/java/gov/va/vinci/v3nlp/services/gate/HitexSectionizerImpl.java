@@ -84,7 +84,7 @@ public class HitexSectionizerImpl extends BaseGateService implements NlpProcessi
             controller.execute();
 
             DocumentInterface resultDoc = processGateResults(corpus, (gov.va.vinci.cm.Document) d, 0,
-                    getSectionizerConfigIncludes(config), getSectionizerConfigExcludes(config), "GATE|" + s.getClass().getCanonicalName());
+                    getSectionizerConfigIncludes(config), getSectionizerConfigExcludes(config), "GATE:" + s.getClass().getCanonicalName());
             return (resultDoc);
         } catch (Exception e) {
             e.printStackTrace();
