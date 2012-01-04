@@ -124,6 +124,15 @@ public interface NlpService {
     public abstract String testSaveDataService(V3nlpDBRepository ds, String loggedInUser);
 
 
+    /**
+     * Given a pipeline ID and user token, get the results as a serialized string.
+     * @param pipeLineId
+     * @param userToken
+     * @return the results in string format.
+     */
+    public abstract String getSerializedResults(String pipeLineId, String userToken);
+
+
     public CorpusSummary deSerializeCorpusSummary(String content);
 
     public String serializeCorpusSummary(CorpusSummary c);
