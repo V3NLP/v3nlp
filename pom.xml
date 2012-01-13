@@ -10,7 +10,7 @@
     <artifactId>keywords-server</artifactId>
     <packaging>war</packaging>
     <name>V3NLP Keywords Server</name>
-    <version>2011.12.8-SNAPSHOT</version>
+    <version>2011.12.8</version>
 
     <properties>
         <!-- Internal Dep Versions -->
