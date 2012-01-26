@@ -1,21 +1,11 @@
 package gov.va.vinci.v3nlp.services.gate;
 
 
-import gate.*;
-import gate.creole.ExecutionException;
-import gate.creole.ResourceInstantiationException;
+import gate.ProcessingResource;
 import gate.util.GateException;
-import gov.va.vinci.cm.Document;
-import gov.va.vinci.v3nlp.registry.NlpComponent;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 
 public class GenericGateServiceTest {
 

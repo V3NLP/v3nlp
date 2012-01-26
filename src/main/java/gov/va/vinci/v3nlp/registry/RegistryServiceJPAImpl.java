@@ -95,9 +95,7 @@ import java.util.List;
                     return "Cannot currently mix modules from " + comp.getTechnology() + " with " + technology + ".";
                 }
 
-                for (NlpComponentProvides p : comp.getProvides()) { // Put provides in first.
-                    provides.add(p.getAnnotation());
-                }
+
 
                 for (NlpComponentRequires r : comp.getRequires()) { // Check requires next.
 
@@ -116,7 +114,12 @@ import java.util.List;
                             + getRequiresString(comp, r) + ".";
 
                 }
+
+                for (NlpComponentProvides p : comp.getProvides()) { // Put provides in LAST.
+                    provides.add(p.getAnnotation());
+                }
             }
+
             return "";
         }
 

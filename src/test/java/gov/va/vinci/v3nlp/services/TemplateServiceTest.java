@@ -7,9 +7,7 @@ package gov.va.vinci.v3nlp.services;
 
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
