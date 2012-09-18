@@ -7,7 +7,8 @@ package gov.va.vinci.v3nlp.services.uima;
 
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.Document;
-import gov.va.vinci.nlp.util.ToCommonModel;
+import gov.va.vinci.nlp.framework.marshallers.commonModel.util.ToCommonModel;
+
 import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.EntityProcessStatus;

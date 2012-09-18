@@ -6,10 +6,12 @@
 package gov.va.vinci.v3nlp.services;
 
 
+
 import gov.va.vinci.cm.Corpus;
-import gov.va.vinci.examples.uima.cr.SuperReader;
+import gov.va.vinci.flap.cr.SuperReader;
+import gov.va.vinci.flap.descriptors.CollectionReaderFactory;
 import gov.va.vinci.flap.Client;
-import gov.va.vinci.flap.Server;
+import gov.va.vinci.flap.Service;
 import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
@@ -43,11 +45,11 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
     public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus, BatchJobStatus jobStatus) {
         String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
 
-        Server server = null;
+        Service service = null;
 
         try {
             //Create the server object
-            server = new Server(flapPropertiesFile);
+            service = new Service(flapPropertiesFile);
 
             //Initialize the server object with the list of annotators
             ArrayList<String> descriptors = new ArrayList<String>();
@@ -64,20 +66,21 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
                 descriptors.add(nlpComp.getImplementationClass());
             }
 
-            server.init(descriptors, true);
+            service.deploy(descriptors, true);
 
             //Create the listener and generate the client
             CorpusUimaAsCallbackListener callbackListener = new CorpusUimaAsCallbackListener(corpus);
-            Client myClient = server.generateClient(callbackListener);
-
+            Client myClient =  new Client();
+            
             //Create the CollectionReader & add a Corpus SubReader
-            CollectionReader myReader =
-                    Client.generateCollectionReader(corpusSuperReaderDescriptorPath);
+            CollectionReader myReader = CollectionReaderFactory.generateCollectionReader
+            		(corpusSuperReaderDescriptorPath, true);
+            
 
             ((SuperReader) myReader).setSubReader(new CorpusSubReader(corpus));
 
             //Execute the pipeline with the collection reader
-            myClient.run(myReader);
+            myClient.run(myReader, callbackListener);
 
             Corpus c = callbackListener.getCorpus();
 

@@ -7,14 +7,14 @@ package gov.va.vinci.v3nlp.services.uima;
 
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.cm.DocumentInterface;
-import gov.va.vinci.examples.uima.cr.Analyte;
-import gov.va.vinci.examples.uima.cr.SubReader;
+import gov.va.vinci.flap.cr.Analyte;
+import gov.va.vinci.flap.cr.SubReader;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 
-public class CorpusSubReader extends SubReader {
+public class CorpusSubReader implements SubReader {
     Corpus corpus = null;
     int currentIndex = 0;
     private static Logger log = Logger.getLogger(CorpusSubReader.class.getCanonicalName()) ;

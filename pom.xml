@@ -62,12 +62,12 @@
             <artifactId>dictionary</artifactId>
             <version>2011.12.0</version>
         </dependency>
+        <!-- Previous dependencies
         <dependency>
             <groupId>gov.va.research</groupId>
             <artifactId>common-model</artifactId>
             <version>2011.12.0</version>
         </dependency>
-        <!-- Previous dependencies
         <dependency>  not needed, as moving to a newer version
             <groupId>gov.va.vinci</groupId>
             <artifactId>flap</artifactId>
