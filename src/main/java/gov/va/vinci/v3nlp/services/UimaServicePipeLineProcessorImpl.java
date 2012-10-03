@@ -6,7 +6,6 @@
 package gov.va.vinci.v3nlp.services;
 
 
-
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.flap.cr.SuperReader;
 import gov.va.vinci.flap.descriptors.CollectionReaderFactory;
@@ -26,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 @Transactional
@@ -48,6 +48,9 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
         Service service = null;
 
         try {
+            // Log UIMA_HOME env variable
+            log.info("Environment Variable UIMA_HOME:" + System.getenv("UIMA_HOME"));
+
             //Create the server object
             service = new Service(flapPropertiesFile);
 
@@ -70,14 +73,14 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
 
             //Create the listener and generate the client
             CorpusUimaAsCallbackListener callbackListener = new CorpusUimaAsCallbackListener(corpus);
-            Client myClient =  new Client();
-            
-            //Create the CollectionReader & add a Corpus SubReader
-            CollectionReader myReader = CollectionReaderFactory.generateCollectionReader
-            		(corpusSuperReaderDescriptorPath, true);
-            
+            Client myClient = new Client(flapPropertiesFile);
 
-            ((SuperReader) myReader).setSubReader(new CorpusSubReader(corpus));
+            //Create the CollectionReader & add a Corpus SubReader
+            CorpusSubReader subReader = new CorpusSubReader(corpus);
+            //SuperReader myReader = new SuperReader();
+            SuperReader myReader = (SuperReader)CollectionReaderFactory.
+                    generateSubReader(new HashMap<String,String>(),"gov.va.vinci.v3nlp.services.uima.CorpusSubReader");
+            myReader.setSubReader(subReader);
 
             //Execute the pipeline with the collection reader
             myClient.run(myReader, callbackListener);
