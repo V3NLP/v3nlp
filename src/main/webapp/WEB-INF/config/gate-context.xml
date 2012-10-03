@@ -7,11 +7,11 @@
        		http://gate.ac.uk/ns/spring  
        		http://gate.ac.uk/ns/spring.xsd">
 
-	<gate:init gate-home="WEB-INF" site-config-file="WEB-INF/config/gate.xml" >
-		<gate:preload-plugins>
-			<value>WEB-INF/resources/</value>
-		</gate:preload-plugins>
-	</gate:init>
+	<!--<gate:init gate-home="WEB-INF" site-config-file="WEB-INF/config/gate.xml" >-->
+		<!--<gate:preload-plugins>-->
+			<!--<value>WEB-INF/resources/</value>-->
+		<!--</gate:preload-plugins>-->
+	<!--</gate:init>-->
 
 	<gate:resource id="defaultUmlsConceptFinder"
 		resource-class="hitex.gate.UMLSConceptFinder">
