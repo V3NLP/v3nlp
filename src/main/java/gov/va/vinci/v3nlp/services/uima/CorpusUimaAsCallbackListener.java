@@ -22,7 +22,7 @@ public class CorpusUimaAsCallbackListener extends UimaAsBaseCallbackListener {
     private Corpus corpus = new Corpus();
     private ToCommonModel toCommonModel = new ToCommonModel();
 
-    public CorpusUimaAsCallbackListener(Corpus c) {
+    public CorpusUimaAsCallbackListener() {
 
     }
 

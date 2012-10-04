@@ -72,7 +72,7 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
             service.deploy(descriptors, true);
 
             //Create the listener and generate the client
-            CorpusUimaAsCallbackListener callbackListener = new CorpusUimaAsCallbackListener(corpus);
+            CorpusUimaAsCallbackListener callbackListener = new CorpusUimaAsCallbackListener();
             Client myClient = new Client(flapPropertiesFile);
 
             //Create the CollectionReader & add a Corpus SubReader
