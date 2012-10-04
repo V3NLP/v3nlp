@@ -224,6 +224,13 @@
             <version>2012.04.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- marshallers.commonModel Dependencies .........  -->
+        <dependency>
+            <groupId>gov.va.vinci.nlp.framework</groupId>
+            <artifactId>marshallers.commonModel</artifactId>
+            <version>2012.04.1-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- question/answer Dependencies ...........  -->
         <dependency>
