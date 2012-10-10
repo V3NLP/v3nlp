@@ -157,7 +157,7 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>sentence</artifactId>
-            <version>2012.04.0</version>
+            <version>2012.04.1-SNAPSHOT</version>
         </dependency>
 
         <!-- section Dependencies .........  -->
