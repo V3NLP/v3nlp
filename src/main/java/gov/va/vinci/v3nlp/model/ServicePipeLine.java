@@ -9,9 +9,7 @@ package gov.va.vinci.v3nlp.model;
 import gov.va.vinci.cm.Corpus;
 import gov.va.vinci.v3nlp.services.database.V3nlpDBRepository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ServicePipeLine {
     private List<ServicePipeLineComponent> services = new ArrayList<ServicePipeLineComponent>();
@@ -25,6 +23,7 @@ public class ServicePipeLine {
     private String jobDescription;
     private String pipelineXml;
     private List<V3nlpDBRepository> saveToRepositories;
+    private List<String> resultsSettings;
 
     public List<ServicePipeLineComponent> getServices() {
         return services;
@@ -113,6 +112,14 @@ public class ServicePipeLine {
 
     public void setSaveToRepositories(List<V3nlpDBRepository> saveToRepositories) {
         this.saveToRepositories = saveToRepositories;
+    }
+
+    public List<String> getResultsSettings() {
+        return resultsSettings;
+    }
+
+    public void setResultsSettings(List<String> resultsSettings) {
+        this.resultsSettings = resultsSettings;
     }
 
     public String toString() {

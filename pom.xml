@@ -11,7 +11,7 @@
     <artifactId>keywords-server</artifactId>
     <packaging>war</packaging>
     <name>V3NLP Keywords Server</name>
-    <version>2012.09.13-SNAPSHOT</version>
+    <version>2012.11.2</version>
 
     <properties>
 
@@ -81,53 +81,56 @@
         </dependency>
         -->
 
+        <!--Todo: add dependency to FLAP pipelines-->
+
+
         <!-- install utils Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>utils.install</artifactId>
-            <version>2012.09.10-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- core Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>core</artifactId>
-            <version>2012.04.7-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- utils Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>utils</artifactId>
-            <version>2012.04.2-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- utils.term Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>utils.term</artifactId>
-            <version>2012.04.2-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- utils.ngram Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>utils.ngram</artifactId>
-            <version>2012.04.3-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- documentHeader Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>documentHeader</artifactId>
-            <version>2012.05.1-SNAPSHOT</version>
+            <version>2012.11.3-SNAPSHOT</version>
         </dependency>
 
         <!-- documentHeader Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>corpusStats</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
 
@@ -135,14 +138,14 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>word</artifactId>
-            <version>2012.04.5-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- line Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>line</artifactId>
-            <version>2012.05.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
 
@@ -150,28 +153,28 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>slotValue</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- sentence Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>sentence</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- section Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>section</artifactId>
-            <version>2012.04.0</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- term/Sophia Dependencies ...........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>term</artifactId>
-            <version>2012.04.4-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
 
@@ -179,62 +182,62 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>pos</artifactId>
-            <version>2012.04.0</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- phrase Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>phrase</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- concept.local Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>concept.local</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- concept Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>concept</artifactId>
-            <version>2012.04.3-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- Negation Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>negation</artifactId>
-            <version>2012.04.2-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>mastifNegation</artifactId>
-            <version>2012.05.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- marshallers.knowtator Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>marshallers.knowtator</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- marshallers.database Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>marshallers.database</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
-        <!-- marshallers.commonModel Dependencies .........  -->
+        <!-- marshallers.common_Model Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>marshallers.commonModel</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.3-SNAPSHOT</version>
         </dependency>
 
 
@@ -242,7 +245,7 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>questionAnswer</artifactId>
-            <version>2012.05.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
 
@@ -250,7 +253,7 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>homelessness</artifactId>
-            <version>2012.05.1-SNAPSHOT</version>
+            <version>2012.11.2</version>
         </dependency>
 
         <!-- Mallet Dependencies ....................  -->
@@ -264,16 +267,22 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>symptom</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.0</version>
         </dependency>
 
+        <!-- UIMA Regular Expression Dependencies ...........  -->
+        <dependency>
+            <groupId>gov.va.vinci.nlp.framework</groupId>
+            <artifactId>regex.uima</artifactId>
+            <version>2012.11.0</version>
+        </dependency>
 
         <!-- Corpus Stats Dependencies ...........  -->
         <!-- Already as a dependency for documentHeader
          <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>corpusStats</artifactId>
-            <version>2012.04.1-SNAPSHOT</version>
+            <version>2012.11.0</version>
          </dependency>
         -->
 
@@ -281,7 +290,7 @@
         <dependency>
             <groupId>gov.va.vinci</groupId>
             <artifactId>flap</artifactId>
-            <version>2012.08.3-SNAPSHOT</version>
+            <version>2012.08.2</version>
         </dependency>
 
         <!-- Logging Dependency -->

@@ -45,7 +45,7 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
     /**
      * Given the services in the pipeline, remove all unneeded annotations where the
      * service component "keepAnnotationInFinalResult" is false.
-     *
+     * <p/>
      * <strong>Note: This looks at feature.metadata.pedigree, a pipe delimited list
      * of pedigrees that created this feature. A feature is ONLY removed if all
      * pedigrees on a particular feature are selected to be removed.</strong>
@@ -55,18 +55,7 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
      * @return
      */
     protected Corpus removeUnneededAnnotations(ServicePipeLine pipeLine, Corpus returnCorpus) {
-        List<String> toRemove = new ArrayList<String>();
-
-        /** Get a list of annotation types to remove. **/
-        for (ServicePipeLineComponent comp : pipeLine.getServices()) {
-            if (GenericValidator.isBlankOrNull(comp.getServiceUid())) {
-                continue;
-            }
-            if (!comp.isKeepAnnotationsInFinalResult()) {
-                NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
-                toRemove.add(loadedComp.getPedigree());
-            }
-        }
+        List<String> toRemove = getAnnotationsToRemove(pipeLine);
 
         /** Go through all the documents and remove those that are not needed. **/
         for (DocumentInterface d : returnCorpus.getDocuments()) {
@@ -83,13 +72,13 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
 
                         if (fName != null) {  // Has a pedigree, see if it needs removed.
                             String[] pedigrees = fName.split(Pattern.quote("|"));
-                            boolean doRemove= true;
+                            boolean doRemove = true;
 
                             // Check the split pedigree list. Only remove this feature
                             // if ALL pedigrees are to be removed.
-                            for (String p: pedigrees) {
+                            for (String p : pedigrees) {
                                 if (!toRemove.contains(p)) {
-                                     doRemove = false;
+                                    doRemove = false;
                                 }
                             }
                             if (doRemove) {
@@ -106,6 +95,22 @@ public abstract class BaseServicePipeLineProcessor implements ServicePipeLinePro
             }
         }
         return returnCorpus;
+    }
+
+    public List<String> getAnnotationsToRemove(ServicePipeLine pipeLine) {
+        List<String> toRemove = new ArrayList<String>();
+
+        /** Get a list of annotation types to remove. **/
+        for (ServicePipeLineComponent comp : pipeLine.getServices()) {
+            if (GenericValidator.isBlankOrNull(comp.getServiceUid())) {
+                continue;
+            }
+            if (!comp.isKeepAnnotationsInFinalResult()) {
+                NlpComponent loadedComp = registryService.getNlpComponent(comp.getServiceUid());
+                toRemove.add(loadedComp.getPedigree());
+            }
+        }
+        return toRemove;
     }
 
 }

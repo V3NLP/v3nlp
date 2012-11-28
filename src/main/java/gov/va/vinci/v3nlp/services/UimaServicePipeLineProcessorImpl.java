@@ -7,10 +7,10 @@ package gov.va.vinci.v3nlp.services;
 
 
 import gov.va.vinci.cm.Corpus;
-import gov.va.vinci.flap.cr.SuperReader;
-import gov.va.vinci.flap.descriptors.CollectionReaderFactory;
 import gov.va.vinci.flap.Client;
 import gov.va.vinci.flap.Service;
+import gov.va.vinci.flap.cr.SuperReader;
+import gov.va.vinci.flap.descriptors.CollectionReaderFactory;
 import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
@@ -20,12 +20,14 @@ import gov.va.vinci.v3nlp.registry.NlpComponent;
 import gov.va.vinci.v3nlp.services.database.DatabaseRepositoryService;
 import gov.va.vinci.v3nlp.services.uima.CorpusSubReader;
 import gov.va.vinci.v3nlp.services.uima.CorpusUimaAsCallbackListener;
-import org.apache.uima.collection.CollectionReader;
+import gov.va.vinci.v3nlp.services.uima.SqlDatabaseListener;
+import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Transactional
@@ -42,56 +44,64 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
     }
 
     @Override
-    public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine, Corpus corpus, BatchJobStatus jobStatus) {
-        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
-
+    public void processPipeLine(String pipeLineId, ServicePipeLine pipeLine,
+                                Corpus corpus, BatchJobStatus jobStatus) {
         Service service = null;
+        HashMap<String, String> resultsSettingsMap = getResultsSettingsMapFromList(pipeLine.getResultsSettings());
+
+        String pathOfResults = directoryToStoreResults + Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
+        if ((resultsSettingsMap.get("type")).equalsIgnoreCase("Directory")) {
+            if (resultsSettingsMap.get("selectedDirectory") != null) {
+                pathOfResults = resultsSettingsMap.get("selectedDirectory") +
+                        Utilities.getUsernameAsDirectory(pipeLine.getUserToken().trim());
+            }
+        }
 
         try {
-            // Log UIMA_HOME env variable
-            log.info("Environment Variable UIMA_HOME:" + System.getenv("UIMA_HOME"));
+            // Set up the FLAP Server
+            SetUpFlapServerWithAnnotatorsAndServiceDescriptors(pipeLine);
 
-            //Create the server object
-            service = new Service(flapPropertiesFile);
+            // Create the listener based on the result settings
+            UimaAsBaseCallbackListener callbackListener;
+            if ((resultsSettingsMap.get("type")).equalsIgnoreCase("Directory")) {
+                log.info("Setting up results to be saved into a directory.");
+                callbackListener = new CorpusUimaAsCallbackListener();
+            } else if ((resultsSettingsMap.get("type")).equalsIgnoreCase("Database")) {
+                log.info("Setting up results to be saved into a database.");
+                String pIncludedLabels[] = null;
+                String pExcludedLabels[] = null;
+                // String pExcludedLabels[] = (String[]) getAnnotationsToRemove(pipeLine).toArray();
 
-            //Initialize the server object with the list of annotators
-            ArrayList<String> descriptors = new ArrayList<String>();
-
-
-            // Add the service descriptors.
-            for (ServicePipeLineComponent comp : pipeLine.getServices()) {
-                if (comp.getServiceUid() == null) { // Ignore any UI / non-server side components.
-                    continue;
-                }
-
-                NlpComponent nlpComp = registryService.getNlpComponent(comp.getServiceUid());
-                log.info("Adding descriptor:" + nlpComp.getImplementationClass());
-                descriptors.add(nlpComp.getImplementationClass());
+                callbackListener = new SqlDatabaseListener();
+                ((SqlDatabaseListener) callbackListener).initialize(resultsSettingsMap, pIncludedLabels, pExcludedLabels);
+            } else {
+                throw new RuntimeException("Unknown results settings");
             }
 
-            service.deploy(descriptors, true);
-
-            //Create the listener and generate the client
-            CorpusUimaAsCallbackListener callbackListener = new CorpusUimaAsCallbackListener();
+            // Generate the client
             Client myClient = new Client(flapPropertiesFile);
+
 
             //Create the CollectionReader & add a Corpus SubReader
             CorpusSubReader subReader = new CorpusSubReader(corpus);
-            //SuperReader myReader = new SuperReader();
-            SuperReader myReader = (SuperReader)CollectionReaderFactory.
-                    generateSubReader(new HashMap<String,String>(),"gov.va.vinci.v3nlp.services.uima.CorpusSubReader");
+            SuperReader myReader = (SuperReader) CollectionReaderFactory.
+                    generateSubReader(new HashMap<String, String>(), "gov.va.vinci.v3nlp.services.uima.CorpusSubReader");
             myReader.setSubReader(subReader);
 
             //Execute the pipeline with the collection reader
             myClient.run(myReader, callbackListener);
 
-            Corpus c = callbackListener.getCorpus();
+            // If it is a file, get the corpus and remove the unneeded annotations
+            if ((resultsSettingsMap.get("type")).equalsIgnoreCase("Directory")) {
+                Corpus c = ((CorpusUimaAsCallbackListener) callbackListener).getCorpus();
+                myClient = null;
+                c = removeUnneededAnnotations(pipeLine, c);
+                log.info("Saving the pipeline to: " +
+                        pathOfResults + pipeLineId + ".results");
+                Utilities.serializeObject(pathOfResults + pipeLineId
+                        + ".results", new CorpusSummary(c));
+            }
 
-            myClient = null;
-
-            c = removeUnneededAnnotations(pipeLine, c);
-            Utilities.serializeObject(pathOfResults + pipeLineId
-                    + ".results", new CorpusSummary(c));
             updatePipeLineStatus(jobStatus, "COMPLETE", pathOfResults + pipeLineId
                     + ".results");
         } catch (Exception e) {
@@ -102,6 +112,47 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
         } finally {
             new File(pathOfResults + pipeLineId + ".lck").delete();
         }
+    }
+
+    private void SetUpFlapServerWithAnnotatorsAndServiceDescriptors(ServicePipeLine pipeLine) throws Exception {
+        Service flapServer;
+        
+        // Log UIMA_HOME env variable
+        log.info("Environment Variable UIMA_HOME:" + System.getenv("UIMA_HOME"));
+
+        //Create the server object
+        flapServer = new Service(flapPropertiesFile);
+
+        //Initialize the server object with the list of annotators
+        ArrayList<String> descriptors = new ArrayList<String>();
+
+
+        // Add the service descriptors.
+        for (ServicePipeLineComponent comp : pipeLine.getServices()) {
+            if (comp.getServiceUid() == null) { // Ignore any UI / non-server side components.
+                continue;
+            }
+
+            NlpComponent nlpComp = registryService.getNlpComponent(comp.getServiceUid());
+            log.info("Adding descriptor:" + nlpComp.getImplementationClass());
+            descriptors.add(nlpComp.getImplementationClass());
+        }
+
+        flapServer.deploy(descriptors, true);
+    }
+
+    private HashMap<String, String> getResultsSettingsMapFromList(List<String> resultSettings) {
+        HashMap<String, String> settingsMap = new HashMap<String, String>();
+        for (String setting : resultSettings) {
+            int pos = setting.indexOf("|");
+            String key = setting.substring(0, pos);
+            String value = setting.substring(pos + 1);
+            if (value != null && value.equals("")) {
+                value = null;
+            }
+            settingsMap.put(key, value);
+        }
+        return settingsMap;
     }
 
     public void setFlapPropertiesFile(String fpf) {

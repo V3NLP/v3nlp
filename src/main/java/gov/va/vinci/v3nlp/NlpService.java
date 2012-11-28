@@ -38,7 +38,7 @@ public interface NlpService {
      * in the background.
      * @param pipeLine the pipeline definition to process.
      * @param corpus  the corpus to process.
-     * @param dataServiceSourceList If pulling for a database, this is a list of the database information
+     * @param dataServiceSourceList If pulling from a database, this is a list of the database information
      *      needed to query the database.
      * @return the id of the pipeline.
      * @throws SQLException
