@@ -61,7 +61,7 @@
         <dependency>
             <groupId>gov.va.research.v3nlp</groupId>
             <artifactId>dictionary</artifactId>
-            <version>2011.12.0</version>
+            <version>2012.06.1-SNAPSHOT</version>
         </dependency>
         <!-- Previous dependencies
         <dependency>
@@ -133,7 +133,6 @@
             <version>2012.11.2</version>
         </dependency>
 
-
         <!-- word Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
@@ -147,7 +146,6 @@
             <artifactId>line</artifactId>
             <version>2012.11.2</version>
         </dependency>
-
 
         <!-- slotValue Dependencies .........  -->
         <dependency>
@@ -177,19 +175,18 @@
             <version>2012.11.2</version>
         </dependency>
 
-
         <!-- pos Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>pos</artifactId>
-            <version>2012.11.2</version>
+            <version>2012.11.3-SNAPSHOT</version>
         </dependency>
 
         <!-- phrase Dependencies .........  -->
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>phrase</artifactId>
-            <version>2012.11.2</version>
+            <version>2012.11.3</version>
         </dependency>
 
         <!-- concept.local Dependencies .........  -->
@@ -216,7 +213,7 @@
         <dependency>
             <groupId>gov.va.vinci.nlp.framework</groupId>
             <artifactId>mastifNegation</artifactId>
-            <version>2012.11.2</version>
+            <version>2012.11.3-SNAPSHOT</version>
         </dependency>
 
         <!-- marshallers.knowtator Dependencies .........  -->
@@ -239,7 +236,6 @@
             <artifactId>marshallers.commonModel</artifactId>
             <version>2012.11.3-SNAPSHOT</version>
         </dependency>
-
 
         <!-- question/answer Dependencies ...........  -->
         <dependency>
@@ -291,6 +287,13 @@
             <groupId>gov.va.vinci</groupId>
             <artifactId>flap</artifactId>
             <version>2012.08.2</version>
+        </dependency>
+        
+        <!-- Other Jars (for things like MASTIF) -->
+        <dependency>
+            <groupId>gov.va.vinci.nlp.framework</groupId>
+            <artifactId>unmavenedJars</artifactId>
+            <version>2012.11.5-SNAPSHOT</version>
         </dependency>
 
         <!-- Logging Dependency -->
