@@ -11,6 +11,7 @@ import gov.va.vinci.flap.Client;
 import gov.va.vinci.flap.Service;
 import gov.va.vinci.flap.cr.SuperReader;
 import gov.va.vinci.flap.descriptors.CollectionReaderFactory;
+import gov.va.vinci.flap.descriptors.FlapAEDescriptor;
 import gov.va.vinci.v3nlp.Utilities;
 import gov.va.vinci.v3nlp.model.BatchJobStatus;
 import gov.va.vinci.v3nlp.model.CorpusSummary;
@@ -116,7 +117,7 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
 
     private void SetUpFlapServerWithAnnotatorsAndServiceDescriptors(ServicePipeLine pipeLine) throws Exception {
         Service flapServer;
-        
+
         // Log UIMA_HOME env variable
         log.info("Environment Variable UIMA_HOME:" + System.getenv("UIMA_HOME"));
 
@@ -124,8 +125,14 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
         flapServer = new Service(flapPropertiesFile);
 
         //Initialize the server object with the list of annotators
-        ArrayList<String> descriptors = new ArrayList<String>();
+        FlapAEDescriptor annotators = new FlapAEDescriptor();
 
+        //Set the number of server instances
+        int numberOfProcesses = 1;
+        if (pipeLine.getNumberOfProcesses() > 0) {
+            numberOfProcesses = pipeLine.getNumberOfProcesses();
+        }
+        annotators.setNumberOfInstances(numberOfProcesses);
 
         // Add the service descriptors.
         for (ServicePipeLineComponent comp : pipeLine.getServices()) {
@@ -135,10 +142,11 @@ public class UimaServicePipeLineProcessorImpl extends BaseServicePipeLineProcess
 
             NlpComponent nlpComp = registryService.getNlpComponent(comp.getServiceUid());
             log.info("Adding descriptor:" + nlpComp.getImplementationClass());
-            descriptors.add(nlpComp.getImplementationClass());
+            FlapAEDescriptor annotator = new FlapAEDescriptor(nlpComp.getImplementationClass(), true);
+            annotators.addDelegate(annotator);
         }
 
-        flapServer.deploy(descriptors, true);
+        flapServer.deploy(annotators);
     }
 
     private HashMap<String, String> getResultsSettingsMapFromList(List<String> resultSettings) {
